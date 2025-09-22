@@ -4,25 +4,25 @@
       "id": "part-1",
       "description": "A steel rail fastener clip.",
       "imageUrl": "https://picsum.photos/seed/rail1/600/400",
-      "imageHint": "metal fastener"
+      "imageHint": "item photo"
     },
     {
       "id": "part-2",
       "description": "A heavy-duty track bolt and nut.",
       "imageUrl": "https://picsum.photos/seed/rail2/600/400",
-      "imageHint": "track bolt"
+      "imageHint": "item photo"
     },
     {
       "id": "part-3",
       "description": "A fishplate for joining two rails.",
       "imageUrl": "https://picsum.photos/seed/rail3/600/400",
-      "imageHint": "metal plate"
+      "imageHint": "item photo"
     },
     {
       "id": "part-4",
       "description": "A railroad switch motor.",
       "imageUrl": "https://picsum.photos/seed/rail4/600/400",
-      "imageHint": "railroad switch"
+      "imageHint": "item photo"
     }
   ]
 }

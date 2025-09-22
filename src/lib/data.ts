@@ -13,7 +13,7 @@ export const parts: Part[] = [
     description: 'A resilient, threadless rail fastening system used to secure rails to railroad ties. Known for its high clamping force and fatigue resistance.',
     category: 'Fasteners',
     imageUrl: 'https://picsum.photos/seed/rail1/600/400',
-    dataAiHint: 'metal fastener',
+    dataAiHint: 'item photo',
     vendorId: 'vendor-1',
     inspections: [
       { id: 'insp-1a', date: '2023-11-15T10:00:00Z', inspector: 'John Doe', notes: 'No visible cracks or corrosion. Clamping force within spec.', status: 'Passed' },
@@ -27,7 +27,7 @@ export const parts: Part[] = [
     description: 'A high-tensile bolt used for joining fishplates to rails. Features a specialized head and nut for high-torque applications.',
     category: 'Bolts & Nuts',
     imageUrl: 'https://picsum.photos/seed/rail2/600/400',
-    dataAiHint: 'track bolt',
+    dataAiHint: 'item photo',
     vendorId: 'vendor-2',
     inspections: [
       { id: 'insp-2a', date: '2023-09-01T09:00:00Z', inspector: 'John Doe', notes: 'Initial installation torque verified.', status: 'Passed' },
@@ -42,7 +42,7 @@ export const parts: Part[] = [
     description: 'A metal bar that is bolted to the ends of two rails to join them together in a track. Made from high-strength steel.',
     category: 'Joint Bars',
     imageUrl: 'https://picsum.photos/seed/rail3/600/400',
-    dataAiHint: 'metal plate',
+    dataAiHint: 'item photo',
     vendorId: 'vendor-1',
     inspections: [
       { id: 'insp-3a', date: '2024-01-10T08:45:00Z', inspector: 'Jane Smith', notes: 'Hairline fracture detected near the third bolt hole. Immediate attention needed.', status: 'Requires Attention' },
@@ -56,7 +56,7 @@ export const parts: Part[] = [
     description: 'An electromechanical motor that controls the movement of railroad switches, enabling trains to change tracks.',
     category: 'Switches',
     imageUrl: 'https://picsum.photos/seed/rail4/600/400',
-    dataAiHint: 'railroad switch',
+    dataAiHint: 'item photo',
     vendorId: 'vendor-2',
     inspections: [
       { id: 'insp-4a', date: '2024-06-01T11:20:00Z', inspector: 'John Doe', notes: 'Cycle time is slow. Lubrication applied. Performance improved.', status: 'Passed' },
