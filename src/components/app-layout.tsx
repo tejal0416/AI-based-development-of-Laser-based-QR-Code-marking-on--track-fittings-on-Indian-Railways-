@@ -35,6 +35,15 @@ import { Icons } from "@/components/icons";
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
+  const getPageTitle = (path: string) => {
+    if (path.startsWith('/parts/')) return 'Part Details';
+    if (path.startsWith('/settings')) return 'Settings';
+    if (path.startsWith('/support')) return 'Support';
+    if (path.startsWith('/dashboard')) return 'Dashboard';
+    if (path.startsWith('/scan')) return 'Scan Part';
+    return 'RailWatch'
+  }
+
   return (
     <SidebarProvider>
       <Sidebar>
@@ -92,7 +101,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           <div className="flex items-center gap-4">
              <SidebarTrigger className="md:hidden" />
              <h1 className="font-headline text-xl font-semibold">
-                {pathname.startsWith('/parts/') ? 'Part Details' : pathname.charAt(1).toUpperCase() + pathname.slice(2)}
+                {getPageTitle(pathname)}
              </h1>
           </div>
           <DropdownMenu>
@@ -109,8 +118,12 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuItem>Support</DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/settings">Settings</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/support">Support</Link>
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
                 <Link href="/login">Logout</Link>
