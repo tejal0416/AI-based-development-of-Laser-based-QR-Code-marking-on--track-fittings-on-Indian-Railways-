@@ -12,6 +12,8 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   onAuthStateChanged,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
 } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 
@@ -19,6 +21,7 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   signInWithGoogle: () => Promise<void>;
+  signInWithEmail: (email: string, pass: string) => Promise<void>;
   signOut: () => Promise<void>;
 }
 
@@ -43,8 +46,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await signInWithPopup(auth, provider);
     } catch (error) {
       console.error("Error signing in with Google", error);
+      throw error;
     }
   };
+
+  const signInWithEmail = async (email: string, pass: string) => {
+    try {
+      await signInWithEmailAndPassword(auth, email, pass);
+    } catch (error) {
+      // If the user doesn't exist, create a new one.
+      // In a real app, you might want a separate sign-up flow.
+      if ((error as any).code === 'auth/user-not-found') {
+        await createUserWithEmailAndPassword(auth, email, pass);
+      } else {
+        console.error("Error signing in with email", error);
+        throw error;
+      }
+    }
+  }
 
   const signOut = async () => {
     try {
@@ -54,7 +73,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const value = { user, loading, signInWithGoogle, signOut };
+  const value = { user, loading, signInWithGoogle, signOut, signInWithEmail };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
