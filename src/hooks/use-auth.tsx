@@ -56,8 +56,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       // If the user doesn't exist, create a new one.
       // In a real app, you might want a separate sign-up flow.
-      if ((error as any).code === 'auth/user-not-found') {
-        await createUserWithEmailAndPassword(auth, email, pass);
+      const errorCode = (error as any).code;
+      if (errorCode === 'auth/user-not-found' || errorCode === 'auth/invalid-credential') {
+        try {
+          await createUserWithEmailAndPassword(auth, email, pass);
+        }
+        catch (createError) {
+            console.error("Error creating user", createError);
+            throw createError;
+        }
       } else {
         console.error("Error signing in with email", error);
         throw error;
