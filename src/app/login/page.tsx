@@ -60,7 +60,7 @@ export default function LoginPage() {
           <div className="flex justify-center mb-4">
             <Icons.logo className="w-12 h-12 text-primary" />
           </div>
-          <CardTitle className="text-3xl font-headline">RailWatch</CardTitle>
+          <CardTitle className="text-3xl font-headline">Rails n Tales</CardTitle>
           <CardDescription>
             Enter your credentials to access your account
           </CardDescription>
