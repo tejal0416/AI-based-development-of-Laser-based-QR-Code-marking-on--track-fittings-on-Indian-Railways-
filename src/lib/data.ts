@@ -12,7 +12,7 @@ export const parts: Part[] = [
     name: 'Pandrol e-Clip',
     description: 'A resilient, threadless rail fastening system used to secure rails to railroad ties. Known for its high clamping force and fatigue resistance.',
     category: 'Fasteners',
-    imageUrl: 'https://picsum.photos/seed/rail1/600/400',
+    imageUrl: 'https://picsum.photos/seed/clip/600/400',
     dataAiHint: 'item photo',
     vendorId: 'vendor-1',
     inspections: [
@@ -26,7 +26,7 @@ export const parts: Part[] = [
     name: 'Heavy-Duty Track Bolt',
     description: 'A high-tensile bolt used for joining fishplates to rails. Features a specialized head and nut for high-torque applications.',
     category: 'Bolts & Nuts',
-    imageUrl: 'https://picsum.photos/seed/rail2/600/400',
+    imageUrl: 'https://picsum.photos/seed/bolt/600/400',
     dataAiHint: 'item photo',
     vendorId: 'vendor-2',
     inspections: [
@@ -41,7 +41,7 @@ export const parts: Part[] = [
     name: 'Standard Fishplate',
     description: 'A metal bar that is bolted to the ends of two rails to join them together in a track. Made from high-strength steel.',
     category: 'Joint Bars',
-    imageUrl: 'https://picsum.photos/seed/rail3/600/400',
+    imageUrl: 'https://picsum.photos/seed/fishplate/600/400',
     dataAiHint: 'item photo',
     vendorId: 'vendor-1',
     inspections: [
@@ -55,7 +55,7 @@ export const parts: Part[] = [
     name: 'M63 Switch Motor',
     description: 'An electromechanical motor that controls the movement of railroad switches, enabling trains to change tracks.',
     category: 'Switches',
-    imageUrl: 'https://picsum.photos/seed/rail4/600/400',
+    imageUrl: 'https://picsum.photos/seed/motor/600/400',
     dataAiHint: 'item photo',
     vendorId: 'vendor-2',
     inspections: [
