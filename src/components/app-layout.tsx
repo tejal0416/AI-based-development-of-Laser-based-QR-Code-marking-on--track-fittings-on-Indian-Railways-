@@ -60,7 +60,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
     if (path.startsWith('/support')) return 'Support';
     if (path.startsWith('/dashboard')) return 'Dashboard';
     if (path.startsWith('/scan')) return 'Scan Part';
-    return 'RailWatch'
+    return 'Rails n Tales'
   }
 
   return (
@@ -70,7 +70,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           <Link href="/dashboard" className="flex items-center gap-2">
             <Icons.logo className="w-8 h-8 text-primary" />
             <span className="font-headline text-2xl font-bold text-foreground">
-              RailWatch
+              Rails n Tales
             </span>
           </Link>
         </SidebarHeader>
