@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect } from "react";
 import {
   LayoutDashboard,
+  Loader,
   LogOut,
   QrCode,
   User,
@@ -31,9 +33,26 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Icons } from "@/components/icons";
+import { useAuth } from "@/hooks/use-auth";
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const { user, loading, signOut } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push("/login");
+    }
+  }, [user, loading, router]);
+
+  if (loading || !user) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <Loader className="h-12 w-12 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   const getPageTitle = (path: string) => {
     if (path.startsWith('/parts/')) return 'Part Details';
@@ -86,7 +105,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         <SidebarFooter>
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild tooltip="Logout">
+              <SidebarMenuButton asChild tooltip="Logout" onClick={signOut}>
                 <Link href="/login">
                   <LogOut />
                   <span>Logout</span>
@@ -108,7 +127,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="rounded-full">
                 <Avatar>
-                  <AvatarImage src="https://picsum.photos/seed/user/40/40" />
+                  <AvatarImage src={user.photoURL ?? "https://picsum.photos/seed/user/40/40"} />
                   <AvatarFallback>
                     <User />
                   </AvatarFallback>
@@ -116,7 +135,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuLabel>{user.displayName}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
                 <Link href="/settings">Settings</Link>
@@ -125,8 +144,8 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                 <Link href="/support">Support</Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <Link href="/login">Logout</Link>
+              <DropdownMenuItem onClick={signOut}>
+                Logout
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

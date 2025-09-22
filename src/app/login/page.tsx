@@ -1,4 +1,8 @@
+"use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,15 +14,34 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Icons } from "@/components/icons";
+import { useAuth } from "@/hooks/use-auth";
+import { Loader } from "lucide-react";
 
 export default function LoginPage() {
+  const { user, loading, signInWithGoogle } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user) {
+      router.push("/dashboard");
+    }
+  }, [user, router]);
+
+  if (loading || user) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <Loader className="h-12 w-12 animate-spin text-primary" />
+      </div>
+    );
+  }
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
       <Card className="mx-auto max-w-sm w-full">
         <CardHeader className="text-center">
-            <div className="flex justify-center mb-4">
-                <Icons.logo className="w-12 h-12 text-primary" />
-            </div>
+          <div className="flex justify-center mb-4">
+            <Icons.logo className="w-12 h-12 text-primary" />
+          </div>
           <CardTitle className="text-3xl font-headline">RailWatch</CardTitle>
           <CardDescription>
             Enter your credentials to access your account
@@ -34,6 +57,7 @@ export default function LoginPage() {
                 placeholder="m@example.com"
                 required
                 defaultValue="inspector@railwatch.com"
+                disabled
               />
             </div>
             <div className="grid gap-2">
@@ -46,13 +70,13 @@ export default function LoginPage() {
                   Forgot your password?
                 </Link>
               </div>
-              <Input id="password" type="password" required defaultValue="password123" />
+              <Input id="password" type="password" required defaultValue="password123" disabled />
             </div>
-            <Button type="submit" className="w-full bg-accent hover:bg-accent/90" asChild>
-                <Link href="/dashboard">Login</Link>
+            <Button type="submit" className="w-full bg-accent hover:bg-accent/90" disabled>
+                Login
             </Button>
-            <Button variant="outline" className="w-full">
-              Login with SSO
+            <Button variant="outline" className="w-full" onClick={signInWithGoogle}>
+              Login with Google
             </Button>
           </div>
           <div className="mt-4 text-center text-sm">
