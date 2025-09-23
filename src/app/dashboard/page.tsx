@@ -55,21 +55,6 @@ function getLatestStatus(part: Part): string {
   return latestInspection.status;
 }
 
-const getPartImage = (partType: string) => {
-    switch (partType) {
-        case "sleeper":
-            return PlaceHolderImages.find(img => img.id === 'sleeper');
-        case "rail_clip":
-            return PlaceHolderImages.find(img => img.id === 'clipper');
-        case "rail_pad":
-             return PlaceHolderImages.find(img => img.id === 'pads');
-        default:
-            // Find a default image, e.g. the first one if no specific match
-            return PlaceHolderImages.find(img => img.id === 'liners') || PlaceHolderImages[0];
-    }
-}
-
-
 export default async function DashboardPage() {
   const parts = await getParts();
 
@@ -117,20 +102,8 @@ export default async function DashboardPage() {
           {parts.map((part) => {
             const latestStatus = getLatestStatus(part);
             const statusStyle = statusStyles[latestStatus];
-            const partImage = getPartImage(part.part_type);
             return (
               <Card key={part.qr_id} className="flex flex-col overflow-hidden rounded-xl">
-                 {partImage && (
-                    <div className="relative w-full h-40 bg-muted">
-                         <Image 
-                            src={partImage.imageUrl} 
-                            alt={partImage.description} 
-                            fill
-                            className="object-cover"
-                            data-ai-hint={partImage.imageHint}
-                        />
-                    </div>
-                )}
                 <CardContent className="p-4 flex flex-col flex-grow bg-white">
                   <h3 className="font-headline text-lg font-semibold leading-tight">
                     {part.part_name}
@@ -138,7 +111,7 @@ export default async function DashboardPage() {
                   <p className="text-sm text-muted-foreground mt-1">
                     {`Batch #${part.lot_no.slice(-4)} • ${part.part_type}`}
                   </p>
-                  <div className="flex-grow my-2" />
+                  <div className="flex-grow my-4" />
                    <div className="flex items-center justify-between gap-4">
                     <Badge variant={statusStyle.variant} className={statusStyle.className}>
                        {statusStyle.icon}
