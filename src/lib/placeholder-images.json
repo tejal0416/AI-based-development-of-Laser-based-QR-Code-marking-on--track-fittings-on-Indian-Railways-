@@ -1,21 +1,21 @@
 [
   {
     "id": "rail_pad",
-    "description": "A scenic view of a railway track curving through a forest.",
-    "imageUrl": "https://picsum.photos/seed/rail-track-forest/600/400",
-    "imageHint": "railway track"
+    "description": "A close-up of rubber pads on a railway track.",
+    "imageUrl": "https://picsum.photos/seed/rail-pads/600/400",
+    "imageHint": "rail pad"
   },
   {
     "id": "sleeper",
-    "description": "A railway track stretching into the distance in a rural landscape.",
-    "imageUrl": "https://picsum.photos/seed/rail-track-rural/600/400",
-    "imageHint": "railway track"
+    "description": "A railway track with wooden sleepers stretching into the distance.",
+    "imageUrl": "https://picsum.photos/seed/railway-sleeper/600/400",
+    "imageHint": "railway sleeper"
   },
   {
     "id": "rail_clip",
-    "description": "A close-up perspective of a straight railway track.",
-    "imageUrl": "https://picsum.photos/seed/rail-track-straight/600/400",
-    "imageHint": "railway track"
+    "description": "A detailed close-up of metal clips fastening a rail to a sleeper.",
+    "imageUrl": "https://picsum.photos/seed/rail-clip/600/400",
+    "imageHint": "rail clip"
   },
   {
     "id": "default",
