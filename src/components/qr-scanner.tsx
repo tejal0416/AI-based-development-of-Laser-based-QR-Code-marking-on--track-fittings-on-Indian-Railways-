@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useRef, useState } from "react";
@@ -63,7 +62,7 @@ export function QrScanner({ onPartDetect }: QrScannerProps) {
       { facingMode: "environment" },
       {
         fps: 10,
-        qrbox: { width: 38, height: 38 }
+        qrbox: { width: 50, height: 50 }
       },
       onScanSuccess,
       onScanFailure
