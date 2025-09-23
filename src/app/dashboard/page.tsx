@@ -47,22 +47,6 @@ const statusStyles: Record<string, {
   }
 };
 
-const partTypeStyles: Record<string, { bg: string; text: string; }> = {
-    "rail_pad": {
-        bg: "from-sky-100 to-blue-100",
-        text: "text-sky-800"
-    },
-    "sleeper": {
-        bg: "from-emerald-100 to-green-100",
-        text: "text-emerald-800"
-    },
-    "rail_clip": {
-        bg: "from-violet-100 to-purple-100",
-        text: "text-violet-800"
-    }
-}
-
-
 function getLatestStatus(part: Part): string {
   if (part.inspections.length === 0) return "Not Inspected";
   const latestInspection = part.inspections.sort(
@@ -118,13 +102,26 @@ export default async function DashboardPage() {
           {parts.map((part) => {
             const latestStatus = getLatestStatus(part);
             const statusStyle = statusStyles[latestStatus];
-            const typeStyle = partTypeStyles[part.part_type] || { bg: "from-gray-100 to-gray-200", text: "text-gray-800" };
+            const partImage = PlaceHolderImages.find(img => img.id === part.part_type);
+
             return (
               <Card key={part.qr_id} className="flex flex-col overflow-hidden rounded-xl">
-                 <div className={cn("relative aspect-[4/3] flex items-center justify-center bg-gradient-to-br", typeStyle.bg)}>
-                    <p className={cn("font-display text-4xl font-bold tracking-wider uppercase", typeStyle.text)}>
-                        {part.part_type.replace('_', ' ')}
-                    </p>
+                 <div className="relative aspect-[4/3] bg-muted">
+                    {partImage ? (
+                      <Image 
+                        src={partImage.imageUrl} 
+                        alt={partImage.description} 
+                        fill
+                        className="object-cover"
+                        data-ai-hint={partImage.imageHint}
+                      />
+                    ) : (
+                      <div className="flex items-center justify-center h-full">
+                        <p className="font-display text-2xl font-bold tracking-wider uppercase text-muted-foreground">
+                          {part.part_type.replace('_', ' ')}
+                        </p>
+                      </div>
+                    )}
                  </div>
                 <CardContent className="p-4 flex flex-col flex-grow bg-white">
                   <h3 className="font-headline text-lg font-semibold leading-tight">

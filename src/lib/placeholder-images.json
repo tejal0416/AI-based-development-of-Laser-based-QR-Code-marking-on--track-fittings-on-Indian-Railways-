@@ -1,26 +1,26 @@
 [
   {
+    "id": "rail_pad",
+    "description": "A stack of black rubber rail pads used for insulation and vibration damping.",
+    "imageUrl": "https://picsum.photos/seed/railpad/600/400",
+    "imageHint": "rail pad"
+  },
+  {
     "id": "sleeper",
-    "description": "Railway sleeper carriage interior",
-    "imageUrl": "https://images.unsplash.com/photo-1580048915783-58641a993798?q=80&w=600",
-    "imageHint": "train interior"
+    "description": "Newly laid concrete railway sleepers on a bed of gravel ballast.",
+    "imageUrl": "https://picsum.photos/seed/sleeper/600/400",
+    "imageHint": "railway sleeper"
   },
   {
-    "id": "clipper",
-    "description": "Close-up of railway tracks and sleepers.",
-    "imageUrl": "https://images.unsplash.com/photo-1559258920-8b1a37549cb3?q=80&w=600",
-    "imageHint": "railroad track"
+    "id": "rail_clip",
+    "description": "Close-up of a metal rail clip fastening a track to a sleeper.",
+    "imageUrl": "https://picsum.photos/seed/railclip/600/400",
+    "imageHint": "rail clip"
   },
   {
-    "id": "pads",
-    "description": "Close-up of a railroad track receding into the distance.",
-    "imageUrl": "https://images.unsplash.com/photo-1526315999933-a3b3a3b939dc?q=80&w=600",
-    "imageHint": "railroad track"
-  },
-  {
-    "id": "liners",
-    "description": "Aerial view of a large train yard.",
-    "imageUrl": "https://images.unsplash.com/photo-1528148344645-38531a37c98e?q=80&w=600",
+    "id": "default",
+    "description": "Aerial view of a large train yard with multiple tracks.",
+    "imageUrl": "https://picsum.photos/seed/default/600/400",
     "imageHint": "train yard"
   }
 ]
