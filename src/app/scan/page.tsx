@@ -86,10 +86,8 @@ export default function ScanPage() {
             return PlaceHolderImages.find(img => img.id === 'clipper');
         case "rail_pad":
              return PlaceHolderImages.find(img => img.id === 'pads');
-        case "liner":
-            return PlaceHolderImages.find(img => img.id === 'liners');
         default:
-            return PlaceHolderImages[0];
+            return PlaceHolderImages.find(img => img.id === 'liners') || PlaceHolderImages[0];
     }
   }
 
@@ -191,13 +189,13 @@ export default function ScanPage() {
                                      const statusVariant = latestStatus === "Passed" ? "default" : "destructive";
                                     return(
                                         <div key={part.qr_id} className="flex items-center gap-4 p-2 rounded-lg bg-slate-50">
-                                            <Image 
-                                                src={partImage?.imageUrl || "https://picsum.photos/seed/default/64/64"} 
+                                            {partImage && <Image 
+                                                src={partImage.imageUrl} 
                                                 alt={part.part_name} 
                                                 width={48} 
                                                 height={48} 
                                                 className="rounded-md object-cover"
-                                            />
+                                            />}
                                             <div className="flex-grow">
                                                 <p className="font-semibold">{part.part_name}</p>
                                                 <p className="text-sm text-muted-foreground">

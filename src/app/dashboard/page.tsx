@@ -1,3 +1,4 @@
+
 import Link from "next/link";
 import Image from "next/image";
 import { getParts } from "@/lib/data";
@@ -62,10 +63,9 @@ const getPartImage = (partType: string) => {
             return PlaceHolderImages.find(img => img.id === 'clipper');
         case "rail_pad":
              return PlaceHolderImages.find(img => img.id === 'pads');
-        case "liner":
-            return PlaceHolderImages.find(img => img.id === 'liners');
         default:
-            return PlaceHolderImages[0];
+            // Find a default image, e.g. the first one if no specific match
+            return PlaceHolderImages.find(img => img.id === 'liners') || PlaceHolderImages[0];
     }
 }
 
@@ -125,8 +125,9 @@ export default async function DashboardPage() {
                          <Image 
                             src={partImage.imageUrl} 
                             alt={partImage.description} 
-                            fill
-                            className="object-cover"
+                            width={600}
+                            height={400}
+                            className="object-cover w-full h-full"
                             data-ai-hint={partImage.imageHint}
                         />
                     </div>
