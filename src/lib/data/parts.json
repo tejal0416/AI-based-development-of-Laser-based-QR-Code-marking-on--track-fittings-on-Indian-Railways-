@@ -1,105 +1,63 @@
-[
+{[
   {
-    "id": "part-1",
-    "qrId": "RW-PART-001",
-    "name": "Pandrol e-Clip",
-    "description": "A resilient, threadless rail fastening system used to secure rails to railroad ties. Known for its high clamping force and fatigue resistance.",
-    "category": "Fasteners",
-    "imageUrl": "https://picsum.photos/seed/clip/600/400",
-    "dataAiHint": "item photo",
-    "vendorId": "vendor-1",
+    "qr_id": "8D2E7C6F-9B3A",
+    "part_name": "sleeper-762",
+    "part_type": "sleeper",
+    "vendor_id": "VEND-1002",
+    "lot_no": "LOT-5926",
+    "mfg_date": "2024-03-24T00:00:00",
+    "warranty_days": 180,
+    "tms_ref": "TMS-44586",
+    "created_at": "2024-03-27T00:00:00",
     "inspections": [
       {
-        "id": "insp-1a",
-        "date": "2023-11-15T10:00:00Z",
-        "inspector": "John Doe",
-        "notes": "No visible cracks or corrosion. Clamping force within spec.",
-        "status": "Passed"
+        "insp_id": "d9f8c7b6-a5e4",
+        "qr_id": "8D2E7C6F-9B3A",
+        "inspector_id": "INSP-559",
+        "insp_date": "2024-09-01T00:00:00",
+        "status": "Passed",
+        "image_path": ""
       },
       {
-        "id": "insp-1b",
-        "date": "2024-05-20T14:30:00Z",
-        "inspector": "Jane Smith",
-        "notes": "Minor surface rust, but structurally sound. Re-check in 6 months.",
-        "status": "Passed"
+        "insp_id": "a1b2c3d4-e5f6",
+        "qr_id": "8D2E7C6F-9B3A",
+        "inspector_id": "INSP-123",
+        "insp_date": "2025-01-15T00:00:00",
+        "status": "Failed",
+        "image_path": ""
       }
     ]
   },
   {
-    "id": "part-2",
-    "qrId": "RW-PART-002",
-    "name": "Heavy-Duty Track Bolt",
-    "description": "A high-tensile bolt used for joining fishplates to rails. Features a specialized head and nut for high-torque applications.",
-    "category": "Bolts & Nuts",
-    "imageUrl": "https://picsum.photos/seed/bolt/600/400",
-    "dataAiHint": "item photo",
-    "vendorId": "vendor-2",
-    "inspections": [
-      {
-        "id": "insp-2a",
-        "date": "2023-09-01T09:00:00Z",
-        "inspector": "John Doe",
-        "notes": "Initial installation torque verified.",
-        "status": "Passed"
-      },
-      {
-        "id": "insp-2b",
-        "date": "2024-03-01T11:00:00Z",
-        "inspector": "Mike Lee",
-        "notes": "Signs of thread stripping found on nut. Replacement required.",
-        "status": "Failed"
-      },
-      {
-        "id": "insp-2c",
-        "date": "2024-03-05T16:00:00Z",
-        "inspector": "Mike Lee",
-        "notes": "Bolt and nut replaced. Torque re-verified.",
-        "status": "Passed"
-      }
-    ]
+    "qr_id": "A1B2C3D4-E5F6",
+    "part_name": "rail_clip-123",
+    "part_type": "rail_clip",
+    "vendor_id": "VEND-1001",
+    "lot_no": "LOT-1234",
+    "mfg_date": "2023-01-01T00:00:00",
+    "warranty_days": 365,
+    "tms_ref": "TMS-12345",
+    "created_at": "2023-01-11T00:00:00",
+    "inspections": []
   },
   {
-    "id": "part-3",
-    "qrId": "RW-PART-003",
-    "name": "Standard Fishplate",
-    "description": "A metal bar that is bolted to the ends of two rails to join them together in a track. Made from high-strength steel.",
-    "category": "Joint Bars",
-    "imageUrl": "https://picsum.photos/seed/fishplate/600/400",
-    "dataAiHint": "item photo",
-    "vendorId": "vendor-1",
+    "qr_id": "F6E5D4C3-B2A1",
+    "part_name": "rail_pad-456",
+    "part_type": "rail_pad",
+    "vendor_id": "VEND-1000",
+    "lot_no": "LOT-5678",
+    "mfg_date": "2023-05-10T00:00:00",
+    "warranty_days": 730,
+    "tms_ref": "TMS-67890",
+    "created_at": "2023-05-15T00:00:00",
     "inspections": [
       {
-        "id": "insp-3a",
-        "date": "2024-01-10T08:45:00Z",
-        "inspector": "Jane Smith",
-        "notes": "Hairline fracture detected near the third bolt hole. Immediate attention needed.",
-        "status": "Requires Attention"
-      },
-      {
-        "id": "insp-3b",
-        "date": "2024-04-18T13:00:00Z",
-        "inspector": "Sam Wilson",
-        "notes": "Follow-up on fracture. No propagation observed. Continue monitoring.",
-        "status": "Requires Attention"
-      }
-    ]
-  },
-  {
-    "id": "part-4",
-    "qrId": "RW-PART-004",
-    "name": "M63 Switch Motor",
-    "description": "An electromechanical motor that controls the movement of railroad switches, enabling trains to change tracks.",
-    "category": "Switches",
-    "imageUrl": "https://picsum.photos/seed/motor/600/400",
-    "dataAiHint": "item photo",
-    "vendorId": "vendor-2",
-    "inspections": [
-      {
-        "id": "insp-4a",
-        "date": "2024-06-01T11:20:00Z",
-        "inspector": "John Doe",
-        "notes": "Cycle time is slow. Lubrication applied. Performance improved.",
-        "status": "Passed"
+        "insp_id": "f6e5d4c3-b2a1-insp1",
+        "qr_id": "F6E5D4C3-B2A1",
+        "inspector_id": "INSP-789",
+        "insp_date": "2024-02-20T00:00:00",
+        "status": "Passed",
+        "image_path": ""
       }
     ]
   }

@@ -1,8 +1,27 @@
 [
-  {
-    "id": "vendor-1",
-    "name": "RailTough Components",
-    "contact": "sales@railtough.com"
-  },
-  { "id": "vendor-2", "name": "SteelForgé Inc.", "contact": "support@steelforge.com" }
+    {
+        "vendor_id": "VEND-1000",
+        "vendor_name": "Cole, Scott and Williams",
+        "public_key": "PUBKEY-000"
+    },
+    {
+        "vendor_id": "VEND-1001",
+        "vendor_name": "Smith PLC",
+        "public_key": "PUBKEY-001"
+    },
+    {
+        "vendor_id": "VEND-1002",
+        "vendor_name": "Davis-Miller",
+        "public_key": "PUBKEY-002"
+    },
+    {
+        "vendor_id": "VEND-1003",
+        "vendor_name": "Jones, Williams and Jones",
+        "public_key": "PUBKEY-003"
+    },
+    {
+        "vendor_id": "VEND-1004",
+        "vendor_name": "Brown Group",
+        "public_key": "PUBKEY-004"
+    }
 ]

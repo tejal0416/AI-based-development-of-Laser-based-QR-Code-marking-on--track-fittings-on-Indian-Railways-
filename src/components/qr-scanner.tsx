@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Html5QrcodeScanner } from "html5-qrcode";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
-import { getPartByQrId } from "@/lib/data"; // Using this directly since we removed the API
+import { getPartByQrId } from "@/lib/data";
 import { Loader, CheckCircle, XCircle } from "lucide-react";
 
 export function QrScanner() {
@@ -34,6 +34,7 @@ export function QrScanner() {
       setScanStatus("success");
       
       try {
+        // Since we are not using an API route anymore, we can call the data function directly
         const part = await getPartByQrId(decodedText);
         
         if (!part) {
