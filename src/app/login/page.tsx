@@ -97,7 +97,7 @@ export default function LoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
-              <Button type="submit" className="w-full bg-accent hover:bg-accent/90">
+              <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
                   Login
               </Button>
               <Button variant="outline" className="w-full" onClick={signInWithGoogle}>
@@ -107,7 +107,7 @@ export default function LoginPage() {
           </form>
           <div className="mt-4 text-center text-sm">
             Don&apos;t have an account?{" "}
-            <Link href="#" className="underline">
+            <Link href="/signup" className="underline text-primary">
               Sign up
             </Link>
           </div>
