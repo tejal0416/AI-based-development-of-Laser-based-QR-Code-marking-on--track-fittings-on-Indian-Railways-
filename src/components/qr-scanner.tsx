@@ -28,15 +28,17 @@ export function QrScanner() {
 
     const onScanSuccess = async (decodedText: string) => {
       if (scanStatus === "success") return;
-
-      setScanStatus("success");
+      
       qrScanner.clear();
+      setScanStatus("success");
       
       try {
         const response = await fetch(`/api/parts/${decodedText}`);
+        
         if (!response.ok) {
             throw new Error('Part not found');
         }
+
         const data = await response.json();
         
         toast({
