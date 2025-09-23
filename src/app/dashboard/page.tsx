@@ -104,6 +104,9 @@ export default async function DashboardPage() {
             const statusStyle = statusStyles[latestStatus];
             return (
               <Card key={part.qr_id} className="flex flex-col overflow-hidden rounded-xl">
+                 <div className="relative aspect-[4/3] bg-muted flex items-center justify-center">
+                    <p className="text-muted-foreground font-medium">{part.part_type}</p>
+                 </div>
                 <CardContent className="p-4 flex flex-col flex-grow bg-white">
                   <h3 className="font-headline text-lg font-semibold leading-tight">
                     {part.part_name}
