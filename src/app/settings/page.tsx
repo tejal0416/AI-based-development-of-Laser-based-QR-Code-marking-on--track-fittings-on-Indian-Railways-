@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 export default function SettingsPage() {
   return (
     <AppLayout>
-      <div className="grid gap-6">
+      <div className="grid gap-6 max-w-4xl mx-auto">
         <Card>
           <CardHeader>
             <CardTitle className="font-headline">Account Settings</CardTitle>
@@ -30,7 +30,7 @@ export default function SettingsPage() {
               <Label htmlFor="email">Email</Label>
               <Input id="email" type="email" defaultValue="inspector@railwatch.com" />
             </div>
-            <Button className="bg-accent hover:bg-accent/90">Save Changes</Button>
+            <Button>Save Changes</Button>
           </CardContent>
         </Card>
         <Card>

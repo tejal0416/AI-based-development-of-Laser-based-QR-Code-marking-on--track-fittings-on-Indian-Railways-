@@ -64,94 +64,60 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <SidebarProvider>
-      <Sidebar>
-        <SidebarHeader>
+    <div className="flex min-h-screen w-full flex-col bg-muted/40">
+      <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
           <Link href="/dashboard" className="flex items-center gap-2">
-            <Icons.logo className="w-8 h-8 text-primary" />
-            <span className="font-headline text-2xl font-bold text-foreground">
+            <Icons.logo className="w-6 h-6 text-primary" />
+            <span className="font-headline text-xl font-bold text-foreground">
               Rails n Tales
             </span>
           </Link>
-        </SidebarHeader>
-        <SidebarContent>
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                asChild
-                isActive={pathname === "/dashboard"}
-                tooltip="Dashboard"
-              >
-                <Link href="/dashboard">
-                  <LayoutDashboard />
-                  <span>Dashboard</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                asChild
-                isActive={pathname === "/scan"}
-                tooltip="Scan Part"
-              >
-                <Link href="/scan">
-                  <QrCode />
-                  <span>Scan Part</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarContent>
-        <SidebarFooter>
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild tooltip="Logout" onClick={signOut}>
-                <Link href="/login">
-                  <LogOut />
-                  <span>Logout</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarFooter>
-      </Sidebar>
-      <SidebarInset>
-        <header className="flex h-14 items-center justify-between border-b bg-card px-4 lg:px-6">
-          <div className="flex items-center gap-4">
-             <SidebarTrigger className="md:hidden" />
-             <h1 className="font-headline text-xl font-semibold">
-                {getPageTitle(pathname)}
-             </h1>
+          <nav className="hidden items-center gap-4 text-sm font-medium md:flex md:flex-row md:gap-5 md:text-sm lg:gap-6 mx-auto">
+            <Link
+              href="/dashboard"
+              className={`transition-colors hover:text-foreground ${pathname === '/dashboard' ? 'text-foreground' : 'text-muted-foreground'}`}
+            >
+              Dashboard
+            </Link>
+            <Link
+              href="/scan"
+              className={`transition-colors hover:text-foreground ${pathname === '/scan' ? 'text-foreground' : 'text-muted-foreground'}`}
+            >
+              Scan Part
+            </Link>
+          </nav>
+          <div className="ml-auto flex items-center gap-4">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="rounded-full">
+                  <Avatar>
+                    <AvatarImage src={user.photoURL ?? "https://picsum.photos/seed/user/40/40"} />
+                    <AvatarFallback>
+                      <User />
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>{user.displayName}</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/settings">Settings</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/support">Support</Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={signOut}>
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="rounded-full">
-                <Avatar>
-                  <AvatarImage src={user.photoURL ?? "https://picsum.photos/seed/user/40/40"} />
-                  <AvatarFallback>
-                    <User />
-                  </AvatarFallback>
-                </Avatar>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>{user.displayName}</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <Link href="/settings">Settings</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/support">Support</Link>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={signOut}>
-                Logout
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </header>
-        <main className="flex-1 p-4 sm:p-6">{children}</main>
-      </SidebarInset>
-    </SidebarProvider>
+      </header>
+      <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
+        {children}
+      </main>
+    </div>
   );
 }

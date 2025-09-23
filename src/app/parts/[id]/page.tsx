@@ -57,9 +57,9 @@ async function AiSummary({ partName, inspections }: { partName: string, inspecti
   
   if (!inspectionHistory) {
     return (
-        <Card className="bg-accent/10 border-accent">
+        <Card className="bg-primary/10 border-primary/20">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 font-headline text-accent">
+              <CardTitle className="flex items-center gap-2 font-headline text-primary">
                 <BrainCircuit />
                 AI Inspection Analysis
               </CardTitle>
@@ -74,9 +74,9 @@ async function AiSummary({ partName, inspections }: { partName: string, inspecti
   const { summary } = await generateInspectionSummary({ partName, inspectionHistory });
 
   return (
-    <Card className="bg-accent/10 border-accent">
+    <Card className="bg-primary/10 border-primary/20">
         <CardHeader>
-            <CardTitle className="flex items-center gap-2 font-headline text-accent">
+            <CardTitle className="flex items-center gap-2 font-headline text-primary">
                 <BrainCircuit />
                 AI Inspection Analysis
             </CardTitle>
