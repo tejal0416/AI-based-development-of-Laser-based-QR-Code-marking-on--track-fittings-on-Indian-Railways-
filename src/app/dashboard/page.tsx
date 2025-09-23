@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -7,6 +8,14 @@ import {
   Card,
   CardContent,
 } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuCheckboxItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,7 +24,7 @@ import type { Part } from "@/lib/types";
 import { QrCode, Search, ListFilter, ArrowUpDown, CheckCircle, AlertTriangle, XCircle } from "lucide-react";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { cn } from "@/lib/utils";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 const statusStyles: Record<string, {
   variant: "default" | "destructive";
@@ -84,6 +93,13 @@ export default function DashboardPage() {
   const [parts, setParts] = useState<Part[]>([]);
   const [filteredParts, setFilteredParts] = useState<Part[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [typeFilters, setTypeFilters] = useState<string[]>([]);
+
+  const partTypes = useMemo(() => {
+    const types = new Set(parts.map(p => p.part_type));
+    return Array.from(types);
+  }, [parts]);
+
 
   useEffect(() => {
     async function loadParts() {
@@ -95,14 +111,31 @@ export default function DashboardPage() {
   }, []);
 
   useEffect(() => {
-    const results = parts.filter(part =>
-      part.part_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      part.qr_id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      part.part_type.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      part.lot_no.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    let results = parts;
+
+    if (searchTerm) {
+        results = results.filter(part =>
+            part.part_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            part.qr_id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            part.part_type.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            part.lot_no.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+    }
+
+    if (typeFilters.length > 0) {
+        results = results.filter(part => typeFilters.includes(part.part_type));
+    }
+
     setFilteredParts(results);
-  }, [searchTerm, parts]);
+  }, [searchTerm, parts, typeFilters]);
+  
+  const handleTypeFilterChange = (partType: string) => {
+    setTypeFilters(prev => 
+      prev.includes(partType) 
+        ? prev.filter(t => t !== partType)
+        : [...prev, partType]
+    );
+  };
 
 
   return (
@@ -135,9 +168,28 @@ export default function DashboardPage() {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <Button variant="outline" className="gap-2">
-             <ListFilter className="h-4 w-4" /> Filter
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="gap-2">
+                    <ListFilter className="h-4 w-4" /> 
+                    Filter
+                    {typeFilters.length > 0 && <Badge variant="secondary" className="rounded-full px-2">{typeFilters.length}</Badge>}
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+                <DropdownMenuLabel>Filter by Part Type</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {partTypes.map(type => (
+                    <DropdownMenuCheckboxItem
+                        key={type}
+                        checked={typeFilters.includes(type)}
+                        onCheckedChange={() => handleTypeFilterChange(type)}
+                    >
+                        {type.replace('_', ' ')}
+                    </DropdownMenuCheckboxItem>
+                ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
           <Button variant="outline" className="gap-2">
             <ArrowUpDown className="h-4 w-4" /> Sort by: Recent
           </Button>
@@ -201,3 +253,4 @@ export default function DashboardPage() {
     </AppLayout>
   );
 }
+
