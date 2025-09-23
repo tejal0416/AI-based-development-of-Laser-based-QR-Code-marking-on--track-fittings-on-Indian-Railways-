@@ -1,55 +1,72 @@
+
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Html5QrcodeScanner } from "html5-qrcode";
+import { Html5QrcodeScanner, Html5Qrcode } from "html5-qrcode";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { getPartByQrId } from "@/lib/data";
 import { Loader, CheckCircle, XCircle } from "lucide-react";
+import type { Part } from "@/lib/types";
 
-export function QrScanner() {
+
+interface QrScannerProps {
+    onPartDetect: (part: Part) => void;
+}
+
+
+export function QrScanner({ onPartDetect }: QrScannerProps) {
   const scannerRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
   const { toast } = useToast();
   const [scanStatus, setScanStatus] = useState<"scanning" | "success" | "error" | "idle">("idle");
-  const [scanner, setScanner] = useState<Html5QrcodeScanner | null>(null);
+  const [scanner, setScanner] = useState<Html5Qrcode | null>(null);
 
   useEffect(() => {
-    if (!scannerRef.current || scanner) return;
-
-    const qrScanner = new Html5QrcodeScanner(
-      "reader",
-      {
-        fps: 10,
-        qrbox: 250,
-        useExtractedVideoElement: true,
-      },
-      false
-    );
+    if (!scannerRef.current) return;
+    if (scanner) {
+        scanner.start(
+            { facingMode: "environment" },
+            { fps: 10, qrbox: 250 },
+            onScanSuccess,
+            onScanFailure
+        ).catch(err => {
+            console.error("Scanner start error", err);
+            setScanStatus("error");
+        });
+        setScanStatus("scanning");
+        return;
+    };
+    
+    Html5Qrcode.getCameras().then(devices => {
+      if (devices && devices.length) {
+        const newScanner = new Html5Qrcode("reader-video");
+        setScanner(newScanner);
+      }
+    }).catch(err => {
+        console.error("Camera error:", err)
+        toast({
+          variant: "destructive",
+          title: "Camera Error",
+          description: "Could not access camera. Please grant permissions and refresh.",
+        });
+    });
 
     const onScanSuccess = async (decodedText: string) => {
       if (scanStatus === "success") return;
       
-      qrScanner.clear();
-      setScanStatus("success");
-      
       try {
-        // Since we are not using an API route anymore, we can call the data function directly
         const part = await getPartByQrId(decodedText);
         
         if (!part) {
             throw new Error('Part not found');
         }
         
+        setScanStatus("success");
+        onPartDetect(part);
         toast({
             title: "Scan Successful",
-            description: `Part found: ${part.part_name}. Redirecting...`,
+            description: `Part found: ${part.part_name}`,
         });
-
-        setTimeout(() => {
-            router.push(`/parts/${part.qr_id}`);
-        }, 1500)
-
 
       } catch (error) {
         console.error("Failed to fetch part data:", error);
@@ -59,9 +76,6 @@ export function QrScanner() {
           title: "Invalid QR Code",
           description: "This QR code does not correspond to a valid part.",
         });
-         setTimeout(() => {
-           window.location.reload();
-        }, 2500)
       }
     };
 
@@ -69,16 +83,13 @@ export function QrScanner() {
         // Continuous scanning, so we don't need to do much here.
     };
 
-    qrScanner.render(onScanSuccess, onScanFailure);
-    setScanner(qrScanner);
-    setScanStatus("scanning");
-
-
     return () => {
-        qrScanner.clear().catch(() => {});
+        if(scanner) {
+            scanner.stop().catch(() => {});
+        }
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [scanner]);
 
 
   const renderOverlay = () => {
@@ -88,7 +99,6 @@ export function QrScanner() {
                 <div className="absolute inset-0 bg-green-900/80 flex flex-col items-center justify-center text-white z-20">
                     <CheckCircle className="w-16 h-16 mb-4"/>
                     <h2 className="text-2xl font-bold">Scan Successful</h2>
-                    <p>Redirecting to part details...</p>
                 </div>
             )
         case 'error':
@@ -100,7 +110,7 @@ export function QrScanner() {
                 </div>
             )
         case 'idle':
-            return (
+             return (
                 <div className="absolute inset-0 bg-slate-900/80 flex flex-col items-center justify-center text-white z-20">
                     <Loader className="w-16 h-16 mb-4 animate-spin"/>
                     <h2 className="text-2xl font-bold">Initializing Scanner...</h2>
@@ -112,9 +122,12 @@ export function QrScanner() {
   }
 
   return (
-    <div className="relative aspect-video w-full max-w-2xl mx-auto overflow-hidden rounded-lg border bg-card shadow-lg">
+    <div className="relative w-full h-full" ref={scannerRef}>
         {renderOverlay()}
-        <div id="reader" ref={scannerRef} className="w-full h-full [&>span]:hidden [&>div>button]:hidden [&>div>span]:hidden"></div>
+        <div id="reader" className="w-full h-full">
+            <video id="reader-video" className="w-full h-full object-cover"></video>
+        </div>
     </div>
   );
 }
+
