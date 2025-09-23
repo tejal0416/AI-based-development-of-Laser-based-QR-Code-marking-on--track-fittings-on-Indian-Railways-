@@ -2,70 +2,98 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Html5QrcodeScanner } from "html5-qrcode";
-import { useRouter } from "next/navigation";
+import { Html5Qrcode } from "html5-qrcode";
 import { useToast } from "@/hooks/use-toast";
-import { getPartByQrId } from "@/lib/data";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const qrcodeRegionId = "html5qr-code-full-region";
 
-export function QrScanner() {
-  const router = useRouter();
+type QrScannerProps = {
+    onPartDetect: (qrId: string) => void;
+};
+
+export function QrScanner({ onPartDetect }: QrScannerProps) {
   const { toast } = useToast();
-  const scannerRef = useRef<Html5QrcodeScanner | null>(null);
+  const scannerRef = useRef<Html5Qrcode | null>(null);
+  const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
 
   useEffect(() => {
-    if (scannerRef.current) {
-        return;
+    const getCameraPermission = async () => {
+      try {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const videoDevices = devices.filter(device => device.kind === 'videoinput');
+        if (videoDevices.length > 0) {
+          await navigator.mediaDevices.getUserMedia({ video: true });
+          setHasCameraPermission(true);
+        } else {
+           setHasCameraPermission(false);
+        }
+      } catch (error) {
+        console.error('Error accessing camera:', error);
+        setHasCameraPermission(false);
+        toast({
+          variant: 'destructive',
+          title: 'Camera Access Denied',
+          description: 'Please enable camera permissions in your browser settings to use this app.',
+        });
+      }
+    };
+
+    getCameraPermission();
+  }, [toast]);
+  
+
+  useEffect(() => {
+    if (!hasCameraPermission) {
+      return;
     }
-    
-    const onScanSuccess = (decodedText: string, decodedResult: any) => {
-        scannerRef.current?.clear();
-        (async () => {
-            try {
-                const part = await getPartByQrId(decodedText);
-                if (part) {
-                    toast({
-                        title: "Scan Successful",
-                        description: `Part found: ${part.part_name}`,
-                    });
-                    setTimeout(() => {
-                        router.push(`/parts/${part.qr_id}`);
-                    }, 1500);
-                } else {
-                    toast({
-                        variant: "destructive",
-                        title: "Invalid QR Code",
-                        description: "This QR code does not correspond to a valid part.",
-                    });
-                }
-            } catch (error) {
-                 toast({
-                    variant: "destructive",
-                    title: "Error",
-                    description: "Failed to fetch part data.",
-                });
-            }
-        })();
+
+    const html5Qrcode = new Html5Qrcode(qrcodeRegionId);
+    scannerRef.current = html5Qrcode;
+
+    const onScanSuccess = (decodedText: string) => {
+      onPartDetect(decodedText);
     };
 
     const onScanFailure = (error: any) => {
-        // handle scan failure, usually better to ignore and keep scanning.
+      // ignore scan failure
     };
 
-    const config = {
+    html5Qrcode.start(
+      { facingMode: "environment" },
+      {
         fps: 10,
-        qrbox: { width: 250, height: 250 }
-    };
-
-    const html5QrcodeScanner = new Html5QrcodeScanner(qrcodeRegionId, config, false);
-    html5QrcodeScanner.render(onScanSuccess, onScanFailure);
-    scannerRef.current = html5QrcodeScanner;
+        qrbox: (viewfinderWidth, viewfinderHeight) => {
+            const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
+            const qrboxSize = Math.floor(minEdge * 0.8);
+            return {
+                width: qrboxSize,
+                height: qrboxSize,
+            };
+        }
+      },
+      onScanSuccess,
+      onScanFailure
+    ).catch(err => {
+      console.error("Scanner start error", err);
+    });
 
     return () => {
-        scannerRef.current?.clear().catch(() => {});
+      scannerRef.current?.stop().catch(() => {});
     };
-  }, [router, toast]);
+  }, [hasCameraPermission, onPartDetect]);
+
+
+  if (hasCameraPermission === false) {
+    return (
+        <Alert variant="destructive">
+            <AlertTitle>Camera Access Required</AlertTitle>
+            <AlertDescription>
+                Please allow camera access in your browser settings to use the scanner.
+            </AlertDescription>
+        </Alert>
+    );
+  }
 
   return <div id={qrcodeRegionId} className="w-full h-full" />;
 }

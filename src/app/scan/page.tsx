@@ -4,7 +4,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { AppLayout } from "@/components/app-layout";
 import { QrScanner } from "@/components/qr-scanner";
 import { Button } from "@/components/ui/button";
@@ -22,13 +22,28 @@ import { Icons } from "@/components/icons";
 import { Badge } from "@/components/ui/badge";
 import type { Part } from "@/lib/types";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
-import { getParts } from "@/lib/data";
+import { getParts, getPartByQrId } from "@/lib/data";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
 
 
 export default function ScanPage() {
   const [showScanner, setShowScanner] = useState(false);
   const [detectedPart, setDetectedPart] = useState<Part | null>(null);
   const [recentScans, setRecentScans] = useState<Part[]>([]);
+  const router = useRouter();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    // Load recent scans on mount
+    const loadRecentScans = async () => {
+      const allParts = await getParts();
+      // Get the last 3 scanned parts for demonstration
+      const sortedParts = allParts.sort((a,b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+      setRecentScans(sortedParts.slice(0, 3));
+    };
+    loadRecentScans();
+  }, []);
 
   const handleScanStart = () => {
     setDetectedPart(null);
@@ -36,10 +51,33 @@ export default function ScanPage() {
   }
 
   const handleCancel = () => {
-    setDetectedPart(null);
     setShowScanner(false);
+    setDetectedPart(null);
   }
   
+  const handlePartDetect = async (qrId: string) => {
+    setShowScanner(false);
+    const part = await getPartByQrId(qrId);
+    if (part) {
+        setDetectedPart(part);
+        toast({
+            title: "Part Detected",
+            description: `Part "${part.part_name}" found.`
+        });
+         if (!recentScans.some(p => p.qr_id === part.qr_id)) {
+            setRecentScans([part, ...recentScans].slice(0, 3));
+        }
+        router.push(`/parts/${part.qr_id}`);
+
+    } else {
+        toast({
+            variant: "destructive",
+            title: "Scan Failed",
+            description: "No part found for this QR code.",
+        });
+    }
+  }
+
   const getPartImage = (partType: string) => {
     switch (partType) {
         case "sleeper":
@@ -80,9 +118,10 @@ export default function ScanPage() {
             <Card className="flex flex-col">
                 <CardContent className="p-6">
                     <div className="relative aspect-video w-full rounded-lg overflow-hidden border bg-slate-50 flex items-center justify-center">
-                       {showScanner ? (
-                            <QrScanner />
-                       ) : (
+                        <div className={`${showScanner ? 'block' : 'hidden'} w-full h-full`}>
+                            <QrScanner onPartDetect={handlePartDetect} />
+                        </div>
+                       {!showScanner && (
                             <div className="text-center text-muted-foreground flex flex-col items-center gap-4">
                                 <Icons.scanFrame className="w-16 h-16" />
                                 <span>Align the code inside the frame</span>
@@ -148,7 +187,7 @@ export default function ScanPage() {
                              <div className="space-y-4">
                                 {recentScans.map(part => {
                                      const partImage = getPartImage(part.part_type);
-                                     const latestStatus = part.inspections.length > 0 ? part.inspections[0].status : "Not Inspected";
+                                     const latestStatus = part.inspections.length > 0 ? part.inspections.sort((a,b) => new Date(b.insp_date).getTime() - new Date(a.insp_date).getTime())[0].status : "Not Inspected";
                                      const statusVariant = latestStatus === "Passed" ? "default" : "destructive";
                                     return(
                                         <div key={part.qr_id} className="flex items-center gap-4 p-2 rounded-lg bg-slate-50">
