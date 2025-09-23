@@ -6,7 +6,7 @@ import path from "path";
 // Helper to open DB connection
 async function openDb() {
   // Check if the database file exists.
-  const dbPath = path.resolve(process.cwd(), "db/parts.db");
+  const dbPath = path.join(process.cwd(), "db/parts.db");
 
   try {
     const db = await open({
@@ -24,9 +24,18 @@ async function openDb() {
 
 // Helper to normalize parts by parsing JSON fields
 function normalizePart(part: any): Part {
+    let inspections = [];
+    if (part.inspections) {
+        try {
+            inspections = JSON.parse(part.inspections);
+        } catch (e) {
+            console.error(`Failed to parse inspections for part ${part.id}:`, e);
+            // If parsing fails, inspections will remain an empty array.
+        }
+    }
   return {
     ...part,
-    inspections: part.inspections ? JSON.parse(part.inspections) : [],
+    inspections,
   };
 }
 

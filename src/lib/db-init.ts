@@ -128,7 +128,7 @@ const parts = [
 ];
 
 async function setup() {
-  const dbDir = path.resolve(process.cwd(), "db");
+  const dbDir = path.join(process.cwd(), "db");
   if (!fs.existsSync(dbDir)) {
     fs.mkdirSync(dbDir);
   }
