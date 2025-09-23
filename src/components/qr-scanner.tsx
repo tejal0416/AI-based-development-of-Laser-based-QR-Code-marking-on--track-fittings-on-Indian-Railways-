@@ -63,14 +63,7 @@ export function QrScanner({ onPartDetect }: QrScannerProps) {
       { facingMode: "environment" },
       {
         fps: 10,
-        qrbox: (viewfinderWidth, viewfinderHeight) => {
-            const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
-            const qrboxSize = Math.floor(minEdge * 0.8);
-            return {
-                width: qrboxSize,
-                height: qrboxSize,
-            };
-        }
+        qrbox: { width: 250, height: 250 }
       },
       onScanSuccess,
       onScanFailure
