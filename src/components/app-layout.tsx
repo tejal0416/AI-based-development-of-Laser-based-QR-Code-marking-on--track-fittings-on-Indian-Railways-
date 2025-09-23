@@ -34,6 +34,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Icons } from "@/components/icons";
 import { useAuth } from "@/hooks/use-auth";
+import { cn } from "@/lib/utils";
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -65,23 +66,27 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
-      <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
-          <Link href="/dashboard" className="flex items-center gap-2">
-            <Icons.logo className="w-6 h-6 text-primary" />
+      <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
+          <Link href="/dashboard" className="flex items-center gap-2 mr-4">
+            <Icons.logo className="w-8 h-8 text-primary" />
             <span className="font-headline text-xl font-bold text-foreground">
               Rails n Tales
             </span>
           </Link>
-          <nav className="hidden items-center gap-4 text-sm font-medium md:flex md:flex-row md:gap-5 md:text-sm lg:gap-6 mx-auto">
+          <nav className="hidden items-center gap-2 text-sm font-medium md:flex md:flex-row md:gap-2 md:text-sm lg:gap-2 mx-auto p-1 bg-gray-100 rounded-lg">
             <Link
               href="/dashboard"
-              className={`transition-colors hover:text-foreground ${pathname === '/dashboard' ? 'text-foreground' : 'text-muted-foreground'}`}
+              className={cn("px-4 py-1.5 rounded-md transition-colors", 
+                pathname === '/dashboard' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'
+              )}
             >
               Dashboard
             </Link>
             <Link
               href="/scan"
-              className={`transition-colors hover:text-foreground ${pathname === '/scan' ? 'text-foreground' : 'text-muted-foreground'}`}
+              className={cn("px-4 py-1.5 rounded-md transition-colors", 
+                pathname === '/scan' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'
+              )}
             >
               Scan Part
             </Link>

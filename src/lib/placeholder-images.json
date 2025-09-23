@@ -1,28 +1,28 @@
 {
   "placeholderImages": [
     {
-      "id": "part-1",
-      "description": "A steel rail fastener clip.",
-      "imageUrl": "https://picsum.photos/seed/rail1/600/400",
-      "imageHint": "item photo"
+      "id": "sleeper",
+      "description": "Railway sleeper carriage interior",
+      "imageUrl": "https://images.unsplash.com/photo-1580048915783-58641a993798?q=80&w=600",
+      "imageHint": "train interior"
     },
     {
-      "id": "part-2",
-      "description": "A heavy-duty track bolt and nut.",
-      "imageUrl": "https://picsum.photos/seed/rail2/600/400",
-      "imageHint": "item photo"
+      "id": "clipper",
+      "description": "Close-up of railway tracks and sleepers.",
+      "imageUrl": "https://images.unsplash.com/photo-1559258920-8b1a37549cb3?q=80&w=600",
+      "imageHint": "railroad track"
     },
     {
-      "id": "part-3",
-      "description": "A fishplate for joining two rails.",
-      "imageUrl": "https://picsum.photos/seed/rail3/600/400",
-      "imageHint": "item photo"
+      "id": "pads",
+      "description": "Top-down view of a green train roof.",
+      "imageUrl": "https://images.unsplash.com/photo-1518998053901-5348d3961a04?q=80&w=600",
+      "imageHint": "train roof"
     },
     {
-      "id": "part-4",
-      "description": "A railroad switch motor.",
-      "imageUrl": "https://picsum.photos/seed/rail4/600/400",
-      "imageHint": "item photo"
+      "id": "liners",
+      "description": "Aerial view of a large train yard.",
+      "imageUrl": "https://images.unsplash.com/photo-1528148344645-38531a37c98e?q=80&w=600",
+      "imageHint": "train yard"
     }
   ]
 }
