@@ -25,6 +25,7 @@ import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { getParts, getPartByQrId } from "@/lib/data";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
+import { Html5Qrcode } from "html5-qrcode";
 
 
 export default function ScanPage() {
@@ -33,6 +34,8 @@ export default function ScanPage() {
   const [recentScans, setRecentScans] = useState<Part[]>([]);
   const router = useRouter();
   const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
 
   useEffect(() => {
     // Load recent scans on mount
@@ -77,6 +80,28 @@ export default function ScanPage() {
         });
     }
   }
+
+  const handleFileUploadClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      const file = event.target.files[0];
+      const html5QrCode = new Html5Qrcode( "qr-reader-container", /* verbose= */ false);
+      try {
+        const decodedText = await html5QrCode.scanFile(file, /* showImage= */ false);
+        handlePartDetect(decodedText);
+      } catch (err) {
+        console.error("Error scanning file.", err);
+        toast({
+            variant: "destructive",
+            title: "Scan Failed",
+            description: "Could not decode QR code from the uploaded image.",
+        });
+      }
+    }
+  };
 
   const getPartImage = (partType: string) => {
     switch (partType) {
@@ -133,10 +158,18 @@ export default function ScanPage() {
                             <Icons.scanLine className="mr-2 h-5 w-5" />
                             Start Scan
                         </Button>
-                        <Button variant="outline" className="w-full">
+                        <Button variant="outline" className="w-full" onClick={handleFileUploadClick}>
                             <Icons.upload className="mr-2 h-5 w-5" />
                             Upload Photo
                         </Button>
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            onChange={handleFileChange}
+                            className="hidden"
+                            accept="image/*"
+                        />
+                        <div id="qr-reader-container" className="hidden"></div>
                      </div>
                      <CardDescription className="text-center mt-4">
                         Supported: QR, Code-128, DataMatrix. Good lighting improves accuracy.
