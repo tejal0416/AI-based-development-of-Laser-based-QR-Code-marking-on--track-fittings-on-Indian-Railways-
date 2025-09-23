@@ -1,26 +1,26 @@
 [
   {
     "id": "rail_pad",
-    "description": "A close-up view of a railway track, focusing on the texture of the rail pads.",
-    "imageUrl": "https://picsum.photos/seed/railway-track/600/400",
+    "description": "A scenic view of a railway track curving through a forest.",
+    "imageUrl": "https://picsum.photos/seed/rail-track-forest/600/400",
     "imageHint": "railway track"
   },
   {
     "id": "sleeper",
-    "description": "A line of concrete railway sleepers set in ballast, creating a strong foundation for tracks.",
-    "imageUrl": "https://picsum.photos/seed/concrete-sleepers/600/400",
-    "imageHint": "concrete sleepers"
+    "description": "A railway track stretching into the distance in a rural landscape.",
+    "imageUrl": "https://picsum.photos/seed/rail-track-rural/600/400",
+    "imageHint": "railway track"
   },
   {
     "id": "rail_clip",
-    "description": "A detailed shot of a metal rail clip securely fastening a rail to a sleeper.",
-    "imageUrl": "https://picsum.photos/seed/rail-fastening/600/400",
-    "imageHint": "rail fastening"
+    "description": "A close-up perspective of a straight railway track.",
+    "imageUrl": "https://picsum.photos/seed/rail-track-straight/600/400",
+    "imageHint": "railway track"
   },
   {
     "id": "default",
-    "description": "An aerial view of a complex railway junction with multiple tracks.",
-    "imageUrl": "https://picsum.photos/seed/train-junction/600/400",
-    "imageHint": "railway junction"
+    "description": "An aerial view of a railway track going over a bridge.",
+    "imageUrl": "https://picsum.photos/seed/rail-track-bridge/600/400",
+    "imageHint": "railway bridge"
   }
 ]
