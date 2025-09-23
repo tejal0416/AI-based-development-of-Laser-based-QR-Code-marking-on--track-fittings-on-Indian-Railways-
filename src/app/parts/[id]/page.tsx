@@ -1,17 +1,21 @@
 import { notFound } from "next/navigation";
-import Image from "next/image";
 import {
   AlertTriangle,
   BrainCircuit,
   Building,
   CheckCircle2,
-  Package,
   Wrench,
   XCircle,
+  Clock,
+  ShieldCheck,
+  Hash,
+  Tag,
+  Package,
 } from "lucide-react";
 import { getPartById, getVendorById } from "@/lib/data";
 import { generateInspectionSummary } from "@/ai/flows/generate-inspection-summary";
-import type { Inspection, InspectionStatus } from "@/lib/types";
+import type { Inspection, InspectionStatus, Part } from "@/lib/types";
+import { format, formatDistanceToNow } from "date-fns";
 
 import { AppLayout } from "@/components/app-layout";
 import {
@@ -37,22 +41,21 @@ type PartDetailPageProps = {
   };
 };
 
-const statusIcons: Record<InspectionStatus, React.ReactNode> = {
+const statusIcons: Record<string, React.ReactNode> = {
   Passed: <CheckCircle2 className="h-5 w-5 text-green-500" />,
   Failed: <XCircle className="h-5 w-5 text-red-500" />,
-  "Requires Attention": <AlertTriangle className="h-5 w-5 text-yellow-500" />,
+  "Needs Repair": <Wrench className="h-5 w-5 text-yellow-500" />,
 };
 
-const statusBadgeVariants: Record<InspectionStatus, "default" | "destructive" | "secondary"> = {
+const statusBadgeVariants: Record<string, "default" | "destructive" | "secondary"> = {
     Passed: "default",
     Failed: "destructive",
-    "Requires Attention": "secondary",
+    "Needs Repair": "secondary",
 };
 
-
-async function AiSummary({ partName, inspections }: { partName: string, inspections: Inspection[]}) {
+async function AiSummary({ part, inspections }: { part: Part, inspections: Inspection[]}) {
   const inspectionHistory = inspections.map(
-      (insp) => `Date: ${new Date(insp.date).toLocaleDateString()}, Status: ${insp.status}, Notes: ${insp.notes}`
+      (insp) => `Date: ${new Date(insp.insp_date).toLocaleDateString()}, Status: ${insp.status}, Inspector: ${insp.inspector_id}`
     ).join("\n");
   
   if (!inspectionHistory) {
@@ -65,13 +68,13 @@ async function AiSummary({ partName, inspections }: { partName: string, inspecti
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p>No inspection history available to analyze.</p>
+              <p>No inspection history available to analyze for part {part.part_name}.</p>
             </CardContent>
         </Card>
     )
   }
 
-  const { summary } = await generateInspectionSummary({ partName, inspectionHistory });
+  const { summary } = await generateInspectionSummary({ partName: part.part_name, inspectionHistory });
 
   return (
     <Card className="bg-primary/10 border-primary/20">
@@ -94,13 +97,17 @@ export default async function PartDetailPage({ params }: PartDetailPageProps) {
     notFound();
   }
 
-  const vendor = await getVendorById(part.vendorId);
+  const vendor = await getVendorById(part.vendor_id);
 
   return (
     <AppLayout>
+        <div className="mb-6">
+            <h1 className="font-headline text-3xl font-bold">{part.part_name}</h1>
+            <p className="text-muted-foreground">QR ID: {part.qr_id}</p>
+        </div>
       <div className="grid gap-8 md:grid-cols-3">
         <div className="md:col-span-2 space-y-8">
-            <AiSummary partName={part.name} inspections={part.inspections} />
+            <AiSummary part={part} inspections={part.inspections} />
 
             <Card>
                 <CardHeader>
@@ -114,28 +121,28 @@ export default async function PartDetailPage({ params }: PartDetailPageProps) {
                     <TableHeader>
                     <TableRow>
                         <TableHead>Date</TableHead>
-                        <TableHead>Inspector</TableHead>
+                        <TableHead>Inspector ID</TableHead>
                         <TableHead>Status</TableHead>
-                        <TableHead className="w-1/2">Notes</TableHead>
+                        <TableHead className="w-1/2">Inspection ID</TableHead>
                     </TableRow>
                     </TableHeader>
                     <TableBody>
                     {part.inspections.length > 0 ? (
                         part.inspections
-                        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                        .sort((a, b) => new Date(b.insp_date).getTime() - new Date(a.insp_date).getTime())
                         .map((inspection) => (
-                            <TableRow key={inspection.id}>
+                            <TableRow key={inspection.insp_id}>
                             <TableCell className="font-medium whitespace-nowrap">
-                                {new Date(inspection.date).toLocaleDateString()}
+                                {format(new Date(inspection.insp_date), "PP")}
                             </TableCell>
-                            <TableCell>{inspection.inspector}</TableCell>
+                            <TableCell>{inspection.inspector_id}</TableCell>
                             <TableCell>
                                 <div className="flex items-center gap-2">
                                 {statusIcons[inspection.status]}
                                 <Badge variant={statusBadgeVariants[inspection.status]}>{inspection.status}</Badge>
                                 </div>
                             </TableCell>
-                            <TableCell>{inspection.notes}</TableCell>
+                            <TableCell className="font-mono text-xs">{inspection.insp_id}</TableCell>
                             </TableRow>
                         ))
                     ) : (
@@ -154,36 +161,55 @@ export default async function PartDetailPage({ params }: PartDetailPageProps) {
         <div className="md:col-span-1 space-y-8">
             <Card>
                 <CardHeader>
-                    <div className="relative aspect-[3/2] w-full overflow-hidden rounded-md mb-4">
-                        <Image
-                            src={part.imageUrl}
-                            alt={part.name}
-                            fill
-                            className="object-cover"
-                            data-ai-hint={part.dataAiHint}
-                        />
-                    </div>
-                    <CardTitle className="font-headline text-2xl">{part.name}</CardTitle>
-                    <CardDescription>{part.description}</CardDescription>
+                    <CardTitle className="font-headline text-2xl">Part Details</CardTitle>
                 </CardHeader>
-                <CardContent className="grid gap-4">
-                    <div className="flex items-center gap-3">
-                        <Wrench className="h-5 w-5 text-muted-foreground" />
-                        <span className="font-medium">QR ID:</span>
-                        <span className="text-muted-foreground">{part.qrId}</span>
+                <CardContent className="grid gap-4 text-sm">
+                    <div className="flex items-start gap-3">
+                        <Package className="h-5 w-5 text-muted-foreground mt-0.5" />
+                        <div>
+                          <span className="font-medium">Part Type:</span>
+                          <span className="text-muted-foreground ml-2">{part.part_type}</span>
+                        </div>
                     </div>
-                    <div className="flex items-center gap-3">
-                        <Package className="h-5 w-5 text-muted-foreground" />
-                        <span className="font-medium">Category:</span>
-                        <span className="text-muted-foreground">{part.category}</span>
+                     <div className="flex items-start gap-3">
+                        <Tag className="h-5 w-5 text-muted-foreground mt-0.5" />
+                        <div>
+                          <span className="font-medium">Lot No:</span>
+                          <span className="text-muted-foreground ml-2 font-mono">{part.lot_no}</span>
+                        </div>
                     </div>
                     {vendor && (
-                        <div className="flex items-center gap-3">
-                        <Building className="h-5 w-5 text-muted-foreground" />
-                        <span className="font-medium">Vendor:</span>
-                        <span className="text-muted-foreground">{vendor.name}</span>
+                        <div className="flex items-start gap-3">
+                        <Building className="h-5 w-5 text-muted-foreground mt-0.5" />
+                         <div>
+                          <span className="font-medium">Vendor:</span>
+                          <span className="text-muted-foreground ml-2">{vendor.vendor_name}</span>
+                        </div>
                         </div>
                     )}
+                     <div className="flex items-start gap-3">
+                        <Clock className="h-5 w-5 text-muted-foreground mt-0.5" />
+                        <div>
+                            <span className="font-medium">Manufactured:</span>
+                            <span className="text-muted-foreground ml-2">
+                                {format(new Date(part.mfg_date), "PP")} ({formatDistanceToNow(new Date(part.mfg_date), { addSuffix: true })})
+                            </span>
+                        </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                        <ShieldCheck className="h-5 w-5 text-muted-foreground mt-0.5" />
+                        <div>
+                            <span className="font-medium">Warranty:</span>
+                            <span className="text-muted-foreground ml-2">{part.warranty_days} days</span>
+                        </div>
+                    </div>
+                     <div className="flex items-start gap-3">
+                        <Hash className="h-5 w-5 text-muted-foreground mt-0.5" />
+                        <div>
+                            <span className="font-medium">TMS Reference:</span>
+                            <span className="text-muted-foreground ml-2 font-mono">{part.tms_ref}</span>
+                        </div>
+                    </div>
                 </CardContent>
             </Card>
         </div>

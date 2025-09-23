@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { getParts } from "@/lib/data";
 import {
   Card,
@@ -10,9 +9,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { AppLayout } from "@/components/app-layout";
 import type { Part, InspectionStatus } from "@/lib/types";
-import { ArrowRight, QrCode, Search, ListFilter, ArrowUpDown, CheckCircle, AlertTriangle } from "lucide-react";
+import { QrCode, Search, ListFilter, ArrowUpDown, CheckCircle, AlertTriangle, Wrench } from "lucide-react";
 
-const statusStyles: Record<InspectionStatus, {
+const statusStyles: Record<string, {
   variant: "default" | "secondary" | "destructive";
   icon: React.ReactNode;
   className: string;
@@ -27,18 +26,23 @@ const statusStyles: Record<InspectionStatus, {
     icon: <AlertTriangle className="h-4 w-4" />,
     className: "bg-red-500/10 text-red-600 border-red-500/20 hover:bg-red-500/20",
   },
-  "Requires Attention": {
+  "Needs Repair": {
     variant: "secondary",
-    icon: <AlertTriangle className="h-4 w-4" />,
+    icon: <Wrench className="h-4 w-4" />,
     className: "bg-yellow-500/10 text-yellow-600 border-yellow-500/20 hover:bg-yellow-500/20",
   },
+  "Not Inspected": {
+     variant: "secondary",
+     icon: <AlertTriangle className="h-4 w-4" />,
+     className: "bg-gray-500/10 text-gray-600 border-gray-500/20 hover:bg-gray-500/20",
+  }
 };
 
 
-function getLatestStatus(part: Part): InspectionStatus {
-  if (part.inspections.length === 0) return "Requires Attention";
+function getLatestStatus(part: Part): string {
+  if (part.inspections.length === 0) return "Not Inspected";
   const latestInspection = part.inspections.sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+    (a, b) => new Date(b.insp_date).getTime() - new Date(a.insp_date).getTime()
   )[0];
   return latestInspection.status;
 }
@@ -70,7 +74,7 @@ export default async function DashboardPage() {
           <div className="relative flex-grow sm:flex-grow-0 sm:w-auto">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search parts, IDs, materials"
+              placeholder="Search parts, IDs, types"
               className="pl-9 w-full sm:w-64"
             />
           </div>
@@ -82,31 +86,22 @@ export default async function DashboardPage() {
           </Button>
           <div className="ml-auto flex items-center gap-2">
              <Button variant="outline" size="sm">Passed</Button>
-             <Button variant="outline" size="sm">Requires Attention</Button>
+             <Button variant="outline" size="sm">Failed</Button>
           </div>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {parts.map((part) => {
             const latestStatus = getLatestStatus(part);
             const statusStyle = statusStyles[latestStatus];
             return (
-              <Card key={part.id} className="flex flex-col overflow-hidden">
-                <div className="relative aspect-[3/2] w-full">
-                     <Image
-                        src={part.imageUrl}
-                        alt={part.name}
-                        fill
-                        className="object-cover"
-                        data-ai-hint={part.dataAiHint}
-                      />
-                </div>
+              <Card key={part.qr_id} className="flex flex-col overflow-hidden">
                 <CardContent className="p-4 flex flex-col flex-grow">
                   <h3 className="font-headline text-xl font-semibold leading-tight">
-                    {part.name}
+                    {part.part_name}
                   </h3>
                   <p className="text-sm text-muted-foreground mt-1">
-                    {`Batch #${part.qrId.slice(-4)} • ${part.category}`}
+                    {`QR ID: ${part.qr_id.slice(0,8)}... • ${part.part_type}`}
                   </p>
                   <div className="flex-grow" />
                   <div className="mt-4 flex items-center justify-between gap-4">
@@ -115,7 +110,7 @@ export default async function DashboardPage() {
                        {latestStatus}
                     </Badge>
                      <Button asChild variant="ghost" size="sm" className="text-muted-foreground hover:bg-muted">
-                        <Link href={`/parts/${part.id}`}>
+                        <Link href={`/parts/${part.qr_id}`}>
                         View Details
                         </Link>
                     </Button>

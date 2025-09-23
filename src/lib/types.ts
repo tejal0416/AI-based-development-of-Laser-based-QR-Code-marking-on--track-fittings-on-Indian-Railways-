@@ -1,27 +1,29 @@
 export interface Vendor {
-  id: string;
-  name: string;
-  contact: string;
+  vendor_id: string;
+  vendor_name: string;
+  public_key: string;
 }
 
-export type InspectionStatus = 'Passed' | 'Failed' | 'Requires Attention';
+export type InspectionStatus = 'Passed' | 'Failed' | 'Needs Repair';
 
 export interface Inspection {
-  id: string;
-  date: string;
-  inspector: string;
-  notes: string;
+  insp_id: string;
+  qr_id: string;
+  inspector_id: string;
+  insp_date: string;
   status: InspectionStatus;
+  image_path: string;
 }
 
 export interface Part {
-  id: string;
-  qrId: string;
-  name: string;
-  description: string;
-  category: string;
-  imageUrl: string;
-  dataAiHint: string;
-  vendorId: string;
+  qr_id: string;
+  part_name: string;
+  part_type: string;
+  vendor_id: string;
+  lot_no: string;
+  mfg_date: string;
+  warranty_days: number;
+  tms_ref: string;
+  created_at: string;
   inspections: Inspection[];
 }

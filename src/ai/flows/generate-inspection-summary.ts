@@ -16,12 +16,12 @@ import {z} from 'genkit';
 
 const GenerateInspectionSummaryInputSchema = z.object({
   partName: z.string().describe('The name of the rail part.'),
-  inspectionHistory: z.string().describe('The inspection history of the rail part.'),
+  inspectionHistory: z.string().describe('A newline-separated list of past inspections, including date, status, and inspector.'),
 });
 export type GenerateInspectionSummaryInput = z.infer<typeof GenerateInspectionSummaryInputSchema>;
 
 const GenerateInspectionSummaryOutputSchema = z.object({
-  summary: z.string().describe('A summary of the inspection history.'),
+  summary: z.string().describe('A concise, plain-language summary of the inspection history and a recommendation on whether a new inspection is needed.'),
 });
 export type GenerateInspectionSummaryOutput = z.infer<typeof GenerateInspectionSummaryOutputSchema>;
 
@@ -35,12 +35,15 @@ const prompt = ai.definePrompt({
   name: 'generateInspectionSummaryPrompt',
   input: {schema: GenerateInspectionSummaryInputSchema},
   output: {schema: GenerateInspectionSummaryOutputSchema},
-  prompt: `You are an AI assistant that helps rail workers determine if a rail part needs inspection. You are provided with the part's inspection history.
+  prompt: `You are an expert AI assistant for the RailWatch app. Your job is to help rail maintenance workers quickly understand the status of a part and decide if it needs a new inspection.
+
+You will be given the part's name and its inspection history.
 
 Part Name: {{{partName}}}
-Inspection History: {{{inspectionHistory}}}
+Inspection History:
+{{{inspectionHistory}}}
 
-Create a concise summary (around 50 words) to determine if a new inspection is recommended.`,
+Analyze the history and provide a concise summary (about 40-60 words). Conclude with a clear recommendation: "New inspection recommended," "No immediate inspection needed," or "Monitor part closely." Base your recommendation on the time since the last inspection, the status of past inspections, and any recurring issues.`,
 });
 
 const generateInspectionSummaryFlow = ai.defineFlow(

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Html5QrcodeScanner } from "html5-qrcode";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
-import { getPartByQrId } from "@/lib/data";
+import { getPartByQrId } from "@/lib/data"; // Using this directly since we removed the API
 import { Loader, CheckCircle, XCircle } from "lucide-react";
 
 export function QrScanner() {
@@ -34,7 +34,6 @@ export function QrScanner() {
       setScanStatus("success");
       
       try {
-        // Since we are not using an API route, we can directly call the data function
         const part = await getPartByQrId(decodedText);
         
         if (!part) {
@@ -43,11 +42,11 @@ export function QrScanner() {
         
         toast({
             title: "Scan Successful",
-            description: `Part found. Redirecting...`,
+            description: `Part found: ${part.part_name}. Redirecting...`,
         });
 
         setTimeout(() => {
-            router.push(`/parts/${part.id}`);
+            router.push(`/parts/${part.qr_id}`);
         }, 1500)
 
 
@@ -59,12 +58,14 @@ export function QrScanner() {
           title: "Invalid QR Code",
           description: "This QR code does not correspond to a valid part.",
         });
+         setTimeout(() => {
+           window.location.reload();
+        }, 2500)
       }
     };
 
     const onScanFailure = (error: any) => {
         // Continuous scanning, so we don't need to do much here.
-        // console.warn(`Code scan error = ${error}`);
     };
 
     qrScanner.render(onScanSuccess, onScanFailure);
@@ -76,7 +77,7 @@ export function QrScanner() {
         qrScanner.clear().catch(() => {});
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router, toast]);
+  }, []);
 
 
   const renderOverlay = () => {
