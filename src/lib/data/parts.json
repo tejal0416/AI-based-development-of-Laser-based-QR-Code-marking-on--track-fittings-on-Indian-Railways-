@@ -1,64 +1,1333 @@
 [
-  {
-    "qr_id": "8D2E7C6F-9B3A",
-    "part_name": "sleeper-762",
-    "part_type": "sleeper",
-    "vendor_id": "VEND-1002",
-    "lot_no": "LOT-5926",
-    "mfg_date": "2024-03-24T00:00:00",
-    "warranty_days": 180,
-    "tms_ref": "TMS-44586",
-    "created_at": "2024-03-27T00:00:00",
-    "inspections": [
-      {
-        "insp_id": "d9f8c7b6-a5e4",
+    {
+        "qr_id": "003078733335",
+        "part_name": "part-001",
+        "part_type": "rail_pad",
+        "vendor_id": "VEND-1001",
+        "lot_no": "LOT-1005",
+        "mfg_date": "2023-02-01T00:00:00",
+        "warranty_days": 365,
+        "tms_ref": "TMS-10001",
+        "created_at": "2023-02-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-003078733335-0",
+                "qr_id": "003078733335",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            },
+            {
+                "insp_id": "insp-003078733335-1",
+                "qr_id": "003078733335",
+                "inspector_id": "INSP-501",
+                "insp_date": "2024-02-15T00:00:00",
+                "status": "Failed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "02CEA2FF2217",
+        "part_name": "part-002",
+        "part_type": "sleeper",
+        "vendor_id": "VEND-1002",
+        "lot_no": "LOT-1010",
+        "mfg_date": "2023-03-01T00:00:00",
+        "warranty_days": 550,
+        "tms_ref": "TMS-10002",
+        "created_at": "2023-03-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-02cea2ff2217-0",
+                "qr_id": "02CEA2FF2217",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "0C944D57AB39",
+        "part_name": "part-003",
+        "part_type": "rail_clip",
+        "vendor_id": "VEND-1003",
+        "lot_no": "LOT-1015",
+        "mfg_date": "2023-04-01T00:00:00",
+        "warranty_days": 180,
+        "tms_ref": "TMS-10003",
+        "created_at": "2023-04-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-0c944d57ab39-0",
+                "qr_id": "0C944D57AB39",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            },
+            {
+                "insp_id": "insp-0c944d57ab39-1",
+                "qr_id": "0C944D57AB39",
+                "inspector_id": "INSP-501",
+                "insp_date": "2024-02-15T00:00:00",
+                "status": "Failed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "0FB55C96DF7C",
+        "part_name": "part-004",
+        "part_type": "rail_pad",
+        "vendor_id": "VEND-1004",
+        "lot_no": "LOT-1020",
+        "mfg_date": "2023-05-01T00:00:00",
+        "warranty_days": 365,
+        "tms_ref": "TMS-10004",
+        "created_at": "2023-05-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-0fb55c96df7c-0",
+                "qr_id": "0FB55C96DF7C",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "232932E4F48E",
+        "part_name": "part-005",
+        "part_type": "sleeper",
+        "vendor_id": "VEND-1005",
+        "lot_no": "LOT-1025",
+        "mfg_date": "2023-06-01T00:00:00",
+        "warranty_days": 550,
+        "tms_ref": "TMS-10005",
+        "created_at": "2023-06-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-232932e4f48e-0",
+                "qr_id": "232932E4F48E",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            },
+            {
+                "insp_id": "insp-232932e4f48e-1",
+                "qr_id": "232932E4F48E",
+                "inspector_id": "INSP-501",
+                "insp_date": "2024-02-15T00:00:00",
+                "status": "Failed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "2680464E0156",
+        "part_name": "part-006",
+        "part_type": "rail_clip",
+        "vendor_id": "VEND-1006",
+        "lot_no": "LOT-1030",
+        "mfg_date": "2023-07-01T00:00:00",
+        "warranty_days": 180,
+        "tms_ref": "TMS-10006",
+        "created_at": "2023-07-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-2680464e0156-0",
+                "qr_id": "2680464E0156",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "2C6BD4EA51DE",
+        "part_name": "part-007",
+        "part_type": "rail_pad",
+        "vendor_id": "VEND-1007",
+        "lot_no": "LOT-1035",
+        "mfg_date": "2023-08-01T00:00:00",
+        "warranty_days": 365,
+        "tms_ref": "TMS-10007",
+        "created_at": "2023-08-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-2c6bd4ea51de-0",
+                "qr_id": "2C6BD4EA51DE",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            },
+            {
+                "insp_id": "insp-2c6bd4ea51de-1",
+                "qr_id": "2C6BD4EA51DE",
+                "inspector_id": "INSP-501",
+                "insp_date": "2024-02-15T00:00:00",
+                "status": "Failed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "3032979494B4",
+        "part_name": "part-008",
+        "part_type": "sleeper",
+        "vendor_id": "VEND-1008",
+        "lot_no": "LOT-1040",
+        "mfg_date": "2023-09-01T00:00:00",
+        "warranty_days": 550,
+        "tms_ref": "TMS-10008",
+        "created_at": "2023-09-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-3032979494b4-0",
+                "qr_id": "3032979494B4",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "3725C895B1E0",
+        "part_name": "part-009",
+        "part_type": "rail_clip",
+        "vendor_id": "VEND-1009",
+        "lot_no": "LOT-1045",
+        "mfg_date": "2023-01-01T00:00:00",
+        "warranty_days": 180,
+        "tms_ref": "TMS-10009",
+        "created_at": "2023-01-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-3725c895b1e0-0",
+                "qr_id": "3725C895B1E0",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            },
+            {
+                "insp_id": "insp-3725c895b1e0-1",
+                "qr_id": "3725C895B1E0",
+                "inspector_id": "INSP-501",
+                "insp_date": "2024-02-15T00:00:00",
+                "status": "Failed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "39239003B224",
+        "part_name": "part-010",
+        "part_type": "rail_pad",
+        "vendor_id": "VEND-1010",
+        "lot_no": "LOT-1050",
+        "mfg_date": "2023-02-01T00:00:00",
+        "warranty_days": 365,
+        "tms_ref": "TMS-10010",
+        "created_at": "2023-02-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-39239003b224-0",
+                "qr_id": "39239003B224",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "3D05ABC0B0AB",
+        "part_name": "part-011",
+        "part_type": "sleeper",
+        "vendor_id": "VEND-1011",
+        "lot_no": "LOT-1055",
+        "mfg_date": "2023-03-01T00:00:00",
+        "warranty_days": 550,
+        "tms_ref": "TMS-10011",
+        "created_at": "2023-03-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-3d05abc0b0ab-0",
+                "qr_id": "3D05ABC0B0AB",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            },
+            {
+                "insp_id": "insp-3d05abc0b0ab-1",
+                "qr_id": "3D05ABC0B0AB",
+                "inspector_id": "INSP-501",
+                "insp_date": "2024-02-15T00:00:00",
+                "status": "Failed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "3F3577E17BE1",
+        "part_name": "part-012",
+        "part_type": "rail_clip",
+        "vendor_id": "VEND-1012",
+        "lot_no": "LOT-1060",
+        "mfg_date": "2023-04-01T00:00:00",
+        "warranty_days": 180,
+        "tms_ref": "TMS-10012",
+        "created_at": "2023-04-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-3f3577e17be1-0",
+                "qr_id": "3F3577E17BE1",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "41BCE2F50677",
+        "part_name": "part-013",
+        "part_type": "rail_pad",
+        "vendor_id": "VEND-1013",
+        "lot_no": "LOT-1065",
+        "mfg_date": "2023-05-01T00:00:00",
+        "warranty_days": 365,
+        "tms_ref": "TMS-10013",
+        "created_at": "2023-05-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-41bce2f50677-0",
+                "qr_id": "41BCE2F50677",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            },
+            {
+                "insp_id": "insp-41bce2f50677-1",
+                "qr_id": "41BCE2F50677",
+                "inspector_id": "INSP-501",
+                "insp_date": "2024-02-15T00:00:00",
+                "status": "Failed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "44AD345D6967",
+        "part_name": "part-014",
+        "part_type": "sleeper",
+        "vendor_id": "VEND-1014",
+        "lot_no": "LOT-1070",
+        "mfg_date": "2023-06-01T00:00:00",
+        "warranty_days": 550,
+        "tms_ref": "TMS-10014",
+        "created_at": "2023-06-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-44ad345d6967-0",
+                "qr_id": "44AD345D6967",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "47C91634E684",
+        "part_name": "part-015",
+        "part_type": "rail_clip",
+        "vendor_id": "VEND-1015",
+        "lot_no": "LOT-1075",
+        "mfg_date": "2023-07-01T00:00:00",
+        "warranty_days": 180,
+        "tms_ref": "TMS-10015",
+        "created_at": "2023-07-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-47c91634e684-0",
+                "qr_id": "47C91634E684",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            },
+            {
+                "insp_id": "insp-47c91634e684-1",
+                "qr_id": "47C91634E684",
+                "inspector_id": "INSP-501",
+                "insp_date": "2024-02-15T00:00:00",
+                "status": "Failed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "487787042FE7",
+        "part_name": "part-016",
+        "part_type": "rail_pad",
+        "vendor_id": "VEND-1016",
+        "lot_no": "LOT-1080",
+        "mfg_date": "2023-08-01T00:00:00",
+        "warranty_days": 365,
+        "tms_ref": "TMS-10016",
+        "created_at": "2023-08-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-487787042fe7-0",
+                "qr_id": "487787042FE7",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "5AADC1BF264E",
+        "part_name": "part-017",
+        "part_type": "sleeper",
+        "vendor_id": "VEND-1017",
+        "lot_no": "LOT-1085",
+        "mfg_date": "2023-09-01T00:00:00",
+        "warranty_days": 550,
+        "tms_ref": "TMS-10017",
+        "created_at": "2023-09-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-5aadc1bf264e-0",
+                "qr_id": "5AADC1BF264E",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            },
+            {
+                "insp_id": "insp-5aadc1bf264e-1",
+                "qr_id": "5AADC1BF264E",
+                "inspector_id": "INSP-501",
+                "insp_date": "2024-02-15T00:00:00",
+                "status": "Failed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "5C05DFE97231",
+        "part_name": "part-018",
+        "part_type": "rail_clip",
+        "vendor_id": "VEND-1018",
+        "lot_no": "LOT-1090",
+        "mfg_date": "2023-01-01T00:00:00",
+        "warranty_days": 180,
+        "tms_ref": "TMS-10018",
+        "created_at": "2023-01-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-5c05dfe97231-0",
+                "qr_id": "5C05DFE97231",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "5D3360CB672A",
+        "part_name": "part-019",
+        "part_type": "rail_pad",
+        "vendor_id": "VEND-1019",
+        "lot_no": "LOT-1095",
+        "mfg_date": "2023-02-01T00:00:00",
+        "warranty_days": 365,
+        "tms_ref": "TMS-10019",
+        "created_at": "2023-02-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-5d3360cb672a-0",
+                "qr_id": "5D3360CB672A",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            },
+            {
+                "insp_id": "insp-5d3360cb672a-1",
+                "qr_id": "5D3360CB672A",
+                "inspector_id": "INSP-501",
+                "insp_date": "2024-02-15T00:00:00",
+                "status": "Failed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "6051507B8556",
+        "part_name": "part-020",
+        "part_type": "sleeper",
+        "vendor_id": "VEND-1020",
+        "lot_no": "LOT-1100",
+        "mfg_date": "2023-03-01T00:00:00",
+        "warranty_days": 550,
+        "tms_ref": "TMS-10020",
+        "created_at": "2023-03-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-6051507b8556-0",
+                "qr_id": "6051507B8556",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "69B4BC10988B",
+        "part_name": "part-021",
+        "part_type": "rail_clip",
+        "vendor_id": "VEND-1021",
+        "lot_no": "LOT-1105",
+        "mfg_date": "2023-04-01T00:00:00",
+        "warranty_days": 180,
+        "tms_ref": "TMS-10021",
+        "created_at": "2023-04-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-69b4bc10988b-0",
+                "qr_id": "69B4BC10988B",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            },
+            {
+                "insp_id": "insp-69b4bc10988b-1",
+                "qr_id": "69B4BC10988B",
+                "inspector_id": "INSP-501",
+                "insp_date": "2024-02-15T00:00:00",
+                "status": "Failed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "70B3EF0F31A2",
+        "part_name": "part-022",
+        "part_type": "rail_pad",
+        "vendor_id": "VEND-1022",
+        "lot_no": "LOT-1110",
+        "mfg_date": "2023-05-01T00:00:00",
+        "warranty_days": 365,
+        "tms_ref": "TMS-10022",
+        "created_at": "2023-05-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-70b3ef0f31a2-0",
+                "qr_id": "70B3EF0F31A2",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "71F84D87DFB2",
+        "part_name": "part-023",
+        "part_type": "sleeper",
+        "vendor_id": "VEND-1023",
+        "lot_no": "LOT-1115",
+        "mfg_date": "2023-06-01T00:00:00",
+        "warranty_days": 550,
+        "tms_ref": "TMS-10023",
+        "created_at": "2023-06-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-71f84d87dfb2-0",
+                "qr_id": "71F84D87DFB2",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            },
+            {
+                "insp_id": "insp-71f84d87dfb2-1",
+                "qr_id": "71F84D87DFB2",
+                "inspector_id": "INSP-501",
+                "insp_date": "2024-02-15T00:00:00",
+                "status": "Failed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "7711B9397D94",
+        "part_name": "part-024",
+        "part_type": "rail_clip",
+        "vendor_id": "VEND-1024",
+        "lot_no": "LOT-1120",
+        "mfg_date": "2023-07-01T00:00:00",
+        "warranty_days": 180,
+        "tms_ref": "TMS-10024",
+        "created_at": "2023-07-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-7711b9397d94-0",
+                "qr_id": "7711B9397D94",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "7D05F20C6417",
+        "part_name": "part-025",
+        "part_type": "rail_pad",
+        "vendor_id": "VEND-1025",
+        "lot_no": "LOT-1125",
+        "mfg_date": "2023-08-01T00:00:00",
+        "warranty_days": 365,
+        "tms_ref": "TMS-10025",
+        "created_at": "2023-08-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-7d05f20c6417-0",
+                "qr_id": "7D05F20C6417",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            },
+            {
+                "insp_id": "insp-7d05f20c6417-1",
+                "qr_id": "7D05F20C6417",
+                "inspector_id": "INSP-501",
+                "insp_date": "2024-02-15T00:00:00",
+                "status": "Failed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "8155C22156CF",
+        "part_name": "part-026",
+        "part_type": "sleeper",
+        "vendor_id": "VEND-1026",
+        "lot_no": "LOT-1130",
+        "mfg_date": "2023-09-01T00:00:00",
+        "warranty_days": 550,
+        "tms_ref": "TMS-10026",
+        "created_at": "2023-09-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-8155c22156cf-0",
+                "qr_id": "8155C22156CF",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "83A195413CF4",
+        "part_name": "part-027",
+        "part_type": "rail_clip",
+        "vendor_id": "VEND-1027",
+        "lot_no": "LOT-1135",
+        "mfg_date": "2023-01-01T00:00:00",
+        "warranty_days": 180,
+        "tms_ref": "TMS-10027",
+        "created_at": "2023-01-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-83a195413cf4-0",
+                "qr_id": "83A195413CF4",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            },
+            {
+                "insp_id": "insp-83a195413cf4-1",
+                "qr_id": "83A195413CF4",
+                "inspector_id": "INSP-501",
+                "insp_date": "2024-02-15T00:00:00",
+                "status": "Failed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "86833D79913A",
+        "part_name": "part-028",
+        "part_type": "rail_pad",
+        "vendor_id": "VEND-1028",
+        "lot_no": "LOT-1140",
+        "mfg_date": "2023-02-01T00:00:00",
+        "warranty_days": 365,
+        "tms_ref": "TMS-10028",
+        "created_at": "2023-02-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-86833d79913a-0",
+                "qr_id": "86833D79913A",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "89A08A36ECC7",
+        "part_name": "part-029",
+        "part_type": "sleeper",
+        "vendor_id": "VEND-1029",
+        "lot_no": "LOT-1145",
+        "mfg_date": "2023-03-01T00:00:00",
+        "warranty_days": 550,
+        "tms_ref": "TMS-10029",
+        "created_at": "2023-03-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-89a08a36ecc7-0",
+                "qr_id": "89A08A36ECC7",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            },
+            {
+                "insp_id": "insp-89a08a36ecc7-1",
+                "qr_id": "89A08A36ECC7",
+                "inspector_id": "INSP-501",
+                "insp_date": "2024-02-15T00:00:00",
+                "status": "Failed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "8B6D783DE318",
+        "part_name": "part-030",
+        "part_type": "rail_clip",
+        "vendor_id": "VEND-1030",
+        "lot_no": "LOT-1150",
+        "mfg_date": "2023-04-01T00:00:00",
+        "warranty_days": 180,
+        "tms_ref": "TMS-10030",
+        "created_at": "2023-04-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-8b6d783de318-0",
+                "qr_id": "8B6D783DE318",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
         "qr_id": "8D2E7C6F-9B3A",
-        "inspector_id": "INSP-559",
-        "insp_date": "2024-09-01T00:00:00",
-        "status": "Passed",
-        "image_path": ""
-      },
-      {
-        "insp_id": "a1b2c3d4-e5f6",
-        "qr_id": "8D2E7C6F-9B3A",
-        "inspector_id": "INSP-123",
-        "insp_date": "2025-01-15T00:00:00",
-        "status": "Failed",
-        "image_path": ""
-      }
-    ]
-  },
-  {
-    "qr_id": "A1B2C3D4-E5F6",
-    "part_name": "rail_clip-123",
-    "part_type": "rail_clip",
-    "vendor_id": "VEND-1001",
-    "lot_no": "LOT-1234",
-    "mfg_date": "2023-01-01T00:00:00",
-    "warranty_days": 365,
-    "tms_ref": "TMS-12345",
-    "created_at": "2023-01-11T00:00:00",
-    "inspections": []
-  },
-  {
-    "qr_id": "F6E5D4C3-B2A1",
-    "part_name": "rail_pad-456",
-    "part_type": "rail_pad",
-    "vendor_id": "VEND-1000",
-    "lot_no": "LOT-5678",
-    "mfg_date": "2023-05-10T00:00:00",
-    "warranty_days": 730,
-    "tms_ref": "TMS-67890",
-    "created_at": "2023-05-15T00:00:00",
-    "inspections": [
-      {
-        "insp_id": "f6e5d4c3-b2a1-insp1",
+        "part_name": "part-031",
+        "part_type": "rail_pad",
+        "vendor_id": "VEND-1031",
+        "lot_no": "LOT-1155",
+        "mfg_date": "2023-05-01T00:00:00",
+        "warranty_days": 365,
+        "tms_ref": "TMS-10031",
+        "created_at": "2023-05-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-8d2e7c6f-9b3a-0",
+                "qr_id": "8D2E7C6F-9B3A",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            },
+            {
+                "insp_id": "insp-8d2e7c6f-9b3a-1",
+                "qr_id": "8D2E7C6F-9B3A",
+                "inspector_id": "INSP-501",
+                "insp_date": "2024-02-15T00:00:00",
+                "status": "Failed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "8E0560AC191A",
+        "part_name": "part-032",
+        "part_type": "sleeper",
+        "vendor_id": "VEND-1032",
+        "lot_no": "LOT-1160",
+        "mfg_date": "2023-06-01T00:00:00",
+        "warranty_days": 550,
+        "tms_ref": "TMS-10032",
+        "created_at": "2023-06-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-8e0560ac191a-0",
+                "qr_id": "8E0560AC191A",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "9142F6F78D29",
+        "part_name": "part-033",
+        "part_type": "rail_clip",
+        "vendor_id": "VEND-1033",
+        "lot_no": "LOT-1165",
+        "mfg_date": "2023-07-01T00:00:00",
+        "warranty_days": 180,
+        "tms_ref": "TMS-10033",
+        "created_at": "2023-07-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-9142f6f78d29-0",
+                "qr_id": "9142F6F78D29",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            },
+            {
+                "insp_id": "insp-9142f6f78d29-1",
+                "qr_id": "9142F6F78D29",
+                "inspector_id": "INSP-501",
+                "insp_date": "2024-02-15T00:00:00",
+                "status": "Failed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "9DCE5F4569A8",
+        "part_name": "part-034",
+        "part_type": "rail_pad",
+        "vendor_id": "VEND-1034",
+        "lot_no": "LOT-1170",
+        "mfg_date": "2023-08-01T00:00:00",
+        "warranty_days": 365,
+        "tms_ref": "TMS-10034",
+        "created_at": "2023-08-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-9dce5f4569a8-0",
+                "qr_id": "9DCE5F4569A8",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "A1B2C3D4-E5F6",
+        "part_name": "part-035",
+        "part_type": "sleeper",
+        "vendor_id": "VEND-1035",
+        "lot_no": "LOT-1175",
+        "mfg_date": "2023-09-01T00:00:00",
+        "warranty_days": 550,
+        "tms_ref": "TMS-10035",
+        "created_at": "2023-09-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-a1b2c3d4-e5f6-0",
+                "qr_id": "A1B2C3D4-E5F6",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            },
+            {
+                "insp_id": "insp-a1b2c3d4-e5f6-1",
+                "qr_id": "A1B2C3D4-E5F6",
+                "inspector_id": "INSP-501",
+                "insp_date": "2024-02-15T00:00:00",
+                "status": "Failed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "A53BD7ABD46D",
+        "part_name": "part-036",
+        "part_type": "rail_clip",
+        "vendor_id": "VEND-1036",
+        "lot_no": "LOT-1180",
+        "mfg_date": "2023-01-01T00:00:00",
+        "warranty_days": 180,
+        "tms_ref": "TMS-10036",
+        "created_at": "2023-01-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-a53bd7abd46d-0",
+                "qr_id": "A53BD7ABD46D",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "AC7E4C37E0DC",
+        "part_name": "part-037",
+        "part_type": "rail_pad",
+        "vendor_id": "VEND-1037",
+        "lot_no": "LOT-1185",
+        "mfg_date": "2023-02-01T00:00:00",
+        "warranty_days": 365,
+        "tms_ref": "TMS-10037",
+        "created_at": "2023-02-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-ac7e4c37e0dc-0",
+                "qr_id": "AC7E4C37E0DC",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            },
+            {
+                "insp_id": "insp-ac7e4c37e0dc-1",
+                "qr_id": "AC7E4C37E0DC",
+                "inspector_id": "INSP-501",
+                "insp_date": "2024-02-15T00:00:00",
+                "status": "Failed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "ACCD3634BF32",
+        "part_name": "part-038",
+        "part_type": "sleeper",
+        "vendor_id": "VEND-1038",
+        "lot_no": "LOT-1190",
+        "mfg_date": "2023-03-01T00:00:00",
+        "warranty_days": 550,
+        "tms_ref": "TMS-10038",
+        "created_at": "2023-03-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-accd3634bf32-0",
+                "qr_id": "ACCD3634BF32",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "AEEA643B54FD",
+        "part_name": "part-039",
+        "part_type": "rail_clip",
+        "vendor_id": "VEND-1039",
+        "lot_no": "LOT-1195",
+        "mfg_date": "2023-04-01T00:00:00",
+        "warranty_days": 180,
+        "tms_ref": "TMS-10039",
+        "created_at": "2023-04-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-aeea643b54fd-0",
+                "qr_id": "AEEA643B54FD",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            },
+            {
+                "insp_id": "insp-aeea643b54fd-1",
+                "qr_id": "AEEA643B54FD",
+                "inspector_id": "INSP-501",
+                "insp_date": "2024-02-15T00:00:00",
+                "status": "Failed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "C191D1971FF4",
+        "part_name": "part-040",
+        "part_type": "rail_pad",
+        "vendor_id": "VEND-1040",
+        "lot_no": "LOT-1200",
+        "mfg_date": "2023-05-01T00:00:00",
+        "warranty_days": 365,
+        "tms_ref": "TMS-10040",
+        "created_at": "2023-05-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-c191d1971ff4-0",
+                "qr_id": "C191D1971FF4",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "C23771BC3029",
+        "part_name": "part-041",
+        "part_type": "sleeper",
+        "vendor_id": "VEND-1041",
+        "lot_no": "LOT-1205",
+        "mfg_date": "2023-06-01T00:00:00",
+        "warranty_days": 550,
+        "tms_ref": "TMS-10041",
+        "created_at": "2023-06-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-c23771bc3029-0",
+                "qr_id": "C23771BC3029",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            },
+            {
+                "insp_id": "insp-c23771bc3029-1",
+                "qr_id": "C23771BC3029",
+                "inspector_id": "INSP-501",
+                "insp_date": "2024-02-15T00:00:00",
+                "status": "Failed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "C60A84005DCC",
+        "part_name": "part-042",
+        "part_type": "rail_clip",
+        "vendor_id": "VEND-1042",
+        "lot_no": "LOT-1210",
+        "mfg_date": "2023-07-01T00:00:00",
+        "warranty_days": 180,
+        "tms_ref": "TMS-10042",
+        "created_at": "2023-07-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-c60a84005dcc-0",
+                "qr_id": "C60A84005DCC",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "C706F7D74194",
+        "part_name": "part-043",
+        "part_type": "rail_pad",
+        "vendor_id": "VEND-1043",
+        "lot_no": "LOT-1215",
+        "mfg_date": "2023-08-01T00:00:00",
+        "warranty_days": 365,
+        "tms_ref": "TMS-10043",
+        "created_at": "2023-08-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-c706f7d74194-0",
+                "qr_id": "C706F7D74194",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            },
+            {
+                "insp_id": "insp-c706f7d74194-1",
+                "qr_id": "C706F7D74194",
+                "inspector_id": "INSP-501",
+                "insp_date": "2024-02-15T00:00:00",
+                "status": "Failed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "D4B429F44F82",
+        "part_name": "part-044",
+        "part_type": "sleeper",
+        "vendor_id": "VEND-1044",
+        "lot_no": "LOT-1220",
+        "mfg_date": "2023-09-01T00:00:00",
+        "warranty_days": 550,
+        "tms_ref": "TMS-10044",
+        "created_at": "2023-09-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-d4b429f44f82-0",
+                "qr_id": "D4B429F44F82",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "D626013C339B",
+        "part_name": "part-045",
+        "part_type": "rail_clip",
+        "vendor_id": "VEND-1045",
+        "lot_no": "LOT-1225",
+        "mfg_date": "2023-01-01T00:00:00",
+        "warranty_days": 180,
+        "tms_ref": "TMS-10045",
+        "created_at": "2023-01-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-d626013c339b-0",
+                "qr_id": "D626013C339B",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            },
+            {
+                "insp_id": "insp-d626013c339b-1",
+                "qr_id": "D626013C339B",
+                "inspector_id": "INSP-501",
+                "insp_date": "2024-02-15T00:00:00",
+                "status": "Failed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "E11CEE67DF95",
+        "part_name": "part-046",
+        "part_type": "rail_pad",
+        "vendor_id": "VEND-1046",
+        "lot_no": "LOT-1230",
+        "mfg_date": "2023-02-01T00:00:00",
+        "warranty_days": 365,
+        "tms_ref": "TMS-10046",
+        "created_at": "2023-02-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-e11cee67df95-0",
+                "qr_id": "E11CEE67DF95",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "E47527D26322",
+        "part_name": "part-047",
+        "part_type": "sleeper",
+        "vendor_id": "VEND-1047",
+        "lot_no": "LOT-1235",
+        "mfg_date": "2023-03-01T00:00:00",
+        "warranty_days": 550,
+        "tms_ref": "TMS-10047",
+        "created_at": "2023-03-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-e47527d26322-0",
+                "qr_id": "E47527D26322",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            },
+            {
+                "insp_id": "insp-e47527d26322-1",
+                "qr_id": "E47527D26322",
+                "inspector_id": "INSP-501",
+                "insp_date": "2024-02-15T00:00:00",
+                "status": "Failed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "E8426F62EB06",
+        "part_name": "part-048",
+        "part_type": "rail_clip",
+        "vendor_id": "VEND-1048",
+        "lot_no": "LOT-1240",
+        "mfg_date": "2023-04-01T00:00:00",
+        "warranty_days": 180,
+        "tms_ref": "TMS-10048",
+        "created_at": "2023-04-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-e8426f62eb06-0",
+                "qr_id": "E8426F62EB06",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "E9E2D242F00D",
+        "part_name": "part-049",
+        "part_type": "rail_pad",
+        "vendor_id": "VEND-1049",
+        "lot_no": "LOT-1245",
+        "mfg_date": "2023-05-01T00:00:00",
+        "warranty_days": 365,
+        "tms_ref": "TMS-10049",
+        "created_at": "2023-05-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-e9e2d242f00d-0",
+                "qr_id": "E9E2D242F00D",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            },
+            {
+                "insp_id": "insp-e9e2d242f00d-1",
+                "qr_id": "E9E2D242F00D",
+                "inspector_id": "INSP-501",
+                "insp_date": "2024-02-15T00:00:00",
+                "status": "Failed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "F19DE3B0694C",
+        "part_name": "part-050",
+        "part_type": "sleeper",
+        "vendor_id": "VEND-1050",
+        "lot_no": "LOT-1250",
+        "mfg_date": "2023-06-01T00:00:00",
+        "warranty_days": 550,
+        "tms_ref": "TMS-10050",
+        "created_at": "2023-06-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-f19de3b0694c-0",
+                "qr_id": "F19DE3B0694C",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "F29A07134E4E",
+        "part_name": "part-051",
+        "part_type": "rail_clip",
+        "vendor_id": "VEND-1051",
+        "lot_no": "LOT-1255",
+        "mfg_date": "2023-07-01T00:00:00",
+        "warranty_days": 180,
+        "tms_ref": "TMS-10051",
+        "created_at": "2023-07-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-f29a07134e4e-0",
+                "qr_id": "F29A07134E4E",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            },
+            {
+                "insp_id": "insp-f29a07134e4e-1",
+                "qr_id": "F29A07134E4E",
+                "inspector_id": "INSP-501",
+                "insp_date": "2024-02-15T00:00:00",
+                "status": "Failed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
+        "qr_id": "F4229E713098",
+        "part_name": "part-052",
+        "part_type": "rail_pad",
+        "vendor_id": "VEND-1052",
+        "lot_no": "LOT-1260",
+        "mfg_date": "2023-08-01T00:00:00",
+        "warranty_days": 365,
+        "tms_ref": "TMS-10052",
+        "created_at": "2023-08-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-f4229e713098-0",
+                "qr_id": "F4229E713098",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            }
+        ]
+    },
+    {
         "qr_id": "F6E5D4C3-B2A1",
-        "inspector_id": "INSP-789",
-        "insp_date": "2024-02-20T00:00:00",
-        "status": "Passed",
-        "image_path": ""
-      }
-    ]
-  }
+        "part_name": "part-053",
+        "part_type": "sleeper",
+        "vendor_id": "VEND-1053",
+        "lot_no": "LOT-1265",
+        "mfg_date": "2023-09-01T00:00:00",
+        "warranty_days": 550,
+        "tms_ref": "TMS-10053",
+        "created_at": "2023-09-11T00:00:00",
+        "inspections": [
+            {
+                "insp_id": "insp-f6e5d4c3-b2a1-0",
+                "qr_id": "F6E5D4C3-B2A1",
+                "inspector_id": "INSP-500",
+                "insp_date": "2024-01-15T00:00:00",
+                "status": "Passed",
+                "image_path": ""
+            },
+            {
+                "insp_id": "insp-f6e5d4c3-b2a1-1",
+                "qr_id": "F6E5D4C3-B2A1",
+                "inspector_id": "INSP-501",
+                "insp_date": "2024-02-15T00:00:00",
+                "status": "Failed",
+                "image_path": ""
+            }
+        ]
+    }
 ]
+
+    
