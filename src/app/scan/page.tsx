@@ -1,6 +1,5 @@
 import { AppLayout } from "@/components/app-layout";
 import { QrScanner } from "@/components/qr-scanner";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function ScanPage() {
   return (
