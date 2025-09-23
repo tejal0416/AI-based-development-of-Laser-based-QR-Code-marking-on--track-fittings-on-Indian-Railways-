@@ -21,6 +21,38 @@ export function QrScanner({ onPartDetect }: QrScannerProps) {
   const [scanStatus, setScanStatus] = useState<"scanning" | "success" | "error" | "idle">("idle");
   const [scanner, setScanner] = useState<Html5Qrcode | null>(null);
 
+  const onScanSuccess = async (decodedText: string) => {
+    if (scanStatus === "success") return;
+    
+    try {
+      const part = await getPartByQrId(decodedText);
+      
+      if (!part) {
+          throw new Error('Part not found');
+      }
+      
+      setScanStatus("success");
+      onPartDetect(part);
+      toast({
+          title: "Scan Successful",
+          description: `Part found: ${part.part_name}`,
+      });
+
+    } catch (error) {
+      console.error("Failed to fetch part data:", error);
+      setScanStatus("error");
+      toast({
+        variant: "destructive",
+        title: "Invalid QR Code",
+        description: "This QR code does not correspond to a valid part.",
+      });
+    }
+  };
+
+  const onScanFailure = (error: any) => {
+      // Continuous scanning, so we don't need to do much here.
+  };
+
   useEffect(() => {
     if (!scannerRef.current) return;
     if (scanner) {
@@ -50,38 +82,6 @@ export function QrScanner({ onPartDetect }: QrScannerProps) {
           description: "Could not access camera. Please grant permissions and refresh.",
         });
     });
-
-    const onScanSuccess = async (decodedText: string) => {
-      if (scanStatus === "success") return;
-      
-      try {
-        const part = await getPartByQrId(decodedText);
-        
-        if (!part) {
-            throw new Error('Part not found');
-        }
-        
-        setScanStatus("success");
-        onPartDetect(part);
-        toast({
-            title: "Scan Successful",
-            description: `Part found: ${part.part_name}`,
-        });
-
-      } catch (error) {
-        console.error("Failed to fetch part data:", error);
-        setScanStatus("error");
-        toast({
-          variant: "destructive",
-          title: "Invalid QR Code",
-          description: "This QR code does not correspond to a valid part.",
-        });
-      }
-    };
-
-    const onScanFailure = (error: any) => {
-        // Continuous scanning, so we don't need to do much here.
-    };
 
     return () => {
         if(scanner) {
@@ -130,4 +130,3 @@ export function QrScanner({ onPartDetect }: QrScannerProps) {
     </div>
   );
 }
-
