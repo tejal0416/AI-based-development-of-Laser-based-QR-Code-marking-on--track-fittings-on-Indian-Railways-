@@ -1,26 +1,26 @@
 [
   {
     "id": "rail_pad",
-    "description": "A stack of black rubber rail pads used for insulation and vibration damping.",
-    "imageUrl": "https://picsum.photos/seed/railpad/600/400",
-    "imageHint": "rail pad"
+    "description": "A close-up view of a railway track, focusing on the texture of the rail pads.",
+    "imageUrl": "https://picsum.photos/seed/railway-track/600/400",
+    "imageHint": "railway track"
   },
   {
     "id": "sleeper",
-    "description": "Newly laid concrete railway sleepers on a bed of gravel ballast.",
-    "imageUrl": "https://picsum.photos/seed/sleeper/600/400",
-    "imageHint": "railway sleeper"
+    "description": "A line of concrete railway sleepers set in ballast, creating a strong foundation for tracks.",
+    "imageUrl": "https://picsum.photos/seed/concrete-sleepers/600/400",
+    "imageHint": "concrete sleepers"
   },
   {
     "id": "rail_clip",
-    "description": "Close-up of a metal rail clip fastening a track to a sleeper.",
-    "imageUrl": "https://picsum.photos/seed/railclip/600/400",
-    "imageHint": "rail clip"
+    "description": "A detailed shot of a metal rail clip securely fastening a rail to a sleeper.",
+    "imageUrl": "https://picsum.photos/seed/rail-fastening/600/400",
+    "imageHint": "rail fastening"
   },
   {
     "id": "default",
-    "description": "Aerial view of a large train yard with multiple tracks.",
-    "imageUrl": "https://picsum.photos/seed/default/600/400",
-    "imageHint": "train yard"
+    "description": "An aerial view of a complex railway junction with multiple tracks.",
+    "imageUrl": "https://picsum.photos/seed/train-junction/600/400",
+    "imageHint": "railway junction"
   }
 ]
