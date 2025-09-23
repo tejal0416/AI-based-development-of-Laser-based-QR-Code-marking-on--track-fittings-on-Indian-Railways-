@@ -122,7 +122,7 @@ export default async function DashboardPage() {
             return (
               <Card key={part.qr_id} className="flex flex-col overflow-hidden rounded-xl">
                  <div className={cn("relative aspect-[4/3] flex items-center justify-center bg-gradient-to-br", typeStyle.bg)}>
-                    <p className={cn("font-headline text-2xl font-bold tracking-wider", typeStyle.text)}>
+                    <p className={cn("font-display text-4xl font-bold tracking-wider uppercase", typeStyle.text)}>
                         {part.part_type.replace('_', ' ')}
                     </p>
                  </div>
