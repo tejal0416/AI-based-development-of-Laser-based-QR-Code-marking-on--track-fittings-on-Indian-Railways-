@@ -121,13 +121,12 @@ export default async function DashboardPage() {
             return (
               <Card key={part.qr_id} className="flex flex-col overflow-hidden rounded-xl">
                  {partImage && (
-                    <div className="relative w-full h-40">
+                    <div className="relative w-full h-40 bg-muted">
                          <Image 
                             src={partImage.imageUrl} 
                             alt={partImage.description} 
-                            width={600}
-                            height={400}
-                            className="object-cover w-full h-full"
+                            fill
+                            className="object-cover"
                             data-ai-hint={partImage.imageHint}
                         />
                     </div>
