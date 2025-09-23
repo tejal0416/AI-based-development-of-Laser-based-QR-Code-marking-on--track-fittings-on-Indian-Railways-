@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import Link from "next/link";
@@ -25,27 +26,18 @@ import { getParts } from "@/lib/data";
 
 
 export default function ScanPage() {
-  const [isScanning, setIsScanning] = useState(false);
+  const [showScanner, setShowScanner] = useState(false);
   const [detectedPart, setDetectedPart] = useState<Part | null>(null);
   const [recentScans, setRecentScans] = useState<Part[]>([]);
 
-  const handlePartDetect = (part: Part) => {
-    setDetectedPart(part);
-    setIsScanning(false);
-    // Add to recent scans, avoiding duplicates
-    if (!recentScans.some(p => p.qr_id === part.qr_id)) {
-      setRecentScans([part, ...recentScans].slice(0, 5)); // Keep last 5
-    }
-  };
-
   const handleScanStart = () => {
     setDetectedPart(null);
-    setIsScanning(true);
+    setShowScanner(true);
   }
 
   const handleCancel = () => {
     setDetectedPart(null);
-    setIsScanning(false);
+    setShowScanner(false);
   }
   
   const getPartImage = (partType: string) => {
@@ -88,8 +80,8 @@ export default function ScanPage() {
             <Card className="flex flex-col">
                 <CardContent className="p-6">
                     <div className="relative aspect-video w-full rounded-lg overflow-hidden border bg-slate-50 flex items-center justify-center">
-                       {isScanning ? (
-                            <QrScanner onPartDetect={handlePartDetect} />
+                       {showScanner ? (
+                            <QrScanner />
                        ) : (
                             <div className="text-center text-muted-foreground flex flex-col items-center gap-4">
                                 <Icons.scanFrame className="w-16 h-16" />
@@ -100,7 +92,7 @@ export default function ScanPage() {
                 </CardContent>
                 <CardHeader className="pt-0 px-6 pb-6">
                      <div className="flex items-center gap-4">
-                        <Button variant="outline" className="w-full" onClick={handleScanStart} disabled={isScanning}>
+                        <Button variant="outline" className="w-full" onClick={handleScanStart} disabled={showScanner}>
                             <Icons.scanLine className="mr-2 h-5 w-5" />
                             Start Scan
                         </Button>
@@ -198,4 +190,3 @@ export default function ScanPage() {
     </AppLayout>
   );
 }
-
