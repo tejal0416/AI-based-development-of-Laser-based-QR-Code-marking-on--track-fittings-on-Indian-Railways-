@@ -13,6 +13,7 @@ export interface Inspection {
   insp_date: string;
   status: InspectionStatus;
   image_path: string;
+  notes?: string;
 }
 
 export interface Part {
