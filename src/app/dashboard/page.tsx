@@ -1,3 +1,4 @@
+"use client";
 
 import Link from "next/link";
 import Image from "next/image";
@@ -14,6 +15,7 @@ import type { Part } from "@/lib/types";
 import { QrCode, Search, ListFilter, ArrowUpDown, CheckCircle, AlertTriangle, XCircle } from "lucide-react";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { cn } from "@/lib/utils";
+import { useState, useEffect } from "react";
 
 const statusStyles: Record<string, {
   variant: "default" | "destructive";
@@ -47,6 +49,29 @@ const statusStyles: Record<string, {
   }
 };
 
+const partTypeStyles: Record<string, {
+  gradient: string;
+  textColor: string;
+}> = {
+    "rail_pad": {
+        gradient: "from-blue-100 to-blue-200",
+        textColor: "text-blue-800",
+    },
+    "sleeper": {
+        gradient: "from-purple-100 to-purple-200",
+        textColor: "text-purple-800",
+    },
+    "rail_clip": {
+        gradient: "from-pink-100 to-pink-200",
+        textColor: "text-pink-800",
+    },
+    "default": {
+        gradient: "from-gray-100 to-gray-200",
+        textColor: "text-gray-800",
+    }
+}
+
+
 function getLatestStatus(part: Part): string {
   if (part.inspections.length === 0) return "Not Inspected";
   const latestInspection = part.inspections.sort(
@@ -55,8 +80,30 @@ function getLatestStatus(part: Part): string {
   return latestInspection.status;
 }
 
-export default async function DashboardPage() {
-  const parts = await getParts();
+export default function DashboardPage() {
+  const [parts, setParts] = useState<Part[]>([]);
+  const [filteredParts, setFilteredParts] = useState<Part[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() => {
+    async function loadParts() {
+      const partsData = await getParts();
+      setParts(partsData);
+      setFilteredParts(partsData);
+    }
+    loadParts();
+  }, []);
+
+  useEffect(() => {
+    const results = parts.filter(part =>
+      part.part_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      part.qr_id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      part.part_type.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      part.lot_no.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredParts(results);
+  }, [searchTerm, parts]);
+
 
   return (
     <AppLayout>
@@ -84,6 +131,8 @@ export default async function DashboardPage() {
             <Input
               placeholder="Search parts, IDs, materials"
               className="pl-9 w-full sm:w-64"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
           <Button variant="outline" className="gap-2">
@@ -99,10 +148,11 @@ export default async function DashboardPage() {
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {parts.map((part) => {
+          {filteredParts.map((part) => {
             const latestStatus = getLatestStatus(part);
             const statusStyle = statusStyles[latestStatus];
             const partImage = PlaceHolderImages.find(img => img.id === part.part_type);
+            const partTypeStyle = partTypeStyles[part.part_type] || partTypeStyles.default;
 
             return (
               <Card key={part.qr_id} className="flex flex-col overflow-hidden rounded-xl">
@@ -116,8 +166,8 @@ export default async function DashboardPage() {
                         data-ai-hint={partImage.imageHint}
                       />
                     ) : (
-                      <div className="flex items-center justify-center h-full">
-                        <p className="font-display text-2xl font-bold tracking-wider uppercase text-muted-foreground">
+                       <div className={cn("flex items-center justify-center h-full bg-gradient-to-br", partTypeStyle.gradient)}>
+                        <p className={cn("font-display text-4xl font-bold tracking-wider uppercase", partTypeStyle.textColor)}>
                           {part.part_type.replace('_', ' ')}
                         </p>
                       </div>
