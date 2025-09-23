@@ -94,6 +94,7 @@ export default function DashboardPage() {
   const [filteredParts, setFilteredParts] = useState<Part[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilters, setTypeFilters] = useState<string[]>([]);
+  const [statusFilter, setStatusFilter] = useState<string | null>(null);
 
   const partTypes = useMemo(() => {
     const types = new Set(parts.map(p => p.part_type));
@@ -125,9 +126,20 @@ export default function DashboardPage() {
     if (typeFilters.length > 0) {
         results = results.filter(part => typeFilters.includes(part.part_type));
     }
+    
+    if (statusFilter) {
+      if (statusFilter === 'Passed') {
+        results = results.filter(part => getLatestStatus(part) === 'Passed');
+      } else if (statusFilter === 'Requires Attention') {
+        results = results.filter(part => {
+          const status = getLatestStatus(part);
+          return status === 'Failed' || status === 'Needs Repair' || status === 'Not Inspected';
+        });
+      }
+    }
 
     setFilteredParts(results);
-  }, [searchTerm, parts, typeFilters]);
+  }, [searchTerm, parts, typeFilters, statusFilter]);
   
   const handleTypeFilterChange = (partType: string) => {
     setTypeFilters(prev => 
@@ -135,6 +147,10 @@ export default function DashboardPage() {
         ? prev.filter(t => t !== partType)
         : [...prev, partType]
     );
+  };
+  
+  const handleStatusFilterChange = (status: string) => {
+    setStatusFilter(prev => prev === status ? null : status);
   };
 
 
@@ -194,8 +210,8 @@ export default function DashboardPage() {
             <ArrowUpDown className="h-4 w-4" /> Sort by: Recent
           </Button>
           <div className="ml-auto flex items-center gap-2">
-             <Button variant="outline" size="sm" className="bg-gray-100">Passed</Button>
-             <Button variant="outline" size="sm" className="bg-gray-100">Requires Attention</Button>
+             <Button variant={statusFilter === 'Passed' ? "default" : "outline"} size="sm" onClick={() => handleStatusFilterChange('Passed')} className={cn(statusFilter === 'Passed' && "bg-green-500/20 text-green-700")}>Passed</Button>
+             <Button variant={statusFilter === 'Requires Attention' ? "destructive" : "outline"} size="sm" onClick={() => handleStatusFilterChange('Requires Attention')} className={cn(statusFilter === 'Requires Attention' && "bg-red-500/20 text-red-700")}>Requires Attention</Button>
           </div>
         </div>
 
@@ -253,4 +269,5 @@ export default function DashboardPage() {
     </AppLayout>
   );
 }
+
 
