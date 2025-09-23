@@ -1,73 +1,31 @@
 import type { Vendor, Part } from "./types";
-import { open } from "sqlite";
-import sqlite3 from "sqlite3";
-import path from "path";
+import partsData from "./data/parts.json";
+import vendorsData from "./data/vendors.json";
 
 // In a real app, you'd fetch this from a database.
-// To keep this demo simple, we're using a local SQLite database.
-
-let db: Awaited<ReturnType<typeof open>> | null = null;
-
-async function openDb() {
-  if (db) {
-    return db;
-  }
-  try {
-    const dbPath = path.join(process.cwd(), "db", "parts.db");
-    const newDb = await open({
-      filename: dbPath,
-      driver: sqlite3.Database,
-    });
-    db = newDb;
-    return db;
-  } catch (err: any) {
-    if (err.code === "SQLITE_CANTOPEN") {
-      throw new Error(
-        'Database file "db/parts.db" not found. Please run `npm run db:init` to create it.'
-      );
-    }
-    throw err;
-  }
-}
-
-
-function normalizePart(part: any): Part {
-  let inspections = [];
-  try {
-    // The database stores inspections as a JSON string
-    if (part.inspections && typeof part.inspections === "string") {
-      inspections = JSON.parse(part.inspections);
-    }
-  } catch (e) {
-    console.error(`Failed to parse inspections for part ${part.id}:`, e);
-    // Return empty array if parsing fails
-  }
-  return { ...part, inspections };
-}
+// To keep this demo simple, we're just using a JSON file.
 
 export const getParts = async (): Promise<Part[]> => {
-  const db = await openDb();
-  const parts = await db.all("SELECT * FROM parts");
-  return parts.map(normalizePart);
+  // Simulate async operation
+  return Promise.resolve(partsData as Part[]);
 };
 
 export const getPartById = async (id: string): Promise<Part | undefined> => {
-  const db = await openDb();
-  const part = await db.get("SELECT * FROM parts WHERE id = ?", id);
-  return part ? normalizePart(part) : undefined;
+  const parts = await getParts();
+  return Promise.resolve(parts.find((part) => part.id === id));
 };
 
 export const getPartByQrId = async (
   qrId: string
 ): Promise<Part | undefined> => {
-  const db = await openDb();
-  const part = await db.get("SELECT * FROM parts WHERE qrId = ?", qrId);
-  return part ? normalizePart(part) : undefined;
+  const parts = await getParts();
+  return Promise.resolve(parts.find((part) => part.qrId === qrId));
 };
 
 export const getVendorById = async (
   id: string
 ): Promise<Vendor | undefined> => {
-  const db = await openDb();
-  return db.get("SELECT * FROM vendors WHERE id = ?", id);
+  // Simulate async operation
+  const vendors = vendorsData as Vendor[];
+  return Promise.resolve(vendors.find((vendor) => vendor.id === id));
 };
