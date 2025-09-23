@@ -13,6 +13,7 @@ import { AppLayout } from "@/components/app-layout";
 import type { Part } from "@/lib/types";
 import { QrCode, Search, ListFilter, ArrowUpDown, CheckCircle, AlertTriangle, XCircle } from "lucide-react";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
+import { cn } from "@/lib/utils";
 
 const statusStyles: Record<string, {
   variant: "default" | "destructive";
@@ -45,6 +46,21 @@ const statusStyles: Record<string, {
      className: "bg-gray-500/10 text-gray-600 border-gray-500/20 hover:bg-gray-500/20",
   }
 };
+
+const partTypeStyles: Record<string, { bg: string; text: string; }> = {
+    "rail_pad": {
+        bg: "from-sky-100 to-blue-100",
+        text: "text-sky-800"
+    },
+    "sleeper": {
+        bg: "from-emerald-100 to-green-100",
+        text: "text-emerald-800"
+    },
+    "rail_clip": {
+        bg: "from-violet-100 to-purple-100",
+        text: "text-violet-800"
+    }
+}
 
 
 function getLatestStatus(part: Part): string {
@@ -102,17 +118,20 @@ export default async function DashboardPage() {
           {parts.map((part) => {
             const latestStatus = getLatestStatus(part);
             const statusStyle = statusStyles[latestStatus];
+            const typeStyle = partTypeStyles[part.part_type] || { bg: "from-gray-100 to-gray-200", text: "text-gray-800" };
             return (
               <Card key={part.qr_id} className="flex flex-col overflow-hidden rounded-xl">
-                 <div className="relative aspect-[4/3] bg-muted flex items-center justify-center">
-                    <p className="text-muted-foreground font-medium">{part.part_type}</p>
+                 <div className={cn("relative aspect-[4/3] flex items-center justify-center bg-gradient-to-br", typeStyle.bg)}>
+                    <p className={cn("font-headline text-2xl font-bold tracking-wider", typeStyle.text)}>
+                        {part.part_type.replace('_', ' ')}
+                    </p>
                  </div>
                 <CardContent className="p-4 flex flex-col flex-grow bg-white">
                   <h3 className="font-headline text-lg font-semibold leading-tight">
                     {part.part_name}
                   </h3>
                   <p className="text-sm text-muted-foreground mt-1">
-                    {`Batch #${part.lot_no.slice(-4)} • ${part.part_type}`}
+                    {`Batch #${part.lot_no.slice(-4)} • ${part.part_type.replace('_', ' ')}`}
                   </p>
                   <div className="flex-grow my-4" />
                    <div className="flex items-center justify-between gap-4">
