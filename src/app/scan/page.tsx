@@ -14,6 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Icons } from "@/components/icons";
 import { Badge } from "@/components/ui/badge";
 import type { Part } from "@/lib/types";
@@ -28,7 +29,9 @@ export default function ScanPage() {
   const router = useRouter();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const [isScanning, setIsScanning] = useState(true);
+  const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
 
   useEffect(() => {
     // Load recent scans on mount
@@ -40,6 +43,30 @@ export default function ScanPage() {
     };
     loadRecentScans();
   }, []);
+
+  useEffect(() => {
+    const getCameraPermission = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({video: true});
+        setHasCameraPermission(true);
+
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+      } catch (error) {
+        console.error('Error accessing camera:', error);
+        setHasCameraPermission(false);
+        toast({
+          variant: 'destructive',
+          title: 'Camera Access Denied',
+          description: 'Please enable camera permissions in your browser settings to use this app.',
+        });
+      }
+    };
+
+    getCameraPermission();
+  }, [toast]);
+
 
   const handlePartDetect = async (qrId: string) => {
     setIsScanning(false);
@@ -118,10 +145,23 @@ export default function ScanPage() {
             <Card className="flex flex-col">
                 <CardContent className="p-6">
                     <div className="relative aspect-video w-full rounded-lg overflow-hidden border bg-muted flex items-center justify-center">
-                        {isScanning ? (
-                            <QrScanner onPartDetect={handlePartDetect} />
-                        ) : (
-                            <div className="text-center text-muted-foreground flex flex-col items-center gap-4 p-4">
+                        <video ref={videoRef} className="w-full aspect-video rounded-md" autoPlay muted />
+                        
+                        {isScanning && hasCameraPermission && videoRef.current && (
+                           <QrScanner videoEl={videoRef.current} onPartDetect={handlePartDetect} />
+                        )}
+                        
+                        {hasCameraPermission === false && (
+                            <Alert variant="destructive">
+                                <AlertTitle>Camera Access Required</AlertTitle>
+                                <AlertDescription>
+                                    Please allow camera access to use this feature.
+                                </AlertDescription>
+                            </Alert>
+                        )}
+                        
+                        {!isScanning && (
+                            <div className="absolute inset-0 bg-black/50 text-white flex flex-col items-center justify-center gap-4 p-4">
                                 <Icons.scanFrame className="w-16 h-16" />
                                 <span>Scanner paused.</span>
                                 <Button onClick={() => setIsScanning(true)}>Scan Again</Button>
