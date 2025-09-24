@@ -16,7 +16,7 @@ export function QrScanner({ onPartDetect, videoEl }: QrScannerProps) {
     const scannerRef = useRef<Html5Qrcode | null>(null);
 
     useEffect(() => {
-        if (!videoEl.srcObject) {
+        if (!videoEl || !(videoEl.srcObject instanceof MediaStream)) {
             return;
         }
 
@@ -26,9 +26,11 @@ export function QrScanner({ onPartDetect, videoEl }: QrScannerProps) {
         const html5Qrcode = scannerRef.current;
 
         const onScanSuccess = (decodedText: string) => {
-            html5Qrcode.stop().then(() => {
-                onPartDetect(decodedText);
-            }).catch(err => console.error("Failed to stop scanner", err));
+            if (html5Qrcode.getState() === Html5QrcodeScannerState.SCANNING) {
+                html5Qrcode.stop().then(() => {
+                    onPartDetect(decodedText);
+                }).catch(err => console.error("Failed to stop scanner", err));
+            }
         };
 
         const onScanFailure = (error: any) => {
@@ -45,8 +47,12 @@ export function QrScanner({ onPartDetect, videoEl }: QrScannerProps) {
         }
 
         if (html5Qrcode.getState() !== Html5QrcodeScannerState.SCANNING) {
-            html5Qrcode.start(
-                { deviceId: { exact: (videoEl.srcObject as MediaStream).getVideoTracks()[0].getSettings().deviceId } },
+             const track = (videoEl.srcObject as MediaStream).getVideoTracks()[0];
+             const deviceId = track.getSettings().deviceId;
+             if (!deviceId) return;
+             
+             html5Qrcode.start(
+                { deviceId: { exact: deviceId } },
                 {
                     fps: 10,
                     qrbox: qrboxFunction,
@@ -70,5 +76,7 @@ export function QrScanner({ onPartDetect, videoEl }: QrScannerProps) {
     }, [onPartDetect, videoEl]);
 
     // The scanner will attach to the videoEl, so we can just return a hidden div for its own DOM element.
-    return <div id={qrcodeRegionId} className="hidden" />;
+    return <div id={qrcodeRegionId} className="absolute inset-0" />;
 }
+
+    

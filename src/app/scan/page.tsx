@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/card";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Icons } from "@/components/icons";
-import { Badge } from "@/components/ui/badge";
 import type { Part } from "@/lib/types";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { getParts, getPartByQrId } from "@/lib/data";
@@ -46,6 +45,7 @@ export default function ScanPage() {
 
   useEffect(() => {
     const getCameraPermission = async () => {
+      if (hasCameraPermission !== null) return;
       try {
         const stream = await navigator.mediaDevices.getUserMedia({video: true});
         setHasCameraPermission(true);
@@ -65,10 +65,11 @@ export default function ScanPage() {
     };
 
     getCameraPermission();
-  }, [toast]);
+  }, [toast, hasCameraPermission]);
 
 
   const handlePartDetect = async (qrId: string) => {
+    if (!isScanning) return;
     setIsScanning(false);
     const part = await getPartByQrId(qrId);
     if (part) {
@@ -84,7 +85,7 @@ export default function ScanPage() {
             description: "No part found for this QR code.",
         });
         // Allow scanning again if part not found
-        setIsScanning(true); 
+        setTimeout(() => setIsScanning(true), 1000);
     }
   }
   
@@ -107,7 +108,7 @@ export default function ScanPage() {
             title: "Scan Failed",
             description: "Could not decode QR code from the uploaded image.",
         });
-        setIsScanning(true); // Allow scanning again if file scan fails
+        setTimeout(() => setIsScanning(true), 1000);
       } finally {
         // Clear the file input so the same file can be selected again
         if(fileInputRef.current) {
@@ -145,7 +146,7 @@ export default function ScanPage() {
             <Card className="flex flex-col">
                 <CardContent className="p-6">
                     <div className="relative aspect-video w-full rounded-lg overflow-hidden border bg-muted flex items-center justify-center">
-                        <video ref={videoRef} className="w-full aspect-video rounded-md" autoPlay muted />
+                        <video ref={videoRef} className="w-full aspect-video rounded-md" autoPlay muted playsInline />
                         
                         {isScanning && hasCameraPermission && videoRef.current && (
                            <QrScanner videoEl={videoRef.current} onPartDetect={handlePartDetect} />
@@ -239,3 +240,5 @@ export default function ScanPage() {
     </AppLayout>
   );
 }
+
+    
