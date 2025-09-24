@@ -13,6 +13,7 @@ import {
   Hash,
   Tag,
   Package,
+  File,
 } from "lucide-react";
 import { getPartById, getVendorById } from "@/lib/data";
 import { generateInspectionSummary } from "@/ai/flows/generate-inspection-summary";
@@ -48,6 +49,7 @@ const statusIcons: Record<string, React.ReactNode> = {
   Passed: <CheckCircle2 className="h-5 w-5 text-green-500" />,
   Failed: <XCircle className="h-5 w-5 text-red-500" />,
   "Needs Repair": <Wrench className="h-5 w-5 text-yellow-500" />,
+  "Not Inspected": <File className="h-5 w-5 text-gray-500" />,
 };
 
 const statusBadgeVariants: Record<string, "default" | "destructive" | "secondary"> = {
@@ -179,7 +181,7 @@ async function PartDetailsContent({ partId }: { partId: string }) {
             <div className="md:col-span-1 space-y-8">
                 <Card>
                     <CardHeader>
-                        <CardTitle className="font-headline text-2xl">Part Details</CardTitle>
+                        <CardTitle className="font-headline">Part Details</CardTitle>
                     </CardHeader>
                     <CardContent className="grid gap-4 text-sm">
                         <div className="flex items-start gap-3">
@@ -274,7 +276,7 @@ function PartDetailsSkeleton() {
             <div className="md:col-span-1 space-y-8">
                 <Card>
                     <CardHeader>
-                        <CardTitle className="font-headline text-2xl">Part Details</CardTitle>
+                        <CardTitle className="font-headline">Part Details</CardTitle>
                     </CardHeader>
                     <CardContent className="grid gap-4 text-sm">
                         {[...Array(6)].map((_, i) => (
