@@ -62,16 +62,7 @@ export default function ScanPage() {
     setShowScanner(false);
     const part = await getPartByQrId(qrId);
     if (part) {
-        setDetectedPart(part);
-        toast({
-            title: "Part Detected",
-            description: `Part "${part.part_name}" found.`
-        });
-         if (!recentScans.some(p => p.qr_id === part.qr_id)) {
-            setRecentScans([part, ...recentScans].slice(0, 3));
-        }
         router.push(`/parts/${part.qr_id}`);
-
     } else {
         toast({
             variant: "destructive",
@@ -251,5 +242,3 @@ export default function ScanPage() {
     </AppLayout>
   );
 }
-
-    
