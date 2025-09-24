@@ -22,6 +22,7 @@ import { getParts, getPartByQrId } from "@/lib/data";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { Html5Qrcode } from "html5-qrcode";
+import { Loader2 } from "lucide-react";
 
 export default function ScanPage() {
   const [recentScans, setRecentScans] = useState<Part[]>([]);
@@ -45,6 +46,7 @@ export default function ScanPage() {
 
   useEffect(() => {
     const getCameraPermission = async () => {
+      if (hasCameraPermission !== null) return;
       try {
         const stream = await navigator.mediaDevices.getUserMedia({video: true});
         setHasCameraPermission(true);
@@ -64,8 +66,7 @@ export default function ScanPage() {
     };
 
     getCameraPermission();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [hasCameraPermission, toast]);
 
 
   const handlePartDetect = async (qrId: string) => {
@@ -146,22 +147,33 @@ export default function ScanPage() {
             <Card className="flex flex-col">
                 <CardContent className="p-6">
                     <div className="relative aspect-video w-full rounded-lg overflow-hidden border bg-muted flex items-center justify-center">
-                        <video ref={videoRef} className="w-full aspect-video rounded-md" autoPlay muted playsInline />
                         
-                        {isScanning && hasCameraPermission && videoRef.current?.srcObject && (
-                           <QrScanner videoEl={videoRef.current} onPartDetect={handlePartDetect} />
+                        {hasCameraPermission === null && (
+                          <div className="flex flex-col items-center gap-2 text-muted-foreground">
+                            <Loader2 className="w-8 h-8 animate-spin" />
+                            <span>Requesting camera access...</span>
+                          </div>
                         )}
                         
                         {hasCameraPermission === false && (
-                            <Alert variant="destructive">
-                                <AlertTitle>Camera Access Required</AlertTitle>
+                            <Alert variant="destructive" className="w-auto">
+                                <AlertTitle>Camera Access Denied</AlertTitle>
                                 <AlertDescription>
-                                    Please allow camera access in your browser settings to use this feature.
+                                    Please enable camera permissions in your browser settings to use the scanner.
                                 </AlertDescription>
                             </Alert>
                         )}
                         
-                        {!isScanning && hasCameraPermission && (
+                        {hasCameraPermission === true && (
+                          <>
+                            <video ref={videoRef} className="w-full aspect-video rounded-md" autoPlay muted playsInline />
+                            {isScanning && (
+                              <QrScanner videoEl={videoRef.current!} onPartDetect={handlePartDetect} />
+                            )}
+                          </>
+                        )}
+                        
+                        {!isScanning && hasCameraPermission === true && (
                             <div className="absolute inset-0 bg-black/50 text-white flex flex-col items-center justify-center gap-4 p-4">
                                 <Icons.scanFrame className="w-16 h-16" />
                                 <span>Scanner paused.</span>
