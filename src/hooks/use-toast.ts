@@ -58,7 +58,7 @@ interface State {
 
 const toastTimeouts = new Map<string, ReturnType<typeof setTimeout>>()
 
-const addToRemoveQueue = (toastId: string) => {
+const addToRemoveQueue = (toastId: string, dispatch: React.Dispatch<Action>) => {
   if (toastTimeouts.has(toastId)) {
     return
   }
@@ -92,16 +92,6 @@ export const reducer = (state: State, action: Action): State => {
 
     case "DISMISS_TOAST": {
       const { toastId } = action
-
-      // ! Side effects ! - This could be extracted into a dismissToast() action,
-      // but I'll keep it here for simplicity
-      if (toastId) {
-        addToRemoveQueue(toastId)
-      } else {
-        state.toasts.forEach((toast) => {
-          addToRemoveQueue(toast.id)
-        })
-      }
 
       return {
         ...state,
@@ -183,10 +173,55 @@ function useToast() {
       }
     }
   }, [state])
+  
+  const dispatch = React.useCallback((action: Action) => {
+     setState((prevState) => reducer(prevState, action));
+  }, []);
+
+  React.useEffect(() => {
+    state.toasts.forEach((t) => {
+        if(t.open) {
+            const timeout = setTimeout(() => {
+                dispatch({type: 'DISMISS_TOAST', toastId: t.id});
+            }, 5000);
+            toastTimeouts.set(t.id, timeout);
+        } else {
+            const timeout = toastTimeouts.get(t.id);
+            if(timeout) {
+                clearTimeout(timeout);
+            }
+            addToRemoveQueue(t.id, dispatch);
+        }
+    });
+
+    return () => {
+        toastTimeouts.forEach((timeout) => clearTimeout(timeout));
+    }
+  }, [state.toasts, dispatch]);
+
 
   return {
     ...state,
-    toast,
+    toast: (props: Toast) => {
+        const id = genId();
+        const newToast: ToasterToast = {
+            ...props,
+            id,
+            open: true,
+            onOpenChange: (open) => {
+                if(!open) {
+                    dispatch({type: 'DISMISS_TOAST', toastId: id})
+                }
+            }
+        }
+        dispatch({type: 'ADD_TOAST', toast: newToast});
+
+        return {
+            id,
+            dismiss: () => dispatch({type: 'DISMISS_TOAST', toastId: id}),
+            update: (props: Partial<ToasterToast>) => dispatch({type: 'UPDATE_TOAST', toast: {...props, id}}),
+        }
+    },
     dismiss: (toastId?: string) => dispatch({ type: "DISMISS_TOAST", toastId }),
   }
 }
