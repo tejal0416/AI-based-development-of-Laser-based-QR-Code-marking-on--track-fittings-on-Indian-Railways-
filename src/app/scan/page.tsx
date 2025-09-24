@@ -70,7 +70,7 @@ export default function ScanPage() {
               description: "No part found for this QR code.",
           });
           // Allow re-scanning
-          setTimeout(() => startScanner(), 2000); 
+          setTimeout(() => startScanner(), 1000); 
       }
   };
   
@@ -91,7 +91,7 @@ export default function ScanPage() {
           ).catch(err => {
               console.error("Error starting scanner", err);
               // In case of error, we can allow another attempt
-              setTimeout(() => setIsScanning(true), 2000); 
+              setTimeout(() => setIsScanning(true), 1000); 
           });
       }
   }
@@ -153,7 +153,7 @@ export default function ScanPage() {
                     description: "No part found for this QR code from file.",
                 });
                 // Allow re-scanning by camera
-                setTimeout(() => startScanner(), 2000);
+                setTimeout(() => startScanner(), 1000);
             }
         }
         fileHandlePartDetect(decodedText);
@@ -164,7 +164,7 @@ export default function ScanPage() {
             title: "Scan Failed",
             description: "Could not decode QR code from the uploaded image.",
         });
-        setTimeout(() => startScanner(), 2000);
+        setTimeout(() => startScanner(), 1000);
       } finally {
         if(fileInputRef.current) {
             fileInputRef.current.value = "";
@@ -282,4 +282,3 @@ export default function ScanPage() {
     </AppLayout>
   );
 }
-
