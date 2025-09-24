@@ -17,7 +17,9 @@ import { useState, useEffect } from "react";
 import { Icons } from "@/components/icons";
 
 function getLatestStatus(part: Part): string {
-  if (part.inspections.length === 0) return "Not Inspected";
+  if (!part.inspections || part.inspections.length === 0) {
+    return "Not Inspected";
+  }
   const latestInspection = part.inspections.sort(
     (a, b) => new Date(b.insp_date).getTime() - new Date(a.insp_date).getTime()
   )[0];
