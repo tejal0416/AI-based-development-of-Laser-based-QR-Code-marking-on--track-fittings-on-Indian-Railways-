@@ -36,7 +36,6 @@ export default function ScanPage() {
   const html5QrCodeRef = useRef<Html5Qrcode | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-
   useEffect(() => {
     const loadRecentScans = async () => {
       const allParts = await getParts();
@@ -49,11 +48,8 @@ export default function ScanPage() {
   useEffect(() => {
     const getCameraPermission = async () => {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        await navigator.mediaDevices.getUserMedia({ video: true });
         setHasCameraPermission(true);
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-        }
       } catch (error) {
         console.error('Error accessing camera:', error);
         setHasCameraPermission(false);
@@ -63,79 +59,73 @@ export default function ScanPage() {
   }, []);
   
 
-  const handlePartDetect = async (qrId: string) => {
-      if (!isScanning) return;
-      
-      toast({
-          title: "QR Code Detected",
-          description: `Processing ID: ${qrId}`,
-      });
+  useEffect(() => {
+    if (hasCameraPermission && !html5QrCodeRef.current) {
+        const html5QrCode = new Html5Qrcode(qrcodeRegionId, { verbose: false });
+        html5QrCodeRef.current = html5QrCode;
 
-      if (html5QrCodeRef.current && html5QrCodeRef.current.isScanning) {
-        await html5QrCodeRef.current.stop();
-      }
-      setIsScanning(false);
+        const handlePartDetect = async (qrId: string) => {
+            setIsScanning(false);
+            if (html5QrCodeRef.current?.isScanning) {
+                await html5QrCodeRef.current.stop();
+            }
 
-      const part = await getPartByQrId(qrId);
-      if (part) {
-          toast({
-              title: "Part Found!",
-              description: "Redirecting to part details...",
-          });
-          router.push(`/parts/${part.qr_id}`);
-      } else {
-          toast({
-              variant: "destructive",
-              title: "Scan Failed",
-              description: "No part found for this QR code.",
-          });
-          // Allow re-scanning
-          setTimeout(() => startScanner(), 1000); 
-      }
-  };
-  
-  const startScanner = () => {
-      if(hasCameraPermission === false) return;
-      
-      if (!html5QrCodeRef.current) {
-        html5QrCodeRef.current = new Html5Qrcode(qrcodeRegionId, { verbose: false });
-      }
+            toast({
+                title: "QR Code Detected",
+                description: `Processing ID: ${qrId}`,
+            });
 
-      if (html5QrCodeRef.current && !html5QrCodeRef.current.isScanning) {
-          setIsScanning(true);
-          const qrboxFunction = (viewfinderWidth: number, viewfinderHeight: number) => {
-              const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
-              const qrboxSize = Math.max(250, Math.floor(minEdge * 0.8));
-              return { width: qrboxSize, height: qrboxSize };
-          };
+            const part = await getPartByQrId(qrId);
+            if (part) {
+                toast({
+                    title: "Part Found!",
+                    description: "Redirecting to part details...",
+                });
+                router.push(`/parts/${part.qr_id}`);
+            } else {
+                toast({
+                    variant: "destructive",
+                    title: "Scan Failed",
+                    description: "No part found for this QR code.",
+                });
+                // Allow re-scanning after a delay
+                setTimeout(() => setIsScanning(true), 2000); 
+            }
+        };
 
-          html5QrCodeRef.current.start(
-              { facingMode: "environment" },
-              { fps: 10, qrbox: qrboxFunction, useBarCodeDetectorIfSupported: true },
-              handlePartDetect,
-              () => {} // onScanFailure - do nothing
-          ).catch(err => {
-              console.error("Error starting scanner", err);
-              setIsScanning(false);
-              setHasCameraPermission(false);
-          });
-      }
-  }
+        const qrboxFunction = (viewfinderWidth: number, viewfinderHeight: number) => {
+            const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
+            const qrboxSize = Math.max(250, Math.floor(minEdge * 0.8));
+            return { width: qrboxSize, height: qrboxSize };
+        };
+
+        if (!html5QrCode.isScanning) {
+            setIsScanning(true);
+            html5QrCode.start(
+                { facingMode: "environment" },
+                { fps: 10, qrbox: qrboxFunction, useBarCodeDetectorIfSupported: true },
+                handlePartDetect,
+                () => {} // onScanFailure - do nothing
+            ).catch(err => {
+                console.error("Error starting scanner", err);
+                setIsScanning(false);
+                setHasCameraPermission(false);
+            });
+        }
+    }
+  }, [hasCameraPermission, router, toast]);
 
   useEffect(() => {
-    if (hasCameraPermission) {
-        startScanner();
-    }
-
+    // Cleanup on unmount
     return () => {
       if (html5QrCodeRef.current && html5QrCodeRef.current.isScanning) {
         html5QrCodeRef.current.stop().catch((err) => {
-          console.error("Failed to stop QR scanner:", err);
+          console.error("Failed to stop QR scanner on cleanup:", err);
         });
+        html5QrCodeRef.current = null;
       }
     };
-  }, [hasCameraPermission]);
-  
+  }, []);
 
   const handleFileUploadClick = () => {
     fileInputRef.current?.click();
@@ -145,15 +135,24 @@ export default function ScanPage() {
     if (event.target.files && event.target.files.length > 0) {
       const file = event.target.files[0];
       setIsScanning(false); 
+      
       // Stop the camera scanner if it's running
       if (html5QrCodeRef.current && html5QrCodeRef.current.isScanning) {
         await html5QrCodeRef.current.stop();
       }
 
-      const fileScanner = new Html5Qrcode( "qr-reader-container-hidden", { verbose: false });
+      // Use a new instance for file scanning to avoid conflicts
+      const fileScanner = new Html5Qrcode("qr-reader-container-hidden", { verbose: false });
       try {
         const decodedText = await fileScanner.scanFile(file, false);
-        await handlePartDetect(decodedText);
+        // We reuse the same handler as the camera scan
+         const part = await getPartByQrId(decodedText);
+        if (part) {
+            toast({ title: "Part Found!", description: "Redirecting..." });
+            router.push(`/parts/${part.qr_id}`);
+        } else {
+            toast({ variant: "destructive", title: "Scan Failed", description: "No part found for this QR code." });
+        }
       } catch (err) {
         console.error("Error scanning file.", err);
         toast({
@@ -161,7 +160,8 @@ export default function ScanPage() {
             title: "Scan Failed",
             description: "Could not decode QR code from the uploaded image.",
         });
-        setTimeout(() => startScanner(), 1000);
+        // Optionally restart camera scanner
+        setTimeout(() => setIsScanning(true), 2000);
       } finally {
         if(fileInputRef.current) {
             fileInputRef.current.value = "";
@@ -169,6 +169,7 @@ export default function ScanPage() {
       }
     }
   };
+
 
   const getPartImage = (partType: string) => {
     return PlaceHolderImages.find(img => img.id === partType) || PlaceHolderImages.find(img => img.id === 'default');
@@ -198,7 +199,6 @@ export default function ScanPage() {
           <Card className="flex flex-col">
               <CardContent className="p-6">
                   <div className="relative aspect-video w-full rounded-lg overflow-hidden border bg-muted flex items-center justify-center">
-                    <video ref={videoRef} className="w-full aspect-video rounded-md" autoPlay muted playsInline hidden={hasCameraPermission !== true} />
                     <div id={qrcodeRegionId} className="w-full h-full" />
                     
                     {hasCameraPermission === null && (
@@ -223,9 +223,9 @@ export default function ScanPage() {
                             <span>Processing...</span>
                         </div>
                     )}
-                    {hasCameraPermission === true && (
+                    {hasCameraPermission === true && isScanning && (
                       <div className="absolute inset-0 pointer-events-none">
-                          <Icons.scanFrame className="w-full h-full text-white/50" />
+                          <Icons.scanFrame className="w-full h-full text-primary/50" />
                       </div>
                     )}
                   </div>
@@ -278,7 +278,7 @@ export default function ScanPage() {
                                             <div className="flex-grow">
                                                 <p className="font-semibold">{part.part_name}</p>
                                                 <p className="text-sm text-muted-foreground">
-                                                    ID: {part.qr_id} • <span className={statusVariant === 'destructive' ? 'text-red-500' : 'text-green-600'}>{latestStatus === 'Passed' ? 'Passed' : 'Requires Attention'}</span>
+                                                    ID: {part.qr_id} • <span className={statusVariant === 'destructive' && latestStatus !== 'Not Inspected' ? 'text-red-500' : 'text-green-600'}>{latestStatus}</span>
                                                 </p>
                                             </div>
                                              <Button variant="ghost" size="sm" asChild>
@@ -299,5 +299,4 @@ export default function ScanPage() {
     </AppLayout>
   );
 }
-
     
