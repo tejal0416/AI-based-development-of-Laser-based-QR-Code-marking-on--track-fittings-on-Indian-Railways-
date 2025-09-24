@@ -59,11 +59,11 @@ export default function ScanPage() {
   }
   
   const handlePartDetect = async (qrId: string) => {
-    setShowScanner(false);
     const part = await getPartByQrId(qrId);
     if (part) {
         router.push(`/parts/${part.qr_id}`);
     } else {
+        setShowScanner(false);
         toast({
             variant: "destructive",
             title: "Scan Failed",
@@ -79,9 +79,9 @@ export default function ScanPage() {
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
       const file = event.target.files[0];
-      const html5QrCode = new Html5Qrcode( "qr-reader-container", /* verbose= */ false);
+      const html5QrCode = new Html5Qrcode( "qr-reader-container-hidden", { verbose: false });
       try {
-        const decodedText = await html5QrCode.scanFile(file, /* showImage= */ false);
+        const decodedText = await html5QrCode.scanFile(file, false);
         handlePartDetect(decodedText);
       } catch (err) {
         console.error("Error scanning file.", err);
@@ -151,7 +151,7 @@ export default function ScanPage() {
                             className="hidden"
                             accept="image/*"
                         />
-                        <div id="qr-reader-container" className="hidden"></div>
+                        <div id="qr-reader-container-hidden" className="hidden"></div>
                      </div>
                      <CardDescription className="text-center mt-4">
                         Supported: QR, Code-128, DataMatrix. Good lighting improves accuracy.
@@ -200,7 +200,8 @@ export default function ScanPage() {
                              <div className="space-y-4">
                                 {recentScans.map(part => {
                                      const partImage = getPartImage(part.part_type);
-                                     const latestStatus = part.inspections.length > 0 ? part.inspections.sort((a,b) => new Date(b.insp_date).getTime() - new Date(a.insp_date).getTime())[0].status : "Not Inspected";
+                                     const latestInspection = part.inspections.length > 0 ? [...part.inspections].sort((a,b) => new Date(b.insp_date).getTime() - new Date(a.insp_date).getTime())[0] : null;
+                                     const latestStatus = latestInspection ? latestInspection.status : "Not Inspected";
                                      const statusVariant = latestStatus === "Passed" ? "default" : "destructive";
                                     return(
                                         <div key={part.qr_id} className="flex items-center gap-4 p-2 rounded-lg bg-slate-50">

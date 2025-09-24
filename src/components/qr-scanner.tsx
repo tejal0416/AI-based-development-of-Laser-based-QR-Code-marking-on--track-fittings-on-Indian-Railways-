@@ -14,6 +14,7 @@ type QrScannerProps = {
 export function QrScanner({ onPartDetect }: QrScannerProps) {
   const { toast } = useToast();
   const scannerRef = useRef<Html5Qrcode | null>(null);
+  const hasCameraPermissionRef = useRef<boolean | null>(null);
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
 
   useEffect(() => {
@@ -22,13 +23,16 @@ export function QrScanner({ onPartDetect }: QrScannerProps) {
         const devices = await navigator.mediaDevices.enumerateDevices();
         const videoDevices = devices.filter(device => device.kind === 'videoinput');
         if (videoDevices.length > 0) {
-          await navigator.mediaDevices.getUserMedia({ video: true });
-          setHasCameraPermission(true);
+           await navigator.mediaDevices.getUserMedia({ video: true });
+           hasCameraPermissionRef.current = true;
+           setHasCameraPermission(true);
         } else {
+           hasCameraPermissionRef.current = false;
            setHasCameraPermission(false);
         }
       } catch (error) {
         console.error('Error accessing camera:', error);
+        hasCameraPermissionRef.current = false;
         setHasCameraPermission(false);
         toast({
           variant: 'destructive',
@@ -37,13 +41,15 @@ export function QrScanner({ onPartDetect }: QrScannerProps) {
         });
       }
     };
-
-    getCameraPermission();
+    
+    if (hasCameraPermissionRef.current === null) {
+      getCameraPermission();
+    }
   }, [toast]);
   
 
   useEffect(() => {
-    if (!hasCameraPermission) {
+    if (hasCameraPermission !== true) {
       return;
     }
 
@@ -51,6 +57,7 @@ export function QrScanner({ onPartDetect }: QrScannerProps) {
     scannerRef.current = html5Qrcode;
 
     const onScanSuccess = (decodedText: string) => {
+      scannerRef.current?.stop().catch(() => {});
       onPartDetect(decodedText);
     };
 
@@ -76,7 +83,10 @@ export function QrScanner({ onPartDetect }: QrScannerProps) {
       onScanSuccess,
       onScanFailure
     ).catch(err => {
-      console.error("Scanner start error", err);
+      // This can happen if the component unmounts before the scanner starts.
+      if (err.name !== "NotAllowedError") {
+         console.error("Scanner start error", err);
+      }
     });
 
     return () => {
@@ -98,5 +108,3 @@ export function QrScanner({ onPartDetect }: QrScannerProps) {
 
   return <div id={qrcodeRegionId} className="w-full h-full" />;
 }
-
-    
