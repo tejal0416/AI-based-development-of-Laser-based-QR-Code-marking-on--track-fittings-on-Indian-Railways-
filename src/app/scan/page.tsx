@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import Link from "next/link";
@@ -27,15 +26,13 @@ import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { Html5Qrcode } from "html5-qrcode";
 
-
 export default function ScanPage() {
-  const [showScanner, setShowScanner] = useState(false);
   const [detectedPart, setDetectedPart] = useState<Part | null>(null);
   const [recentScans, setRecentScans] = useState<Part[]>([]);
   const router = useRouter();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
-
+  const [isScanning, setIsScanning] = useState(true);
 
   useEffect(() => {
     // Load recent scans on mount
@@ -48,19 +45,9 @@ export default function ScanPage() {
     loadRecentScans();
   }, []);
 
-  const handleScanStart = () => {
-    setDetectedPart(null);
-    setShowScanner(true);
-  }
-
-  const handleCancel = () => {
-    setShowScanner(false);
-    setDetectedPart(null);
-  }
-  
   const handlePartDetect = async (qrId: string) => {
+    setIsScanning(false);
     const part = await getPartByQrId(qrId);
-    setShowScanner(false);
     if (part) {
         toast({
             title: "Part Found!",
@@ -83,6 +70,7 @@ export default function ScanPage() {
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
       const file = event.target.files[0];
+      setIsScanning(false); // Stop camera scanner if a file is chosen
       const html5QrCode = new Html5Qrcode( "qr-reader-container-hidden", { verbose: false });
       try {
         const decodedText = await html5QrCode.scanFile(file, false);
@@ -94,6 +82,11 @@ export default function ScanPage() {
             title: "Scan Failed",
             description: "Could not decode QR code from the uploaded image.",
         });
+      } finally {
+        // Clear the file input so the same file can be selected again
+        if(fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
       }
     }
   };
@@ -101,7 +94,6 @@ export default function ScanPage() {
   const getPartImage = (partType: string) => {
     return PlaceHolderImages.find(img => img.id === partType) || PlaceHolderImages.find(img => img.id === 'default');
   }
-
 
   return (
     <AppLayout>
@@ -112,7 +104,7 @@ export default function ScanPage() {
                     Scan Part
                 </h2>
                 <p className="text-muted-foreground mt-1">
-                    Use your device camera to scan a barcode/QR or upload a photo to identify the part.
+                    Scan a QR code with your camera or upload a photo to identify a part.
                 </p>
             </div>
             <Button variant="outline" asChild>
@@ -126,27 +118,22 @@ export default function ScanPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
             <Card className="flex flex-col">
                 <CardContent className="p-6">
-                    <div className="relative aspect-video w-full rounded-lg overflow-hidden border bg-slate-50 flex items-center justify-center">
-                        <div className={`${showScanner ? 'block' : 'hidden'} w-full h-full`}>
+                    <div className="relative aspect-video w-full rounded-lg overflow-hidden border bg-muted flex items-center justify-center">
+                        {isScanning ? (
                             <QrScanner onPartDetect={handlePartDetect} />
-                        </div>
-                       {!showScanner && (
-                            <div className="text-center text-muted-foreground flex flex-col items-center gap-4">
+                        ) : (
+                            <div className="text-center text-muted-foreground flex flex-col items-center gap-4 p-4">
                                 <Icons.scanFrame className="w-16 h-16" />
-                                <span>Align the code inside the frame</span>
+                                <span>Scanner paused.</span>
                             </div>
-                       )}
+                        )}
                     </div>
                 </CardContent>
                 <CardHeader className="pt-0 px-6 pb-6">
-                     <div className="flex items-center gap-4">
-                        <Button variant="outline" className="w-full" onClick={handleScanStart} disabled={showScanner}>
-                            <Icons.scanLine className="mr-2 h-5 w-5" />
-                            Start Scan
-                        </Button>
+                     <div className="flex flex-col items-center gap-4">
                         <Button variant="outline" className="w-full" onClick={handleFileUploadClick}>
                             <Icons.upload className="mr-2 h-5 w-5" />
-                            Upload Photo
+                            Upload a QR Code Image
                         </Button>
                         <input
                             type="file"
@@ -158,7 +145,7 @@ export default function ScanPage() {
                         <div id="qr-reader-container-hidden" className="hidden"></div>
                      </div>
                      <CardDescription className="text-center mt-4">
-                        Supported: QR, Code-128, DataMatrix. Good lighting improves accuracy.
+                        Place the QR code inside the frame. Good lighting improves accuracy.
                      </CardDescription>
                 </CardHeader>
             </Card>
@@ -235,7 +222,7 @@ export default function ScanPage() {
                     </CardContent>
                  </Card>
                  <div className="flex justify-end gap-2">
-                    <Button variant="outline" onClick={handleCancel}>Cancel</Button>
+                    <Button variant="outline" onClick={() => router.push('/dashboard')}>Cancel</Button>
                     <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
                         <Icons.save className="mr-2 h-4 w-4" />
                         Save to Inventory
