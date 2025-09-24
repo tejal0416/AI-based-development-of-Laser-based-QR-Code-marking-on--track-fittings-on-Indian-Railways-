@@ -8,6 +8,7 @@ import {
   Card,
   CardContent,
 } from "@/components/ui/card";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { AppLayout } from "@/components/app-layout";
 import type { Part } from "@/lib/types";
@@ -15,6 +16,7 @@ import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
 import { Icons } from "@/components/icons";
+import { Info } from "lucide-react";
 
 function getLatestStatus(part: Part): string {
   if (!part.inspections || part.inspections.length === 0) {
@@ -75,6 +77,14 @@ export default function DashboardPage() {
             </Link>
           </Button>
         </div>
+
+        <Alert>
+          <Info className="h-4 w-4" />
+          <AlertTitle>Data Source</AlertTitle>
+          <AlertDescription>
+            Part data is retrieved from connected UDM and TMS portals to provide you with the latest information.
+          </AlertDescription>
+        </Alert>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           {categories.map((category) => {
