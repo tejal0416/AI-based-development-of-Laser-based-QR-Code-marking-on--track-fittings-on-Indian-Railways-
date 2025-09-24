@@ -67,8 +67,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
       if (userCredential.user) {
         await updateProfile(userCredential.user, { displayName: fullName });
-        // Re-setting user to trigger re-render with updated profile
-        setUser({ ...userCredential.user, displayName: fullName });
+        // Manually update the user in state to reflect the new display name immediately
+        const updatedUser = { ...userCredential.user, displayName: fullName, photoURL: userCredential.user.photoURL, email: userCredential.user.email, emailVerified: userCredential.user.emailVerified, isAnonymous: userCredential.user.isAnonymous, metadata: userCredential.user.metadata, phoneNumber: userCredential.user.phoneNumber, providerData: userCredential.user.providerData, providerId: userCredential.user.providerId, tenantId: userCredential.user.tenantId, uid: userCredential.user.uid};
+        setUser(updatedUser as User);
       }
     } catch (error) {
         console.error("Error signing up with email", error);
