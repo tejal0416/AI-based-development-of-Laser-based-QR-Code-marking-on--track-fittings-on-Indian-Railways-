@@ -14,9 +14,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Icons } from "@/components/icons";
 import { Badge } from "@/components/ui/badge";
 import type { Part } from "@/lib/types";
@@ -27,9 +24,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Html5Qrcode } from "html5-qrcode";
 
 export default function ScanPage() {
-  const [detectedPart, setDetectedPart] = useState<Part | null>(null);
   const [recentScans, setRecentScans] = useState<Part[]>([]);
-  const [notes, setNotes] = useState("");
   const router = useRouter();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -66,15 +61,6 @@ export default function ScanPage() {
     }
   }
   
-  const handleSave = () => {
-    // In a real app, you'd save the notes and other data.
-    // For now, we'll just show a success toast.
-    toast({
-        title: "Saved!",
-        description: `Notes for part ${detectedPart?.part_name} have been saved.`,
-    });
-  }
-
   const handleFileUploadClick = () => {
     fileInputRef.current?.click();
   };
@@ -165,27 +151,6 @@ export default function ScanPage() {
             </Card>
 
             <div className="space-y-8">
-                 <Card>
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2 font-headline text-lg">
-                            <Icons.info className="h-5 w-5"/>
-                            Detected Part Info
-                        </CardTitle>
-                        <CardDescription>Details will appear here after a successful scan.</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="space-y-4">
-                            <div className="grid gap-2">
-                               <Label htmlFor="part-id">Part ID:</Label>
-                               <Input id="part-id" readOnly value={detectedPart?.qr_id || '—'}/>
-                            </div>
-                             <div className="grid gap-2">
-                               <Label htmlFor="part-name">Part Name:</Label>
-                               <Input id="part-name" readOnly value={detectedPart?.part_name || '—'}/>
-                            </div>
-                        </div>
-                    </CardContent>
-                 </Card>
                  <Card>
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2 font-headline text-lg">
