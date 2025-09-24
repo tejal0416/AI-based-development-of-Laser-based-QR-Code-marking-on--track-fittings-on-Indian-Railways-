@@ -40,7 +40,7 @@ export default function LoginPage() {
       toast({
         variant: "destructive",
         title: "Login Failed",
-        description: "Please check your email and password and try again.",
+        description: "Please check your Inspector ID and password and try again.",
       });
       console.error("Error signing in with email and password", error);
     }
@@ -70,11 +70,11 @@ export default function LoginPage() {
           <form onSubmit={(e) => { e.preventDefault(); handleLogin(); }}>
             <div className="grid gap-4">
               <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">Inspector ID</Label>
                 <Input
                   id="email"
                   type="email"
-                  placeholder="m@example.com"
+                  placeholder="inspector-id@example.com"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}

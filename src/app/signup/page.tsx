@@ -101,8 +101,8 @@ export default function SignUpPage() {
                 <Input id="full-name" placeholder="Jane Doe" value={fullName} onChange={(e) => setFullName(e.target.value)} required />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" placeholder="jane@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                <Label htmlFor="email">Inspector ID</Label>
+                <Input id="email" type="email" placeholder="inspector-id@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="password">Password</Label>
