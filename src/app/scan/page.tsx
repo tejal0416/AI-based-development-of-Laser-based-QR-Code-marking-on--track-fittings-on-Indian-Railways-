@@ -50,17 +50,19 @@ export default function ScanPage() {
     setIsScanning(false);
     const part = await getPartByQrId(qrId);
     if (part) {
-        setDetectedPart(part);
         toast({
             title: "Part Found!",
-            description: "Part details have been loaded.",
+            description: "Redirecting to part details...",
         });
+        router.push(`/parts/${part.qr_id}`);
     } else {
         toast({
             variant: "destructive",
             title: "Scan Failed",
             description: "No part found for this QR code.",
         });
+        // Allow scanning again if part not found
+        setIsScanning(true); 
     }
   }
   
@@ -71,11 +73,6 @@ export default function ScanPage() {
         title: "Saved!",
         description: `Notes for part ${detectedPart?.part_name} have been saved.`,
     });
-    // You could redirect or clear the form here.
-    // For example, redirecting to the part's detail page:
-    // if (detectedPart) {
-    //   router.push(`/parts/${detectedPart.qr_id}`);
-    // }
   }
 
   const handleFileUploadClick = () => {
@@ -97,6 +94,7 @@ export default function ScanPage() {
             title: "Scan Failed",
             description: "Could not decode QR code from the uploaded image.",
         });
+        setIsScanning(true); // Allow scanning again if file scan fails
       } finally {
         // Clear the file input so the same file can be selected again
         if(fileInputRef.current) {
@@ -171,33 +169,20 @@ export default function ScanPage() {
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2 font-headline text-lg">
                             <Icons.info className="h-5 w-5"/>
-                            Detected Metadata
+                            Detected Part Info
                         </CardTitle>
+                        <CardDescription>Details will appear here after a successful scan.</CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-4">
-                        <div className="grid gap-2">
-                           <Label htmlFor="part-id">Part ID:</Label>
-                           <Input id="part-id" readOnly value={detectedPart?.qr_id || '—'}/>
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
+                    <CardContent>
+                        <div className="space-y-4">
                             <div className="grid gap-2">
-                                <Label htmlFor="category">Category:</Label>
-                                <Input id="category" readOnly value={detectedPart?.part_type ? detectedPart.part_type.replace(/_/g, ' ') : '—'} />
+                               <Label htmlFor="part-id">Part ID:</Label>
+                               <Input id="part-id" readOnly value={detectedPart?.qr_id || '—'}/>
                             </div>
                              <div className="grid gap-2">
-                                <Label htmlFor="batch">Batch:</Label>
-                                <Input id="batch" readOnly value={detectedPart?.lot_no ? detectedPart.lot_no.slice(-4) : '—'} />
+                               <Label htmlFor="part-name">Part Name:</Label>
+                               <Input id="part-name" readOnly value={detectedPart?.part_name || '—'}/>
                             </div>
-                        </div>
-                         <div className="grid gap-2">
-                           <Label htmlFor="notes">Notes:</Label>
-                           <Textarea 
-                             id="notes" 
-                             placeholder="Add any relevant notes here..." 
-                             value={notes}
-                             onChange={(e) => setNotes(e.target.value)}
-                             disabled={!detectedPart}
-                           />
                         </div>
                     </CardContent>
                  </Card>
@@ -243,17 +228,6 @@ export default function ScanPage() {
                         )}
                     </CardContent>
                  </Card>
-                 <div className="flex justify-end gap-2">
-                    <Button variant="outline" onClick={() => router.push('/dashboard')}>Cancel</Button>
-                    <Button 
-                        className="bg-primary hover:bg-primary/90 text-primary-foreground"
-                        onClick={handleSave}
-                        disabled={!detectedPart}
-                    >
-                        <Icons.save className="mr-2 h-4 w-4" />
-                        Save to Inventory
-                    </Button>
-                 </div>
             </div>
         </div>
       </div>
