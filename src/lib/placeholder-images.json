@@ -18,6 +18,12 @@
     "imageHint": "rail clip"
   },
   {
+    "id": "liner",
+    "description": "A rail liner on a track.",
+    "imageUrl": "https://picsum.photos/seed/rail-liner/600/400",
+    "imageHint": "rail liner"
+  },
+  {
     "id": "default",
     "description": "An aerial view of a railway track going over a bridge.",
     "imageUrl": "https://images.unsplash.com/photo-1569963914883-c6676a6d6e9f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxyYWlsd2F5JTIwYnJpZGdlfGVufDB8fHx8MTc1ODcwMDU4Nnww&ixlib=rb-4.1.0&q=80&w=1080",

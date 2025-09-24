@@ -8,78 +8,20 @@ import {
   Card,
   CardContent,
 } from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuCheckboxItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { AppLayout } from "@/components/app-layout";
 import type { Part } from "@/lib/types";
-import { QrCode, Search, ListFilter, ArrowUpDown, CheckCircle, AlertTriangle, XCircle } from "lucide-react";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { cn } from "@/lib/utils";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
+import { Icons } from "@/components/icons";
 
-const statusStyles: Record<string, {
-  variant: "default" | "destructive";
-  icon: React.ReactNode;
-  label: string;
-  className: string;
-}> = {
-  "Passed": {
-    variant: "default",
-    icon: <CheckCircle className="h-4 w-4" />,
-    label: "Passed",
-    className: "bg-green-500/10 text-green-600 border-green-500/20 hover:bg-green-500/20",
-  },
-  "Failed": {
-    variant: "destructive",
-    icon: <AlertTriangle className="h-4 w-4" />,
-    label: "Requires Attention",
-    className: "bg-red-500/10 text-red-600 border-red-500/20 hover:bg-red-500/20",
-  },
-  "Needs Repair": {
-    variant: "destructive",
-    icon: <AlertTriangle className="h-4 w-4" />,
-    label: "Requires Attention",
-    className: "bg-yellow-500/10 text-yellow-600 border-yellow-500/20 hover:bg-yellow-500/20",
-  },
-  "Not Inspected": {
-     variant: "destructive",
-     icon: <XCircle className="h-4 w-4" />,
-     label: "Not Inspected",
-     className: "bg-gray-500/10 text-gray-600 border-gray-500/20 hover:bg-gray-500/20",
-  }
+const partTypeMap: Record<string, string> = {
+    sleepers: 'sleeper',
+    clips: 'rail_clip',
+    pads: 'rail_pad',
+    liners: 'liner',
 };
-
-const partTypeStyles: Record<string, {
-  gradient: string;
-  textColor: string;
-}> = {
-    "rail_pad": {
-        gradient: "from-blue-100 to-blue-200",
-        textColor: "text-blue-800",
-    },
-    "sleeper": {
-        gradient: "from-purple-100 to-purple-200",
-        textColor: "text-purple-800",
-    },
-    "rail_clip": {
-        gradient: "from-pink-100 to-pink-200",
-        textColor: "text-pink-800",
-    },
-    "default": {
-        gradient: "from-gray-100 to-gray-200",
-        textColor: "text-gray-800",
-    }
-}
-
 
 function getLatestStatus(part: Part): string {
   if (part.inspections.length === 0) return "Not Inspected";
@@ -91,68 +33,33 @@ function getLatestStatus(part: Part): string {
 
 export default function DashboardPage() {
   const [parts, setParts] = useState<Part[]>([]);
-  const [filteredParts, setFilteredParts] = useState<Part[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [typeFilters, setTypeFilters] = useState<string[]>([]);
-  const [statusFilter, setStatusFilter] = useState<string | null>(null);
-
-  const partTypes = useMemo(() => {
-    const types = new Set(parts.map(p => p.part_type));
-    return Array.from(types);
-  }, [parts]);
-
-
+  
   useEffect(() => {
     async function loadParts() {
       const partsData = await getParts();
       setParts(partsData);
-      setFilteredParts(partsData);
     }
     loadParts();
   }, []);
 
-  useEffect(() => {
-    let results = parts;
-
-    if (searchTerm) {
-        results = results.filter(part =>
-            part.part_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            part.qr_id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            part.part_type.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            part.lot_no.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-    }
-
-    if (typeFilters.length > 0) {
-        results = results.filter(part => typeFilters.includes(part.part_type));
-    }
-    
-    if (statusFilter) {
-      if (statusFilter === 'Passed') {
-        results = results.filter(part => getLatestStatus(part) === 'Passed');
-      } else if (statusFilter === 'Requires Attention') {
-        results = results.filter(part => {
-          const status = getLatestStatus(part);
-          return status === 'Failed' || status === 'Needs Repair' || status === 'Not Inspected';
-        });
-      }
-    }
-
-    setFilteredParts(results);
-  }, [searchTerm, parts, typeFilters, statusFilter]);
+  const categories = [
+    { name: "Sleepers", type: "sleeper", description: "Concrete and wooden supports", imageHint: "railway sleeper" },
+    { name: "Clips", type: "rail_clip", description: "Fasteners for securing rails", imageHint: "rail clip" },
+    { name: "Pads", type: "rail_pad", description: "Resilient pads for vibration damping", imageHint: "rail pad" },
+    { name: "Liners", type: "liner", description: "Insulating and positioning components", imageHint: "rail liner" },
+  ];
   
-  const handleTypeFilterChange = (partType: string) => {
-    setTypeFilters(prev => 
-      prev.includes(partType) 
-        ? prev.filter(t => t !== partType)
-        : [...prev, partType]
-    );
-  };
-  
-  const handleStatusFilterChange = (status: string) => {
-    setStatusFilter(prev => prev === status ? null : status);
-  };
-
+  const getCategoryStats = (partType: string) => {
+    const relevantParts = parts.filter(p => p.part_type === partType);
+    const attentionCount = relevantParts.filter(p => {
+        const status = getLatestStatus(p);
+        return status === 'Failed' || status === 'Needs Repair' || status === 'Not Inspected';
+    }).length;
+    return {
+        total: relevantParts.length,
+        attention: attentionCount
+    };
+  }
 
   return (
     <AppLayout>
@@ -160,108 +67,65 @@ export default function DashboardPage() {
         <div className="flex items-start justify-between gap-4">
           <div>
             <h2 className="text-2xl font-bold tracking-tight font-headline">
-              Parts Inventory
+              Inventory Categories
             </h2>
             <p className="text-muted-foreground mt-1">
-              Track status, review details, and scan new components into your inventory.
+              Browse parts by category to check status and manage your stock.
             </p>
           </div>
           <Button asChild className="bg-primary hover:bg-primary/90 text-primary-foreground flex-shrink-0">
             <Link href="/scan">
-              <QrCode className="mr-2 h-4 w-4" />
+              <Icons.scanLine className="mr-2 h-4 w-4" />
               Scan New Part
             </Link>
           </Button>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="relative flex-grow sm:flex-grow-0 sm:w-auto">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search parts, IDs, materials"
-              className="pl-9 w-full sm:w-64"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="gap-2">
-                    <ListFilter className="h-4 w-4" /> 
-                    Filter
-                    {typeFilters.length > 0 && <Badge variant="secondary" className="rounded-full px-2">{typeFilters.length}</Badge>}
-                </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-                <DropdownMenuLabel>Filter by Part Type</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                {partTypes.map(type => (
-                    <DropdownMenuCheckboxItem
-                        key={type}
-                        checked={typeFilters.includes(type)}
-                        onCheckedChange={() => handleTypeFilterChange(type)}
-                    >
-                        {type.replace('_', ' ')}
-                    </DropdownMenuCheckboxItem>
-                ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <Button variant="outline" className="gap-2">
-            <ArrowUpDown className="h-4 w-4" /> Sort by: Recent
-          </Button>
-          <div className="ml-auto flex items-center gap-2">
-             <Button variant={statusFilter === 'Passed' ? "default" : "outline"} size="sm" onClick={() => handleStatusFilterChange('Passed')} className={cn(statusFilter === 'Passed' && "bg-green-500/20 text-green-700")}>Passed</Button>
-             <Button variant={statusFilter === 'Requires Attention' ? "destructive" : "outline"} size="sm" onClick={() => handleStatusFilterChange('Requires Attention')} className={cn(statusFilter === 'Requires Attention' && "bg-red-500/20 text-red-700")}>Requires Attention</Button>
-          </div>
-        </div>
-
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {filteredParts.map((part) => {
-            const latestStatus = getLatestStatus(part);
-            const statusStyle = statusStyles[latestStatus];
-            const partImage = PlaceHolderImages.find(img => img.id === part.part_type) || PlaceHolderImages.find(img => img.id === "default");
-            const partTypeStyle = partTypeStyles[part.part_type] || partTypeStyles.default;
-
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          {categories.map((category) => {
+            const stats = getCategoryStats(category.type);
+            const categoryImage = PlaceHolderImages.find(img => img.id === category.type);
+            
             return (
-              <Card key={part.qr_id} className="flex flex-col overflow-hidden rounded-xl">
-                 <div className="relative aspect-[4/3] bg-muted">
-                    {partImage ? (
-                      <Image 
-                        src={partImage.imageUrl} 
-                        alt={partImage.description} 
-                        fill
-                        className="object-cover"
-                        data-ai-hint={partImage.imageHint}
-                      />
-                    ) : (
-                       <div className={cn("flex items-center justify-center h-full bg-gradient-to-br", partTypeStyle.gradient)}>
-                        <p className={cn("font-display text-4xl font-bold tracking-wider uppercase", partTypeStyle.textColor)}>
-                          {part.part_type.replace('_', ' ')}
-                        </p>
+              <Link href={`/dashboard/parts?type=${category.type}`} key={category.name}>
+                <Card className="group flex flex-col overflow-hidden rounded-xl h-full transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+                   <div className="relative aspect-[4/3] bg-muted overflow-hidden">
+                      {categoryImage && (
+                        <Image 
+                          src={categoryImage.imageUrl} 
+                          alt={category.description} 
+                          fill
+                          className="object-cover transition-transform duration-300 group-hover:scale-105"
+                          data-ai-hint={categoryImage.imageHint}
+                        />
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                      <div className="absolute bottom-4 left-4">
+                         <h3 className="font-headline text-2xl font-bold text-white">
+                           {category.name}
+                         </h3>
                       </div>
-                    )}
-                 </div>
-                <CardContent className="p-4 flex flex-col flex-grow bg-white">
-                  <h3 className="font-headline text-lg font-semibold leading-tight">
-                    {part.part_name}
-                  </h3>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {`Batch #${part.lot_no.slice(-4)} • ${part.part_type.replace('_', ' ')}`}
-                  </p>
-                  <div className="flex-grow my-4" />
-                   <div className="flex items-center justify-between gap-4">
-                    <Badge variant={statusStyle.variant} className={statusStyle.className}>
-                       {statusStyle.icon}
-                       {statusStyle.label}
-                    </Badge>
-                     <Button asChild variant="ghost" size="sm" className="text-muted-foreground bg-gray-100 hover:bg-gray-200">
-                        <Link href={`/parts/${part.qr_id}`}>
-                        View Details
-                        </Link>
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+                   </div>
+                  <CardContent className="p-4 flex flex-col flex-grow bg-card">
+                     <p className="text-sm text-muted-foreground mb-4">
+                        {category.description}
+                      </p>
+                    <div className="flex-grow" />
+                     <div className="flex items-center justify-between text-sm">
+                        <div className="flex items-center gap-2">
+                            <Icons.folder className="w-5 h-5 text-muted-foreground"/>
+                            <span className="font-medium">{stats.total}</span>
+                            <span className="text-muted-foreground">Parts</span>
+                        </div>
+                        <div className={cn("flex items-center gap-2", stats.attention > 0 ? 'text-destructive' : 'text-green-600')}>
+                            <Icons.shieldAlert className="w-5 h-5"/>
+                            <span className="font-medium">{stats.attention}</span>
+                           <span className="">Needs Attention</span>
+                        </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
             );
           })}
         </div>
@@ -269,5 +133,3 @@ export default function DashboardPage() {
     </AppLayout>
   );
 }
-
-    
