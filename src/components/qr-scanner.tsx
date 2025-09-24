@@ -57,12 +57,21 @@ export function QrScanner({ onPartDetect }: QrScannerProps) {
     const onScanFailure = (error: any) => {
       // ignore scan failure
     };
+    
+    const qrboxFunction = (viewfinderWidth: number, viewfinderHeight: number) => {
+        const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
+        const qrboxSize = Math.floor(minEdge * 0.5);
+        return {
+            width: qrboxSize,
+            height: qrboxSize,
+        };
+    }
 
     html5Qrcode.start(
       { facingMode: "environment" },
       {
         fps: 10,
-        qrbox: { width: 50, height: 50 }
+        qrbox: qrboxFunction,
       },
       onScanSuccess,
       onScanFailure
@@ -89,3 +98,5 @@ export function QrScanner({ onPartDetect }: QrScannerProps) {
 
   return <div id={qrcodeRegionId} className="w-full h-full" />;
 }
+
+    

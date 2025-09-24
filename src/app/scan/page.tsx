@@ -104,16 +104,7 @@ export default function ScanPage() {
   };
 
   const getPartImage = (partType: string) => {
-    switch (partType) {
-        case "sleeper":
-            return PlaceHolderImages.find(img => img.id === 'sleeper');
-        case "rail_clip":
-            return PlaceHolderImages.find(img => img.id === 'clipper');
-        case "rail_pad":
-             return PlaceHolderImages.find(img => img.id === 'pads');
-        default:
-            return PlaceHolderImages.find(img => img.id === 'liners') || PlaceHolderImages[0];
-    }
+    return PlaceHolderImages.find(img => img.id === partType) || PlaceHolderImages.find(img => img.id === 'default');
   }
 
 
@@ -193,7 +184,7 @@ export default function ScanPage() {
                         <div className="grid grid-cols-2 gap-4">
                             <div className="grid gap-2">
                                 <Label htmlFor="category">Category:</Label>
-                                <Input id="category" readOnly value={detectedPart?.part_type || '—'} />
+                                <Input id="category" readOnly value={detectedPart?.part_type ? detectedPart.part_type.replace(/_/g, ' ') : '—'} />
                             </div>
                              <div className="grid gap-2">
                                 <Label htmlFor="batch">Batch:</Label>
@@ -260,3 +251,5 @@ export default function ScanPage() {
     </AppLayout>
   );
 }
+
+    

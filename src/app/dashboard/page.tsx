@@ -219,7 +219,7 @@ export default function DashboardPage() {
           {filteredParts.map((part) => {
             const latestStatus = getLatestStatus(part);
             const statusStyle = statusStyles[latestStatus];
-            const partImage = PlaceHolderImages.find(img => img.id === part.part_type);
+            const partImage = PlaceHolderImages.find(img => img.id === part.part_type) || PlaceHolderImages.find(img => img.id === "default");
             const partTypeStyle = partTypeStyles[part.part_type] || partTypeStyles.default;
 
             return (
@@ -270,4 +270,4 @@ export default function DashboardPage() {
   );
 }
 
-
+    
