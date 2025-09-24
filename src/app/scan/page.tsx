@@ -23,7 +23,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Html5Qrcode } from "html5-qrcode";
 import { Loader2 } from "lucide-react";
 
-// const qrcodeRegionId = "html5qr-code-full-region";
+const qrcodeRegionId = "html5qr-code-full-region";
 
 export default function ScanPage() {
   const [recentScans, setRecentScans] = useState<Part[]>([]);
@@ -32,9 +32,9 @@ export default function ScanPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [isScanning, setIsScanning] = useState(true);
-  // const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
-  // const html5QrCodeRef = useRef<Html5Qrcode | null>(null);
-  // const videoRef = useRef<HTMLVideoElement>(null);
+  const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
+  const html5QrCodeRef = useRef<Html5Qrcode | null>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     const loadRecentScans = async () => {
@@ -48,6 +48,10 @@ export default function ScanPage() {
   const handlePartDetect = async (qrId: string) => {
       if (!isScanning) return;
       setIsScanning(false);
+      
+      if (html5QrCodeRef.current && html5QrCodeRef.current.isScanning) {
+        await html5QrCodeRef.current.stop();
+      }
 
       toast({
           title: "Scanning...",
@@ -70,16 +74,15 @@ export default function ScanPage() {
           setTimeout(() => setIsScanning(true), 2000);
       }
   };
-
-  /*
+  
   useEffect(() => {
     const getCameraPermission = async () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+        setHasCameraPermission(true);
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
         }
-        setHasCameraPermission(true);
       } catch (error) {
         console.error('Error accessing camera:', error);
         setHasCameraPermission(false);
@@ -88,18 +91,16 @@ export default function ScanPage() {
 
     getCameraPermission();
   }, []);
-
-  useEffect(() => {
-    if (isScanning && hasCameraPermission && !html5QrCodeRef.current) {
-      const html5QrCode = new Html5Qrcode(qrcodeRegionId, { verbose: false });
-      html5QrCodeRef.current = html5QrCode;
   
+  useEffect(() => {
+    if (isScanning && hasCameraPermission && videoRef.current) {
+      if (!html5QrCodeRef.current) {
+        html5QrCodeRef.current = new Html5Qrcode(qrcodeRegionId, { verbose: false });
+      }
+      const html5QrCode = html5QrCodeRef.current;
+
       const onScanSuccess = (decodedText: string) => {
         handlePartDetect(decodedText);
-      };
-  
-      const onScanFailure = (error: any) => { 
-        // ignore
       };
   
       const qrboxFunction = (viewfinderWidth: number, viewfinderHeight: number) => {
@@ -108,25 +109,27 @@ export default function ScanPage() {
         return { width: qrboxSize, height: qrboxSize };
       };
       
-      html5QrCode.start(
-        { facingMode: "environment" },
-        { fps: 10, qrbox: qrboxFunction, useBarCodeDetectorIfSupported: true },
-        onScanSuccess,
-        onScanFailure
-      ).catch(err => {
-        console.error("Error starting scanner", err);
-        setHasCameraPermission(false);
-      });
+      if (!html5QrCode.isScanning) {
+        html5QrCode.start(
+          { facingMode: "environment" },
+          { fps: 10, qrbox: qrboxFunction, useBarCodeDetectorIfSupported: true },
+          onScanSuccess,
+          () => {} // onScanFailure - do nothing
+        ).catch(err => {
+          console.error("Error starting scanner", err);
+        });
+      }
   
       return () => {
-        html5QrCode.stop().catch((err) => {
-          console.error("Failed to stop QR scanner:", err);
-        });
-        html5QrCodeRef.current = null;
+        if (html5QrCodeRef.current && html5QrCodeRef.current.isScanning) {
+          html5QrCodeRef.current.stop().catch((err) => {
+            console.error("Failed to stop QR scanner:", err);
+          });
+        }
       };
     }
   }, [isScanning, hasCameraPermission]);
-  */
+  
 
   const handleFileUploadClick = () => {
     fileInputRef.current?.click();
@@ -170,7 +173,7 @@ export default function ScanPage() {
                     Scan Part
                 </h2>
                 <p className="text-muted-foreground mt-1">
-                    Upload a photo of a QR code to identify a part.
+                    Scan a QR code with your camera or upload a photo to identify a part.
                 </p>
             </div>
             <Button variant="outline" asChild>
@@ -182,31 +185,62 @@ export default function ScanPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-            <Card className="flex flex-col items-center justify-center p-8">
-                <CardHeader>
-                    <CardTitle>Upload QR Code</CardTitle>
-                    <CardDescription className="text-center mt-2">
-                        Click the button below to select an image of a QR code from your device.
-                     </CardDescription>
-                </CardHeader>
-                <CardContent className="w-full">
-                     <div className="flex flex-col items-center gap-4">
-                        <Button variant="default" size="lg" className="w-full" onClick={handleFileUploadClick} disabled={!isScanning}>
-                            <Icons.upload className="mr-2 h-5 w-5" />
-                            Upload a QR Code Image
-                        </Button>
-                        <input
-                            type="file"
-                            ref={fileInputRef}
-                            onChange={handleFileChange}
-                            className="hidden"
-                            accept="image/*"
-                        />
-                        <div id="qr-reader-container-hidden" className="hidden"></div>
-                     </div>
-                </CardContent>
-            </Card>
-
+          <Card className="flex flex-col">
+              <CardContent className="p-6">
+                  <div className="relative aspect-video w-full rounded-lg overflow-hidden border bg-muted flex items-center justify-center">
+                      {hasCameraPermission === null && (
+                        <div className="flex flex-col items-center gap-2 text-muted-foreground">
+                          <Loader2 className="w-8 h-8 animate-spin" />
+                          <span>Requesting camera access...</span>
+                        </div>
+                      )}
+                      
+                      {hasCameraPermission === false && (
+                          <Alert variant="destructive" className="w-auto">
+                              <AlertTitle>Camera Access Denied</AlertTitle>
+                              <AlertDescription>
+                                  Please enable camera permissions in your browser settings to use the scanner.
+                              </AlertDescription>
+                          </Alert>
+                      )}
+                      
+                      {hasCameraPermission === true && (
+                        <>
+                          <video ref={videoRef} className="w-full h-full object-cover" autoPlay muted playsInline />
+                          <div id={qrcodeRegionId} className="absolute inset-0" />
+                          {!isScanning && (
+                              <div className="absolute inset-0 bg-black/50 text-white flex flex-col items-center justify-center gap-4 p-4">
+                                  <Loader2 className="w-16 h-16 animate-spin" />
+                                  <span>Processing...</span>
+                              </div>
+                          )}
+                          <div className="absolute inset-0 pointer-events-none">
+                              <Icons.scanFrame className="w-full h-full text-white/50" />
+                          </div>
+                        </>
+                      )}
+                  </div>
+              </CardContent>
+              <CardHeader className="pt-0 px-6 pb-6">
+                   <div className="flex flex-col items-center gap-4">
+                      <Button variant="outline" className="w-full" onClick={handleFileUploadClick} disabled={!isScanning}>
+                          <Icons.upload className="mr-2 h-5 w-5" />
+                          Or Upload a QR Code Image
+                      </Button>
+                      <input
+                          type="file"
+                          ref={fileInputRef}
+                          onChange={handleFileChange}
+                          className="hidden"
+                          accept="image/*"
+                      />
+                      <div id="qr-reader-container-hidden" className="hidden"></div>
+                   </div>
+                   <CardDescription className="text-center mt-4">
+                      Place the QR code inside the frame. Good lighting improves accuracy.
+                   </CardDescription>
+              </CardHeader>
+          </Card>
             <div className="space-y-8">
                  <Card>
                     <CardHeader>
