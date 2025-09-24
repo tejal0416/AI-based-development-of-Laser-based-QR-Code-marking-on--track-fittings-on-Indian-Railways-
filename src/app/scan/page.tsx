@@ -1,11 +1,9 @@
-
 "use client";
 
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState, useRef } from "react";
 import { AppLayout } from "@/components/app-layout";
-import { QrScanner } from "@/components/qr-scanner";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -21,32 +19,108 @@ import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { getParts, getPartByQrId } from "@/lib/data";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
-import { Html5Qrcode } from "html5-qrcode";
+import { Html5Qrcode, Html5QrcodeScannerState } from "html5-qrcode";
 import { Loader2 } from "lucide-react";
+
+const qrcodeRegionId = "html5qr-code-full-region";
 
 export default function ScanPage() {
   const [recentScans, setRecentScans] = useState<Part[]>([]);
   const router = useRouter();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  
   const [isScanning, setIsScanning] = useState(true);
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
+  const html5QrCodeRef = useRef<Html5Qrcode | null>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     const loadRecentScans = async () => {
       const allParts = await getParts();
-      const sortedParts = allParts.sort((a,b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+      const sortedParts = allParts.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
       setRecentScans(sortedParts.slice(0, 3));
     };
     loadRecentScans();
   }, []);
 
+  const handlePartDetect = async (qrId: string) => {
+      if (!isScanning) return;
+      setIsScanning(false);
+
+      toast({
+          title: "Scanning...",
+          description: `QR Code Detected: ${qrId}`,
+      });
+
+      const part = await getPartByQrId(qrId);
+      if (part) {
+          toast({
+              title: "Part Found!",
+              description: "Redirecting to part details...",
+          });
+          router.push(`/parts/${part.qr_id}`);
+      } else {
+          toast({
+              variant: "destructive",
+              title: "Scan Failed",
+              description: "No part found for this QR code.",
+          });
+          setTimeout(() => setIsScanning(true), 2000);
+      }
+  };
+
+  useEffect(() => {
+    if (!isScanning || !videoRef.current || hasCameraPermission !== true) {
+      return;
+    }
+  
+    if (!html5QrCodeRef.current) {
+        html5QrCodeRef.current = new Html5Qrcode(qrcodeRegionId, { verbose: false });
+    }
+    const html5QrCode = html5QrCodeRef.current;
+  
+    const onScanSuccess = (decodedText: string) => {
+        if (html5QrCode.getState() === Html5QrcodeScannerState.SCANNING) {
+            handlePartDetect(decodedText);
+        }
+    };
+  
+    const onScanFailure = (error: any) => { /* ignore */ };
+  
+    const qrboxFunction = (viewfinderWidth: number, viewfinderHeight: number) => {
+        const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
+        const qrboxSize = Math.max(250, Math.floor(minEdge * 0.8));
+        return { width: qrboxSize, height: qrboxSize };
+    };
+
+    if (html5QrCode.getState() !== Html5QrcodeScannerState.SCANNING) {
+        html5QrCode.start(
+            { facingMode: "environment" },
+            { fps: 10, qrbox: qrboxFunction, useBarCodeDetectorIfSupported: true },
+            onScanSuccess,
+            onScanFailure
+        ).catch(err => {
+            console.error("Error starting scanner", err);
+        });
+    }
+  
+    return () => {
+        if (html5QrCode && html5QrCode.getState() === Html5QrcodeScannerState.SCANNING) {
+            html5QrCode.stop().catch((err) => {
+                console.error("Failed to stop QR scanner:", err);
+            });
+        }
+    };
+  }, [isScanning, hasCameraPermission]);
+  
+  
   useEffect(() => {
     const getCameraPermission = async () => {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({video: true});
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
         setHasCameraPermission(true);
+
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
         }
@@ -58,31 +132,6 @@ export default function ScanPage() {
     getCameraPermission();
   }, []);
 
-
-  const handlePartDetect = async (qrId: string) => {
-    if (!isScanning) return;
-    setIsScanning(false);
-    toast({
-        title: "Scanning...",
-        description: `QR Code Detected: ${qrId}`,
-    });
-    const part = await getPartByQrId(qrId);
-    if (part) {
-        toast({
-            title: "Part Found!",
-            description: "Redirecting to part details...",
-        });
-        router.push(`/parts/${part.qr_id}`);
-    } else {
-        toast({
-            variant: "destructive",
-            title: "Scan Failed",
-            description: "No part found for this QR code.",
-        });
-        setTimeout(() => setIsScanning(true), 2000);
-    }
-  }
-  
   const handleFileUploadClick = () => {
     fileInputRef.current?.click();
   };
@@ -139,7 +188,6 @@ export default function ScanPage() {
             <Card className="flex flex-col">
                 <CardContent className="p-6">
                     <div className="relative aspect-video w-full rounded-lg overflow-hidden border bg-muted flex items-center justify-center">
-                        
                         {hasCameraPermission === null && (
                           <div className="flex flex-col items-center gap-2 text-muted-foreground">
                             <Loader2 className="w-8 h-8 animate-spin" />
@@ -159,10 +207,8 @@ export default function ScanPage() {
                         {hasCameraPermission === true && (
                           <>
                             <video ref={videoRef} className="w-full aspect-video rounded-md" autoPlay muted playsInline />
-                            {isScanning && videoRef.current && (
-                              <QrScanner videoEl={videoRef.current} onPartDetect={handlePartDetect} />
-                            )}
-                             {!isScanning && (
+                            <div id={qrcodeRegionId} className="absolute inset-0" />
+                            {!isScanning && (
                                 <div className="absolute inset-0 bg-black/50 text-white flex flex-col items-center justify-center gap-4 p-4">
                                     <Icons.scanFrame className="w-16 h-16" />
                                     <span>Processing...</span>
