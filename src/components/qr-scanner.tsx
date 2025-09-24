@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useRef, useState } from "react";
@@ -67,7 +68,7 @@ export function QrScanner({ onPartDetect }: QrScannerProps) {
     
     const qrboxFunction = (viewfinderWidth: number, viewfinderHeight: number) => {
         const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
-        const qrboxSize = Math.floor(minEdge * 0.5);
+        const qrboxSize = Math.max(50, Math.min(Math.floor(minEdge * 0.8), 250));
         return {
             width: qrboxSize,
             height: qrboxSize,
