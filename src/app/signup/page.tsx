@@ -21,6 +21,8 @@ import { Icons } from "@/components/icons";
 import { useAuth } from "@/hooks/use-auth";
 import { Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
 
 export default function SignUpPage() {
   const { user, signUpWithEmail } = useAuth();
@@ -29,6 +31,8 @@ export default function SignUpPage() {
   
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
+  const [mobileNumber, setMobileNumber] = useState("");
+  const [role, setRole] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [agreed, setAgreed] = useState(false);
@@ -55,7 +59,7 @@ export default function SignUpPage() {
     return password === confirmPassword;
   }, [password, confirmPassword]);
 
-  const canSubmit = agreed && passwordsMatch && passwordStrength >= 50 && fullName && email;
+  const canSubmit = agreed && passwordsMatch && passwordStrength >= 50 && fullName && email && role;
 
   const handleSignUp = async () => {
     if (!canSubmit) return;
@@ -104,6 +108,28 @@ export default function SignUpPage() {
                 <Label htmlFor="email">Inspector ID</Label>
                 <Input id="email" type="email" placeholder="inspector-id@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
               </div>
+
+              <div className="grid gap-2">
+                <Label htmlFor="mobile-number">Mobile Number (Optional)</Label>
+                <Input id="mobile-number" placeholder="+1 234 567 890" value={mobileNumber} onChange={(e) => setMobileNumber(e.target.value)} />
+              </div>
+
+              <div className="grid gap-2">
+                <Label htmlFor="role">Role</Label>
+                <Select onValueChange={setRole} value={role}>
+                    <SelectTrigger id="role">
+                        <SelectValue placeholder="Select your role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="inspector">Inspector</SelectItem>
+                        <SelectItem value="engineer">Engineer</SelectItem>
+                        <SelectItem value="dispatcher">Dispatcher</SelectItem>
+                        <SelectItem value="mechanic">Mechanic</SelectItem>
+                        <SelectItem value="maintainer">Maintainer</SelectItem>
+                    </SelectContent>
+                </Select>
+              </div>
+
               <div className="grid gap-2">
                 <Label htmlFor="password">Password</Label>
                 <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
