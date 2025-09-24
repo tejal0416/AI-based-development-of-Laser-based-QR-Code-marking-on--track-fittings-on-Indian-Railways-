@@ -2,8 +2,11 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useEffect, useState, useRef } from "react";
+import { useRouter } from "next/navigation";
+import { Html5Qrcode } from "html5-qrcode";
+import { AlertTriangle, Loader2 } from "lucide-react";
+
 import { AppLayout } from "@/components/app-layout";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,39 +17,103 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+
 import { Icons } from "@/components/icons";
-import type { Part } from "@/lib/types";
-import { PlaceHolderImages } from "@/lib/placeholder-images";
-import { getParts, getPartByQrId } from "@/lib/data";
-import { useRouter } from "next/navigation";
+import { getPartByQrId } from "@/lib/data";
 import { useToast } from "@/hooks/use-toast";
-import { Html5Qrcode } from "html5-qrcode";
-import { Loader2 } from "lucide-react";
 
 const qrcodeRegionId = "html5qr-code-full-region";
 
+type ScanStep = "pre-scan" | "scanning" | "scanned";
+
 export default function ScanPage() {
-  const [recentScans, setRecentScans] = useState<Part[]>([]);
   const router = useRouter();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  
-  const [isScanning, setIsScanning] = useState(false);
-  const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
   const html5QrCodeRef = useRef<Html5Qrcode | null>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const [step, setStep] = useState<ScanStep>("pre-scan");
+  const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [defectType, setDefectType] = useState<string>("");
+  const [notes, setNotes] = useState("");
+
+  const handlePartDetect = async (qrId: string) => {
+    if (isProcessing) return;
+    setIsProcessing(true);
+
+    if (html5QrCodeRef.current?.isScanning) {
+      await html5QrCodeRef.current.stop();
+    }
+
+    toast({
+      title: "QR Code Detected",
+      description: `Processing ID: ${qrId}`,
+    });
+
+    const part = await getPartByQrId(qrId);
+    if (part) {
+      toast({
+        title: "Part Found!",
+        description: "Redirecting to part details...",
+      });
+      // Here you could pass the defect info to the next page via query params or state management
+      router.push(`/parts/${part.qr_id}`);
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Scan Failed",
+        description: "No part found for this QR code.",
+      });
+      setIsProcessing(false);
+      // Optionally allow re-scanning
+      setStep("scanning");
+    }
+  };
 
   useEffect(() => {
-    const loadRecentScans = async () => {
-      const allParts = await getParts();
-      const sortedParts = allParts.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-      setRecentScans(sortedParts.slice(0, 3));
+    if (step !== "scanning" || hasCameraPermission !== true) {
+      return;
+    }
+
+    if (!html5QrCodeRef.current) {
+      html5QrCodeRef.current = new Html5Qrcode(qrcodeRegionId, { verbose: false });
+    }
+    const qrScanner = html5QrCodeRef.current;
+
+    if (!qrScanner.isScanning) {
+      const qrboxFunction = (viewfinderWidth: number, viewfinderHeight: number) => {
+          const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
+          const qrboxSize = Math.max(250, Math.floor(minEdge * 0.8));
+          return { width: qrboxSize, height: qrboxSize };
+      };
+
+      qrScanner.start(
+          { facingMode: "environment" },
+          { fps: 10, qrbox: qrboxFunction, useBarCodeDetectorIfSupported: true },
+          handlePartDetect,
+          () => {} // onScanFailure
+      ).catch(err => {
+          console.error("Error starting scanner", err);
+          setHasCameraPermission(false);
+          setStep("pre-scan");
+      });
+    }
+
+    return () => {
+      if (qrScanner && qrScanner.isScanning) {
+        qrScanner.stop().catch(err => console.error("Failed to stop QR scanner:", err));
+      }
     };
-    loadRecentScans();
-  }, []);
-  
-  useEffect(() => {
-    const getCameraPermission = async () => {
+  }, [step, hasCameraPermission]);
+
+  const startScanning = async () => {
+    setStep("scanning");
+    // Only request permission when the user decides to scan
+    if (hasCameraPermission === null) {
       try {
         await navigator.mediaDevices.getUserMedia({ video: true });
         setHasCameraPermission(true);
@@ -54,126 +121,34 @@ export default function ScanPage() {
         console.error('Error accessing camera:', error);
         setHasCameraPermission(false);
       }
-    };
-    getCameraPermission();
-  }, []);
-  
-
-  useEffect(() => {
-    if (hasCameraPermission && !html5QrCodeRef.current) {
-        const html5QrCode = new Html5Qrcode(qrcodeRegionId, { verbose: false });
-        html5QrCodeRef.current = html5QrCode;
-
-        const handlePartDetect = async (qrId: string) => {
-            setIsScanning(false);
-            if (html5QrCodeRef.current?.isScanning) {
-                await html5QrCodeRef.current.stop();
-            }
-
-            toast({
-                title: "QR Code Detected",
-                description: `Processing ID: ${qrId}`,
-            });
-
-            const part = await getPartByQrId(qrId);
-            if (part) {
-                toast({
-                    title: "Part Found!",
-                    description: "Redirecting to part details...",
-                });
-                router.push(`/parts/${part.qr_id}`);
-            } else {
-                toast({
-                    variant: "destructive",
-                    title: "Scan Failed",
-                    description: "No part found for this QR code.",
-                });
-                // Allow re-scanning after a delay
-                setTimeout(() => setIsScanning(true), 2000); 
-            }
-        };
-
-        const qrboxFunction = (viewfinderWidth: number, viewfinderHeight: number) => {
-            const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
-            const qrboxSize = Math.max(250, Math.floor(minEdge * 0.8));
-            return { width: qrboxSize, height: qrboxSize };
-        };
-
-        if (!html5QrCode.isScanning) {
-            setIsScanning(true);
-            html5QrCode.start(
-                { facingMode: "environment" },
-                { fps: 10, qrbox: qrboxFunction, useBarCodeDetectorIfSupported: true },
-                handlePartDetect,
-                () => {} // onScanFailure - do nothing
-            ).catch(err => {
-                console.error("Error starting scanner", err);
-                setIsScanning(false);
-                setHasCameraPermission(false);
-            });
-        }
     }
-  }, [hasCameraPermission, router, toast]);
-
-  useEffect(() => {
-    // Cleanup on unmount
-    return () => {
-      if (html5QrCodeRef.current && html5QrCodeRef.current.isScanning) {
-        html5QrCodeRef.current.stop().catch((err) => {
-          console.error("Failed to stop QR scanner on cleanup:", err);
-        });
-        html5QrCodeRef.current = null;
-      }
-    };
-  }, []);
-
+  };
+  
   const handleFileUploadClick = () => {
     fileInputRef.current?.click();
   };
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
-      const file = event.target.files[0];
-      setIsScanning(false); 
-      
-      // Stop the camera scanner if it's running
-      if (html5QrCodeRef.current && html5QrCodeRef.current.isScanning) {
-        await html5QrCodeRef.current.stop();
-      }
-
-      // Use a new instance for file scanning to avoid conflicts
-      const fileScanner = new Html5Qrcode("qr-reader-container-hidden", { verbose: false });
-      try {
-        const decodedText = await fileScanner.scanFile(file, false);
-        // We reuse the same handler as the camera scan
-         const part = await getPartByQrId(decodedText);
-        if (part) {
-            toast({ title: "Part Found!", description: "Redirecting..." });
-            router.push(`/parts/${part.qr_id}`);
-        } else {
-            toast({ variant: "destructive", title: "Scan Failed", description: "No part found for this QR code." });
+        const file = event.target.files[0];
+        try {
+            const fileScanner = new Html5Qrcode("qr-reader-container-hidden", { verbose: false });
+            const decodedText = await fileScanner.scanFile(file, false);
+            handlePartDetect(decodedText);
+        } catch (err) {
+            console.error("Error scanning file.", err);
+            toast({
+                variant: "destructive",
+                title: "Scan Failed",
+                description: "Could not decode QR code from the uploaded image.",
+            });
+        } finally {
+            if (fileInputRef.current) {
+                fileInputRef.current.value = "";
+            }
         }
-      } catch (err) {
-        console.error("Error scanning file.", err);
-        toast({
-            variant: "destructive",
-            title: "Scan Failed",
-            description: "Could not decode QR code from the uploaded image.",
-        });
-        // Optionally restart camera scanner
-        setTimeout(() => setIsScanning(true), 2000);
-      } finally {
-        if(fileInputRef.current) {
-            fileInputRef.current.value = "";
-        }
-      }
     }
   };
-
-
-  const getPartImage = (partType: string) => {
-    return PlaceHolderImages.find(img => img.id === partType) || PlaceHolderImages.find(img => img.id === 'default');
-  }
 
   return (
     <AppLayout>
@@ -181,10 +156,10 @@ export default function ScanPage() {
         <div className="flex items-center justify-between gap-4">
             <div>
                 <h2 className="text-2xl font-bold tracking-tight font-headline">
-                    Scan Part
+                    Inspect a Part
                 </h2>
                 <p className="text-muted-foreground mt-1">
-                    Scan a QR code with your camera or upload a photo to identify a part.
+                    Report a defect or scan a part to view its details.
                 </p>
             </div>
             <Button variant="outline" asChild>
@@ -195,108 +170,119 @@ export default function ScanPage() {
             </Button>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-          <Card className="flex flex-col">
-              <CardContent className="p-6">
-                  <div className="relative aspect-video w-full rounded-lg overflow-hidden border bg-muted flex items-center justify-center">
-                    <div id={qrcodeRegionId} className="w-full h-full" />
-                    
-                    {hasCameraPermission === null && (
-                      <div className="flex flex-col items-center gap-2 text-muted-foreground">
-                        <Loader2 className="w-8 h-8 animate-spin" />
-                        <span>Requesting camera access...</span>
-                      </div>
-                    )}
-
-                    {hasCameraPermission === false && (
-                      <Alert variant="destructive" className="w-auto">
-                        <AlertTitle>Camera Access Denied</AlertTitle>
-                        <AlertDescription>
-                          Please enable camera permissions in your browser settings to use the scanner.
-                        </AlertDescription>
-                      </Alert>
-                    )}
-
-                    {hasCameraPermission === true && !isScanning && (
-                        <div className="absolute inset-0 bg-black/50 text-white flex flex-col items-center justify-center gap-4 p-4">
-                            <Loader2 className="w-16 h-16 animate-spin" />
-                            <span>Processing...</span>
-                        </div>
-                    )}
-                    {hasCameraPermission === true && isScanning && (
-                      <div className="absolute inset-0 pointer-events-none">
-                          <Icons.scanFrame className="w-full h-full text-primary/50" />
-                      </div>
-                    )}
+        <div className="max-w-2xl mx-auto w-full">
+        {step === "pre-scan" && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <AlertTriangle className="text-destructive" />
+                Report a Defect
+              </CardTitle>
+              <CardDescription>
+                Is there an issue with this part? Select the type of defect and add notes if necessary.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <Label>What is the issue?</Label>
+                 <RadioGroup value={defectType} onValueChange={setDefectType}>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="rusted" id="rusted" />
+                      <Label htmlFor="rusted">Rusted</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="corroded" id="corroded" />
+                      <Label htmlFor="corroded">Corroded</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="cracked" id="cracked" />
+                      <Label htmlFor="cracked">Cracked</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="other" id="other" />
+                      <Label htmlFor="other">Other</Label>
+                    </div>
                   </div>
+                </RadioGroup>
+              </div>
+
+              <div className="space-y-2">
+                  <Label htmlFor="notes">Additional Notes</Label>
+                  <Textarea id="notes" placeholder="e.g., 'Heavy corrosion on the left side...'" value={notes} onChange={(e) => setNotes(e.target.value)} />
+              </div>
+
+              <Button onClick={startScanning} className="w-full" disabled={!defectType}>
+                <Icons.scanLine className="mr-2 h-4 w-4" />
+                Proceed to Scan
+              </Button>
+              <Button variant="outline" className="w-full" onClick={startScanning}>
+                Skip and Scan a Good Part
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+        
+        {step === "scanning" && (
+            <Card>
+              <CardContent className="p-6">
+                <div className="relative aspect-video w-full rounded-lg overflow-hidden border bg-muted flex items-center justify-center">
+                  <div id={qrcodeRegionId} className="w-full h-full" />
+                  
+                  {hasCameraPermission === null && !isProcessing && (
+                    <div className="flex flex-col items-center gap-2 text-muted-foreground">
+                      <Loader2 className="w-8 h-8 animate-spin" />
+                      <span>Requesting camera access...</span>
+                    </div>
+                  )}
+
+                  {hasCameraPermission === false && (
+                    <Alert variant="destructive" className="w-auto">
+                      <AlertTitle>Camera Access Denied</AlertTitle>
+                      <AlertDescription>
+                        Please enable camera permissions in your browser settings to use the scanner.
+                      </AlertDescription>
+                    </Alert>
+                  )}
+
+                  {isProcessing && (
+                      <div className="absolute inset-0 bg-black/50 text-white flex flex-col items-center justify-center gap-4 p-4">
+                          <Loader2 className="w-16 h-16 animate-spin" />
+                          <span>Processing...</span>
+                      </div>
+                  )}
+
+                  {hasCameraPermission === true && !isProcessing && (
+                    <div className="absolute inset-0 pointer-events-none">
+                        <Icons.scanFrame className="w-full h-full text-primary/50" />
+                    </div>
+                  )}
+                </div>
               </CardContent>
-              <CardHeader className="pt-0 px-6 pb-6">
-                   <div className="flex flex-col items-center gap-4">
-                      <Button variant="outline" className="w-full" onClick={handleFileUploadClick}>
-                          <Icons.upload className="mr-2 h-5 w-5" />
-                          Or Upload a QR Code Image
-                      </Button>
-                      <input
-                          type="file"
-                          ref={fileInputRef}
-                          onChange={handleFileChange}
-                          className="hidden"
-                          accept="image/*"
-                      />
-                      <div id="qr-reader-container-hidden" className="hidden"></div>
-                   </div>
-                   <CardDescription className="text-center mt-4">
+              <CardHeader className="pt-0 px-6 pb-6 text-center">
+                    <Button variant="outline" className="w-full" onClick={handleFileUploadClick} disabled={isProcessing}>
+                        <Icons.upload className="mr-2 h-5 w-5" />
+                        Or Upload a QR Code Image
+                    </Button>
+                    <input
+                        type="file"
+                        ref={fileInputRef}
+                        onChange={handleFileChange}
+                        className="hidden"
+                        accept="image/*"
+                    />
+                    <div id="qr-reader-container-hidden" className="hidden"></div>
+                   <CardDescription className="mt-4">
                       Place the QR code inside the frame. Good lighting improves accuracy.
                    </CardDescription>
+                   <Button variant="link" onClick={() => { setStep("pre-scan"); setHasCameraPermission(null); }}>
+                        Go Back
+                   </Button>
               </CardHeader>
-          </Card>
-            <div className="space-y-8">
-                 <Card>
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2 font-headline text-lg">
-                            <Icons.history className="h-5 w-5"/>
-                            Recent Scans
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        {recentScans.length > 0 ? (
-                             <div className="space-y-4">
-                                {recentScans.map(part => {
-                                     const partImage = getPartImage(part.part_type);
-                                     const latestInspection = (!part.inspections || part.inspections.length === 0) ? null : [...part.inspections].sort((a,b) => new Date(b.insp_date).getTime() - new Date(a.insp_date).getTime())[0];
-                                     const latestStatus = latestInspection ? latestInspection.status : "Not Inspected";
-                                     const statusVariant = latestStatus === "Passed" ? "default" : "destructive";
-                                    return(
-                                        <div key={part.qr_id} className="flex items-center gap-4 p-2 rounded-lg bg-slate-50">
-                                            {partImage && <Image 
-                                                src={partImage.imageUrl} 
-                                                alt={part.part_name} 
-                                                width={48} 
-                                                height={48} 
-                                                className="rounded-md object-cover"
-                                            />}
-                                            <div className="flex-grow">
-                                                <p className="font-semibold">{part.part_name}</p>
-                                                <p className="text-sm text-muted-foreground">
-                                                    ID: {part.qr_id} • <span className={statusVariant === 'destructive' && latestStatus !== 'Not Inspected' ? 'text-red-500' : 'text-green-600'}>{latestStatus}</span>
-                                                </p>
-                                            </div>
-                                             <Button variant="ghost" size="sm" asChild>
-                                                <Link href={`/parts/${part.qr_id}`}>View</Link>
-                                            </Button>
-                                        </div>
-                                    )
-                                })}
-                            </div>
-                        ) : (
-                            <p className="text-muted-foreground text-center py-4">No recent scans</p>
-                        )}
-                    </CardContent>
-                 </Card>
-            </div>
+            </Card>
+        )}
         </div>
       </div>
     </AppLayout>
   );
 }
-    
