@@ -46,7 +46,6 @@ export default function ScanPage() {
 
   useEffect(() => {
     const getCameraPermission = async () => {
-      if (hasCameraPermission !== null) return;
       try {
         const stream = await navigator.mediaDevices.getUserMedia({video: true});
         setHasCameraPermission(true);
@@ -66,12 +65,17 @@ export default function ScanPage() {
     };
 
     getCameraPermission();
-  }, [hasCameraPermission, toast]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
 
   const handlePartDetect = async (qrId: string) => {
     if (!isScanning) return;
     setIsScanning(false);
+    toast({
+        title: "Scanning...",
+        description: `QR Code Detected: ${qrId}`,
+    });
     const part = await getPartByQrId(qrId);
     if (part) {
         toast({
@@ -86,7 +90,7 @@ export default function ScanPage() {
             description: "No part found for this QR code.",
         });
         // Allow scanning again if part not found
-        setTimeout(() => setIsScanning(true), 1000);
+        setTimeout(() => setIsScanning(true), 2000);
     }
   }
   
@@ -109,7 +113,7 @@ export default function ScanPage() {
             title: "Scan Failed",
             description: "Could not decode QR code from the uploaded image.",
         });
-        setTimeout(() => setIsScanning(true), 1000);
+        setTimeout(() => setIsScanning(true), 2000);
       } finally {
         // Clear the file input so the same file can be selected again
         if(fileInputRef.current) {
@@ -167,8 +171,8 @@ export default function ScanPage() {
                         {hasCameraPermission === true && (
                           <>
                             <video ref={videoRef} className="w-full aspect-video rounded-md" autoPlay muted playsInline />
-                            {isScanning && (
-                              <QrScanner videoEl={videoRef.current!} onPartDetect={handlePartDetect} />
+                            {isScanning && videoRef.current && (
+                              <QrScanner videoEl={videoRef.current} onPartDetect={handlePartDetect} />
                             )}
                           </>
                         )}
@@ -176,15 +180,14 @@ export default function ScanPage() {
                         {!isScanning && hasCameraPermission === true && (
                             <div className="absolute inset-0 bg-black/50 text-white flex flex-col items-center justify-center gap-4 p-4">
                                 <Icons.scanFrame className="w-16 h-16" />
-                                <span>Scanner paused.</span>
-                                <Button onClick={() => setIsScanning(true)}>Scan Again</Button>
+                                <span>Processing...</span>
                             </div>
                         )}
                     </div>
                 </CardContent>
                 <CardHeader className="pt-0 px-6 pb-6">
                      <div className="flex flex-col items-center gap-4">
-                        <Button variant="outline" className="w-full" onClick={handleFileUploadClick}>
+                        <Button variant="outline" className="w-full" onClick={handleFileUploadClick} disabled={!isScanning}>
                             <Icons.upload className="mr-2 h-5 w-5" />
                             Upload a QR Code Image
                         </Button>
