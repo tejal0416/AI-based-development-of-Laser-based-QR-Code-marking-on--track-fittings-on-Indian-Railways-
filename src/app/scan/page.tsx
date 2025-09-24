@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -71,66 +72,65 @@ export default function ScanPage() {
   };
 
   useEffect(() => {
-    if (!isScanning || !videoRef.current || hasCameraPermission !== true) {
-      return;
-    }
-  
-    if (!html5QrCodeRef.current) {
-        html5QrCodeRef.current = new Html5Qrcode(qrcodeRegionId, { verbose: false });
-    }
-    const html5QrCode = html5QrCodeRef.current;
-  
-    const onScanSuccess = (decodedText: string) => {
-        if (html5QrCode.getState() === Html5QrcodeScannerState.SCANNING) {
-            handlePartDetect(decodedText);
-        }
-    };
-  
-    const onScanFailure = (error: any) => { /* ignore */ };
-  
-    const qrboxFunction = (viewfinderWidth: number, viewfinderHeight: number) => {
-        const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
-        const qrboxSize = Math.max(250, Math.floor(minEdge * 0.8));
-        return { width: qrboxSize, height: qrboxSize };
-    };
-
-    if (html5QrCode.getState() !== Html5QrcodeScannerState.SCANNING) {
-        html5QrCode.start(
-            { facingMode: "environment" },
-            { fps: 10, qrbox: qrboxFunction, useBarCodeDetectorIfSupported: true },
-            onScanSuccess,
-            onScanFailure
-        ).catch(err => {
-            console.error("Error starting scanner", err);
-        });
-    }
-  
-    return () => {
-        if (html5QrCode && html5QrCode.getState() === Html5QrcodeScannerState.SCANNING) {
-            html5QrCode.stop().catch((err) => {
-                console.error("Failed to stop QR scanner:", err);
-            });
-        }
-    };
-  }, [isScanning, hasCameraPermission]);
-  
-  
-  useEffect(() => {
     const getCameraPermission = async () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-        setHasCameraPermission(true);
-
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
         }
+        setHasCameraPermission(true);
       } catch (error) {
         console.error('Error accessing camera:', error);
         setHasCameraPermission(false);
       }
     };
+
     getCameraPermission();
   }, []);
+
+  useEffect(() => {
+    if (isScanning && hasCameraPermission && videoRef.current) {
+      if (!html5QrCodeRef.current) {
+        html5QrCodeRef.current = new Html5Qrcode(qrcodeRegionId, { verbose: false });
+      }
+      const html5QrCode = html5QrCodeRef.current;
+  
+      if (html5QrCode.getState() === Html5QrcodeScannerState.SCANNING) {
+        return;
+      }
+  
+      const onScanSuccess = (decodedText: string) => {
+        if (html5QrCode.getState() === Html5QrcodeScannerState.SCANNING) {
+          handlePartDetect(decodedText);
+        }
+      };
+  
+      const onScanFailure = (error: any) => { /* ignore */ };
+  
+      const qrboxFunction = (viewfinderWidth: number, viewfinderHeight: number) => {
+        const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
+        const qrboxSize = Math.max(250, Math.floor(minEdge * 0.8));
+        return { width: qrboxSize, height: qrboxSize };
+      };
+      
+      html5QrCode.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: qrboxFunction, useBarCodeDetectorIfSupported: true },
+        onScanSuccess,
+        onScanFailure
+      ).catch(err => {
+        console.error("Error starting scanner", err);
+      });
+  
+      return () => {
+        if (html5QrCode && html5QrCode.getState() === Html5QrcodeScannerState.SCANNING) {
+          html5QrCode.stop().catch((err) => {
+            console.error("Failed to stop QR scanner:", err);
+          });
+        }
+      };
+    }
+  }, [isScanning, hasCameraPermission]);
 
   const handleFileUploadClick = () => {
     fileInputRef.current?.click();
@@ -288,3 +288,5 @@ export default function ScanPage() {
     </AppLayout>
   );
 }
+
+    
