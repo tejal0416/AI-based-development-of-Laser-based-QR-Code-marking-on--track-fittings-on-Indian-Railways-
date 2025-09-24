@@ -6,6 +6,7 @@ import { AuthProvider } from "@/hooks/use-auth";
 export const metadata: Metadata = {
   title: "Rails n Tales",
   description: "Intelligent rail part inspection and management.",
+  manifest: "/manifest.json",
 };
 
 export default function RootLayout({
