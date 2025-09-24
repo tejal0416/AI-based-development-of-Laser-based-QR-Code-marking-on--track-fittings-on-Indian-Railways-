@@ -16,13 +16,6 @@ import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
 import { Icons } from "@/components/icons";
 
-const partTypeMap: Record<string, string> = {
-    sleepers: 'sleeper',
-    clips: 'rail_clip',
-    pads: 'rail_pad',
-    liners: 'liner',
-};
-
 function getLatestStatus(part: Part): string {
   if (part.inspections.length === 0) return "Not Inspected";
   const latestInspection = part.inspections.sort(
@@ -53,7 +46,7 @@ export default function DashboardPage() {
     const relevantParts = parts.filter(p => p.part_type === partType);
     const attentionCount = relevantParts.filter(p => {
         const status = getLatestStatus(p);
-        return status === 'Failed' || status === 'Needs Repair' || status === 'Not Inspected';
+        return status === 'Failed' || status === 'Needs Repair';
     }).length;
     return {
         total: relevantParts.length,

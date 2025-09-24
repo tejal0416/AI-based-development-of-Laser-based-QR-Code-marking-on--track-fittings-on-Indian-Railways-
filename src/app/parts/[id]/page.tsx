@@ -51,6 +51,7 @@ const statusBadgeVariants: Record<string, "default" | "destructive" | "secondary
     Passed: "default",
     Failed: "destructive",
     "Needs Repair": "secondary",
+    "Not Inspected": "secondary",
 };
 
 async function AiSummary({ part, inspections }: { part: Part, inspections: Inspection[]}) {
