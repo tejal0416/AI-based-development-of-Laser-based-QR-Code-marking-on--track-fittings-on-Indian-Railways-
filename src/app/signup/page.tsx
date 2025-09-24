@@ -1,8 +1,9 @@
+
 "use client";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -22,18 +23,23 @@ import { Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export default function SignUpPage() {
-  const { signInWithEmail } = useAuth();
+  const { user, signUpWithEmail } = useAuth();
   const router = useRouter();
   const { toast } = useToast();
   
-  const [fullName, setFullName] = useState("Jane Inspector");
-  const [email, setEmail] = useState("jane@railwatch.com");
-  const [mobile, setMobile] = useState("+1 555 0102");
-  const [role, setRole] = useState("Inspector");
-  const [password, setPassword] = useState("password123");
-  const [confirmPassword, setConfirmPassword] = useState("password123");
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [agreed, setAgreed] = useState(false);
   const [accountCreated, setAccountCreated] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      router.push("/dashboard");
+    }
+  }, [user, router]);
+
 
   const passwordStrength = useMemo(() => {
     let strength = 0;
@@ -49,15 +55,19 @@ export default function SignUpPage() {
     return password === confirmPassword;
   }, [password, confirmPassword]);
 
-  const canSubmit = agreed && passwordsMatch && passwordStrength >= 50;
+  const canSubmit = agreed && passwordsMatch && passwordStrength >= 50 && fullName && email;
 
   const handleSignUp = async () => {
     if (!canSubmit) return;
     try {
-      await signInWithEmail(email, password);
+      await signUpWithEmail(email, password, fullName);
       setAccountCreated(true);
+      toast({
+        title: "Account Created!",
+        description: "Redirecting you to the dashboard...",
+      });
       setTimeout(() => {
-        router.push("/login");
+        router.push("/dashboard");
       }, 2000);
     } catch (error: any) {
       toast({
@@ -78,9 +88,9 @@ export default function SignUpPage() {
                 <Icons.logo className="w-8 h-8 text-gray-400" />
              </div>
           </div>
-          <CardTitle className="text-3xl font-headline">Rails n Tales</CardTitle>
+          <CardTitle className="text-3xl font-headline">Create Your Account</CardTitle>
           <CardDescription>
-            Create your account
+            Join Rails n Tales to manage your inventory.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -88,26 +98,18 @@ export default function SignUpPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
               <div className="grid gap-2">
                 <Label htmlFor="full-name">Full Name</Label>
-                <Input id="full-name" value={fullName} onChange={(e) => setFullName(e.target.value)} required />
+                <Input id="full-name" placeholder="Jane Doe" value={fullName} onChange={(e) => setFullName(e.target.value)} required />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="mobile">Mobile Number (optional)</Label>
-                <Input id="mobile" value={mobile} onChange={(e) => setMobile(e.target.value)} />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="role">Role</Label>
-                <Input id="role" value={role} onChange={(e) => setRole(e.target.value)} required />
+                <Input id="email" type="email" placeholder="jane@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="password">Password</Label>
                 <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
                     <Progress value={passwordStrength} className="w-24 h-1.5" />
-                    <span>Strength</span>
+                    <span>Strength: {passwordStrength}%</span>
                 </div>
               </div>
               <div className="grid gap-2">
@@ -115,9 +117,6 @@ export default function SignUpPage() {
                 <Input id="confirm-password" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
                  {!passwordsMatch && (
                     <p className="text-xs text-red-500">Passwords do not match</p>
-                 )}
-                 {passwordsMatch && confirmPassword && (
-                     <p className="text-xs text-green-600">Passwords match</p>
                  )}
               </div>
             </div>
@@ -139,14 +138,14 @@ export default function SignUpPage() {
           <div className="mt-6 text-center text-sm">
             Already have an account?{" "}
             <Link href="/login" className="underline text-primary font-semibold">
-              Back to Log in
+              Log in
             </Link>
           </div>
 
           {accountCreated && (
              <Alert className="mt-6 bg-green-500 text-white border-green-500">
                 <AlertDescription className="text-center font-semibold">
-                    Account created successfully. Redirecting to login...
+                    Account created successfully. Redirecting...
                 </AlertDescription>
              </Alert>
           )}

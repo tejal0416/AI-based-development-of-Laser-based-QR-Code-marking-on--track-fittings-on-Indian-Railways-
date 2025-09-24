@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -22,8 +23,8 @@ export default function LoginPage() {
   const { user, loading, signInWithGoogle, signInWithEmail } = useAuth();
   const router = useRouter();
   const { toast } = useToast();
-  const [email, setEmail] = useState("inspector@railwatch.com");
-  const [password, setPassword] = useState("password123");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   useEffect(() => {
     if (user) {

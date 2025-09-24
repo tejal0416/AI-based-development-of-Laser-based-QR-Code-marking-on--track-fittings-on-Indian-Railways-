@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -14,6 +15,7 @@ import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
+  updateProfile,
 } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 
@@ -22,6 +24,7 @@ interface AuthContextType {
   loading: boolean;
   signInWithGoogle: () => Promise<void>;
   signInWithEmail: (email: string, pass: string) => Promise<void>;
+  signUpWithEmail: (email: string, pass: string, fullName: string) => Promise<void>;
   signOut: () => Promise<void>;
 }
 
@@ -54,23 +57,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       await signInWithEmailAndPassword(auth, email, pass);
     } catch (error) {
-      // If the user doesn't exist, create a new one.
-      // In a real app, you might want a separate sign-up flow.
-      const errorCode = (error as any).code;
-      if (errorCode === 'auth/user-not-found' || errorCode === 'auth/invalid-credential') {
-        try {
-          await createUserWithEmailAndPassword(auth, email, pass);
-        }
-        catch (createError) {
-            console.error("Error creating user", createError);
-            throw createError;
-        }
-      } else {
         console.error("Error signing in with email", error);
         throw error;
-      }
     }
   }
+
+  const signUpWithEmail = async (email: string, pass: string, fullName: string) => {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+      if (userCredential.user) {
+        await updateProfile(userCredential.user, { displayName: fullName });
+        // Re-setting user to trigger re-render with updated profile
+        setUser({ ...userCredential.user, displayName: fullName });
+      }
+    } catch (error) {
+        console.error("Error signing up with email", error);
+        throw error;
+    }
+  }
+
 
   const signOut = async () => {
     try {
@@ -80,7 +85,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const value = { user, loading, signInWithGoogle, signOut, signInWithEmail };
+  const value = { user, loading, signInWithGoogle, signOut, signInWithEmail, signUpWithEmail };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
