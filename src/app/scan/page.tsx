@@ -45,7 +45,6 @@ export default function ScanPage() {
 
   useEffect(() => {
     const getCameraPermission = async () => {
-      if (hasCameraPermission !== null) return;
       try {
         const stream = await navigator.mediaDevices.getUserMedia({video: true});
         setHasCameraPermission(true);
@@ -65,7 +64,8 @@ export default function ScanPage() {
     };
 
     getCameraPermission();
-  }, [toast, hasCameraPermission]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
 
   const handlePartDetect = async (qrId: string) => {
@@ -148,7 +148,7 @@ export default function ScanPage() {
                     <div className="relative aspect-video w-full rounded-lg overflow-hidden border bg-muted flex items-center justify-center">
                         <video ref={videoRef} className="w-full aspect-video rounded-md" autoPlay muted playsInline />
                         
-                        {isScanning && hasCameraPermission && videoRef.current && (
+                        {isScanning && hasCameraPermission && videoRef.current?.srcObject && (
                            <QrScanner videoEl={videoRef.current} onPartDetect={handlePartDetect} />
                         )}
                         
@@ -156,12 +156,12 @@ export default function ScanPage() {
                             <Alert variant="destructive">
                                 <AlertTitle>Camera Access Required</AlertTitle>
                                 <AlertDescription>
-                                    Please allow camera access to use this feature.
+                                    Please allow camera access in your browser settings to use this feature.
                                 </AlertDescription>
                             </Alert>
                         )}
                         
-                        {!isScanning && (
+                        {!isScanning && hasCameraPermission && (
                             <div className="absolute inset-0 bg-black/50 text-white flex flex-col items-center justify-center gap-4 p-4">
                                 <Icons.scanFrame className="w-16 h-16" />
                                 <span>Scanner paused.</span>
@@ -240,5 +240,3 @@ export default function ScanPage() {
     </AppLayout>
   );
 }
-
-    
