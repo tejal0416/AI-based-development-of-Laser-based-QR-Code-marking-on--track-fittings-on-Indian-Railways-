@@ -60,10 +60,14 @@ export default function ScanPage() {
   
   const handlePartDetect = async (qrId: string) => {
     const part = await getPartByQrId(qrId);
+    setShowScanner(false);
     if (part) {
+        toast({
+            title: "Part Found!",
+            description: "Redirecting to part details...",
+        });
         router.push(`/parts/${part.qr_id}`);
     } else {
-        setShowScanner(false);
         toast({
             variant: "destructive",
             title: "Scan Failed",
