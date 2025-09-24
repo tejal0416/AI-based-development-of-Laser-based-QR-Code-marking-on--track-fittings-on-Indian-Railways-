@@ -14,10 +14,24 @@ export const Icons = {
       strokeLinejoin="round"
       {...props}
     >
-      <path d="M6 5 18 3" />
-      <path d="M6 19 18 21" />
-      <path d="M6 9.5 18 8" />
-      <path d="M6 15.5 18 14" />
+      {/* Train Body */}
+      <rect x="3" y="8" width="18" height="10" rx="2" />
+      {/* Cowcatcher */}
+      <path d="m3 18 4-5h10l4 5" />
+      {/* Wheels (Ashoka Chakra inspired) */}
+      <circle cx="7.5" cy="18" r="2.5" />
+      <circle cx="16.5" cy="18" r="2.5" />
+       {/* Chakra Spokes */}
+      <path d="M7.5 15.5v5" />
+      <path d="m5.5 17 4 2" />
+      <path d="m9.5 17-4 2" />
+      <path d="M16.5 15.5v5" />
+      <path d="m14.5 17 4 2" />
+      <path d="m18.5 17-4 2" />
+      {/* Cabin */}
+      <path d="M12 8v-2h6v2" />
+      {/* Headlight */}
+      <circle cx="18" cy="11" r="1" fill="currentColor" />
     </svg>
   ),
   arrowLeft: (props: SVGProps<SVGSVGElement>) => (
