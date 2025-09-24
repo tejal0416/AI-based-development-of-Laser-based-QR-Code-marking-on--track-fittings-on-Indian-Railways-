@@ -1,7 +1,11 @@
 {
   "name": "Rails n Tales",
-  "short_name": "RailsNTales",
+  "short_name": "RailsnTales",
   "description": "Intelligent rail part inspection and management.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#FBBF24",
   "icons": [
     {
       "src": "/icons/icon-192x192.png",
@@ -13,10 +17,5 @@
       "sizes": "512x512",
       "type": "image/png"
     }
-  ],
-  "theme_color": "#FBBF24",
-  "background_color": "#FFFFFF",
-  "start_url": "/",
-  "display": "standalone",
-  "orientation": "portrait"
+  ]
 }
