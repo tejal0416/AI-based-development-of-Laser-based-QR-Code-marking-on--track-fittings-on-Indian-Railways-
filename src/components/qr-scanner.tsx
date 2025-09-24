@@ -48,7 +48,7 @@ export function QrScanner({ onPartDetect, videoEl }: QrScannerProps) {
 
         if (html5Qrcode.getState() !== Html5QrcodeScannerState.SCANNING) {
             html5Qrcode.start(
-                { facingMode: "environment" },
+                { deviceId: { exact: (videoEl.srcObject as MediaStream).getVideoTracks()[0].getSettings().deviceId } },
                 {
                     fps: 10,
                     qrbox: qrboxFunction,
@@ -65,12 +65,11 @@ export function QrScanner({ onPartDetect, videoEl }: QrScannerProps) {
         return () => {
             if (html5Qrcode && html5Qrcode.getState() === Html5QrcodeScannerState.SCANNING) {
                 html5Qrcode.stop().catch((err) => {
-                    // console.error("Failed to stop QR scanner:", err);
+                    console.error("Failed to stop QR scanner:", err);
                 });
             }
         };
     }, [onPartDetect, videoEl]);
 
-    // The scanner will attach to the videoEl, so we can just return a hidden div for its own DOM element.
     return <div id={qrcodeRegionId} className="absolute inset-0" />;
 }

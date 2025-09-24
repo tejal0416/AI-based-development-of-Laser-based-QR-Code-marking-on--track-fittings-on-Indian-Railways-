@@ -34,10 +34,8 @@ export default function ScanPage() {
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
 
   useEffect(() => {
-    // Load recent scans on mount
     const loadRecentScans = async () => {
       const allParts = await getParts();
-      // Get the last 3 scanned parts for demonstration
       const sortedParts = allParts.sort((a,b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
       setRecentScans(sortedParts.slice(0, 3));
     };
@@ -49,23 +47,15 @@ export default function ScanPage() {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({video: true});
         setHasCameraPermission(true);
-
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
         }
       } catch (error) {
         console.error('Error accessing camera:', error);
         setHasCameraPermission(false);
-        toast({
-          variant: 'destructive',
-          title: 'Camera Access Denied',
-          description: 'Please enable camera permissions in your browser settings to use this app.',
-        });
       }
     };
-
     getCameraPermission();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
 
@@ -89,7 +79,6 @@ export default function ScanPage() {
             title: "Scan Failed",
             description: "No part found for this QR code.",
         });
-        // Allow scanning again if part not found
         setTimeout(() => setIsScanning(true), 2000);
     }
   }
@@ -101,7 +90,7 @@ export default function ScanPage() {
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
       const file = event.target.files[0];
-      setIsScanning(false); // Stop camera scanner if a file is chosen
+      setIsScanning(false); 
       const html5QrCode = new Html5Qrcode( "qr-reader-container-hidden", { verbose: false });
       try {
         const decodedText = await html5QrCode.scanFile(file, false);
@@ -115,7 +104,6 @@ export default function ScanPage() {
         });
         setTimeout(() => setIsScanning(true), 2000);
       } finally {
-        // Clear the file input so the same file can be selected again
         if(fileInputRef.current) {
             fileInputRef.current.value = "";
         }
@@ -174,14 +162,13 @@ export default function ScanPage() {
                             {isScanning && videoRef.current && (
                               <QrScanner videoEl={videoRef.current} onPartDetect={handlePartDetect} />
                             )}
+                             {!isScanning && (
+                                <div className="absolute inset-0 bg-black/50 text-white flex flex-col items-center justify-center gap-4 p-4">
+                                    <Icons.scanFrame className="w-16 h-16" />
+                                    <span>Processing...</span>
+                                </div>
+                            )}
                           </>
-                        )}
-                        
-                        {!isScanning && hasCameraPermission === true && (
-                            <div className="absolute inset-0 bg-black/50 text-white flex flex-col items-center justify-center gap-4 p-4">
-                                <Icons.scanFrame className="w-16 h-16" />
-                                <span>Processing...</span>
-                            </div>
                         )}
                     </div>
                 </CardContent>
