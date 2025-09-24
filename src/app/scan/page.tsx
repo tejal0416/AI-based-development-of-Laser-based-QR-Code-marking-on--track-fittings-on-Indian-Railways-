@@ -29,6 +29,7 @@ import { Html5Qrcode } from "html5-qrcode";
 export default function ScanPage() {
   const [detectedPart, setDetectedPart] = useState<Part | null>(null);
   const [recentScans, setRecentScans] = useState<Part[]>([]);
+  const [notes, setNotes] = useState("");
   const router = useRouter();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -49,11 +50,11 @@ export default function ScanPage() {
     setIsScanning(false);
     const part = await getPartByQrId(qrId);
     if (part) {
+        setDetectedPart(part);
         toast({
             title: "Part Found!",
-            description: "Redirecting to part details...",
+            description: "Part details have been loaded.",
         });
-        router.push(`/parts/${part.qr_id}`);
     } else {
         toast({
             variant: "destructive",
@@ -61,6 +62,20 @@ export default function ScanPage() {
             description: "No part found for this QR code.",
         });
     }
+  }
+  
+  const handleSave = () => {
+    // In a real app, you'd save the notes and other data.
+    // For now, we'll just show a success toast.
+    toast({
+        title: "Saved!",
+        description: `Notes for part ${detectedPart?.part_name} have been saved.`,
+    });
+    // You could redirect or clear the form here.
+    // For example, redirecting to the part's detail page:
+    // if (detectedPart) {
+    //   router.push(`/parts/${detectedPart.qr_id}`);
+    // }
   }
 
   const handleFileUploadClick = () => {
@@ -125,6 +140,7 @@ export default function ScanPage() {
                             <div className="text-center text-muted-foreground flex flex-col items-center gap-4 p-4">
                                 <Icons.scanFrame className="w-16 h-16" />
                                 <span>Scanner paused.</span>
+                                <Button onClick={() => setIsScanning(true)}>Scan Again</Button>
                             </div>
                         )}
                     </div>
@@ -175,7 +191,13 @@ export default function ScanPage() {
                         </div>
                          <div className="grid gap-2">
                            <Label htmlFor="notes">Notes:</Label>
-                           <Textarea id="notes" placeholder="Add any relevant notes here..." />
+                           <Textarea 
+                             id="notes" 
+                             placeholder="Add any relevant notes here..." 
+                             value={notes}
+                             onChange={(e) => setNotes(e.target.value)}
+                             disabled={!detectedPart}
+                           />
                         </div>
                     </CardContent>
                  </Card>
@@ -223,7 +245,11 @@ export default function ScanPage() {
                  </Card>
                  <div className="flex justify-end gap-2">
                     <Button variant="outline" onClick={() => router.push('/dashboard')}>Cancel</Button>
-                    <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
+                    <Button 
+                        className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                        onClick={handleSave}
+                        disabled={!detectedPart}
+                    >
                         <Icons.save className="mr-2 h-4 w-4" />
                         Save to Inventory
                     </Button>
