@@ -65,7 +65,7 @@ const statusBadgeVariants: Record<string, "default" | "destructive" | "secondary
 };
 
 
-async function AiSummary({ part, inspections }: { part: Part, inspections: Inspection[]}) {
+function AiSummary({ part, inspections }: { part: Part, inspections: Inspection[]}) {
   const [summary, setSummary] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -463,5 +463,7 @@ export default function InspectionPage() {
     </AppLayout>
   );
 }
+
+    
 
     
