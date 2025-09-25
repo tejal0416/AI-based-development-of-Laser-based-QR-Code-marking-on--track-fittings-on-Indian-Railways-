@@ -15,11 +15,14 @@ import {
   Package,
   File,
   Info,
+  CalendarDays,
+  ShieldAlert,
+  Calendar,
 } from "lucide-react";
 import { getPartById, getVendorById } from "@/lib/data";
 import { generateInspectionSummary } from "@/ai/flows/generate-inspection-summary";
 import type { Inspection, InspectionStatus, Part } from "@/lib/types";
-import { format, formatDistanceToNow } from "date-fns";
+import { format, formatDistanceToNow, addDays, differenceInDays } from "date-fns";
 
 import { AppLayout } from "@/components/app-layout";
 import {
@@ -39,6 +42,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
 type PartDetailPageProps = {
   params: {
@@ -116,6 +120,49 @@ function AiSummarySkeleton() {
     )
 }
 
+function WarrantyCard({ part }: { part: Part }) {
+    const mfgDate = new Date(part.mfg_date);
+    const expiryDate = addDays(mfgDate, part.warranty_days);
+    const daysLeft = differenceInDays(expiryDate, new Date());
+    const hasExpired = daysLeft <= 0;
+
+    return (
+        <Card>
+            <CardHeader>
+                <CardTitle className="font-headline flex items-center gap-2">
+                    <ShieldCheck />
+                    Warranty Status
+                </CardTitle>
+            </CardHeader>
+            <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                <div className="flex items-start gap-3">
+                    <Calendar className="h-5 w-5 text-muted-foreground mt-0.5" />
+                    <div>
+                        <span className="font-medium">Manufactured</span>
+                        <p className="text-muted-foreground">{format(mfgDate, "PP")}</p>
+                    </div>
+                </div>
+                <div className="flex items-start gap-3">
+                    <CalendarDays className="h-5 w-5 text-muted-foreground mt-0.5" />
+                    <div>
+                        <span className="font-medium">Warranty Expires</span>
+                        <p className="text-muted-foreground">{format(expiryDate, "PP")}</p>
+                    </div>
+                </div>
+                <div className="flex items-start gap-3">
+                    <ShieldAlert className={cn("h-5 w-5 mt-0.5", hasExpired ? 'text-red-500' : 'text-green-500')} />
+                    <div>
+                        <span className="font-medium">Time Left</span>
+                        <p className={cn("font-bold text-lg", hasExpired ? 'text-red-500' : 'text-green-500')}>
+                            {hasExpired ? "Expired" : `${daysLeft} days`}
+                        </p>
+                    </div>
+                </div>
+            </CardContent>
+        </Card>
+    )
+}
+
 async function PartDetailsContent({ partId }: { partId: string }) {
     const part = await getPartById(partId);
     if (!part) {
@@ -129,6 +176,8 @@ async function PartDetailsContent({ partId }: { partId: string }) {
                 <Suspense fallback={<AiSummarySkeleton />}>
                     <AiSummary part={part} inspections={part.inspections} />
                 </Suspense>
+
+                <WarrantyCard part={part} />
 
                 <Card>
                     <CardHeader>
@@ -249,6 +298,10 @@ function PartDetailsSkeleton() {
             <div className="md:col-span-2 space-y-8">
                 <AiSummarySkeleton />
                 <Card>
+                    <CardHeader><CardTitle className="font-headline">Warranty Status</CardTitle></CardHeader>
+                    <CardContent><Skeleton className="h-16 w-full" /></CardContent>
+                </Card>
+                <Card>
                     <CardHeader>
                         <CardTitle className="font-headline">Inspection History</CardTitle>
                         <CardDescription>
@@ -324,5 +377,7 @@ export default async function PartDetailPage({ params }: PartDetailPageProps) {
     </AppLayout>
   );
 }
+
+    
 
     
