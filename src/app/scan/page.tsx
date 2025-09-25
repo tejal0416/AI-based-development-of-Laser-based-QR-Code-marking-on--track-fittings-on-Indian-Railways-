@@ -58,10 +58,10 @@ export default function ScanPage() {
     if (part) {
       toast({
         title: "Part Found!",
-        description: "Redirecting to part details...",
+        description: "Redirecting to inspection form...",
       });
-      // Here you could pass the defect info to the next page via query params or state management
-      router.push(`/parts/${part.qr_id}`);
+      // Redirect to the new inspection form page
+      router.push(`/parts/${part.qr_id}/inspect`);
     } else {
       toast({
         variant: "destructive",
@@ -115,8 +115,11 @@ export default function ScanPage() {
     // Only request permission when the user decides to scan
     if (hasCameraPermission === null) {
       try {
-        await navigator.mediaDevices.getUserMedia({ video: true });
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        // We don't need to do anything with the stream directly, just requesting it is enough.
+        // Once permission is granted, the useEffect will handle starting the scanner.
         setHasCameraPermission(true);
+        stream.getTracks().forEach(track => track.stop()); // Stop the stream immediately
       } catch (error) {
         console.error('Error accessing camera:', error);
         setHasCameraPermission(false);
@@ -216,7 +219,7 @@ export default function ScanPage() {
                 <Icons.scanLine className="mr-2 h-4 w-4" />
                 Proceed to Scan
               </Button>
-              <Button variant="outline" className="w-full" onClick={startScanning}>
+              <Button variant="outline" className="w-full" onClick={() => { setDefectType("none"); startScanning(); }}>
                 Skip and Scan a Good Part
               </Button>
             </CardContent>
