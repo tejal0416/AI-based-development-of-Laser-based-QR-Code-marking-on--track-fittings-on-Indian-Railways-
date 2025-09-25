@@ -14,6 +14,7 @@ import {
   Tag,
   Package,
   File,
+  Info,
 } from "lucide-react";
 import { getPartById, getVendorById } from "@/lib/data";
 import { generateInspectionSummary } from "@/ai/flows/generate-inspection-summary";
@@ -132,8 +133,9 @@ async function PartDetailsContent({ partId }: { partId: string }) {
                 <Card>
                     <CardHeader>
                     <CardTitle className="font-headline">Inspection History</CardTitle>
-                    <CardDescription>
-                        Review the complete maintenance log for this part.
+                    <CardDescription className="flex items-center gap-2 pt-1">
+                        <Info className="w-4 h-4"/>
+                        This log is retrieved from connected UDM and TMS portals.
                     </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -182,6 +184,10 @@ async function PartDetailsContent({ partId }: { partId: string }) {
                 <Card>
                     <CardHeader>
                         <CardTitle className="font-headline">Part Details</CardTitle>
+                         <CardDescription className="flex items-center gap-2 pt-1">
+                            <Info className="w-4 h-4"/>
+                            Data sourced from UDM and TMS portals.
+                        </CardDescription>
                     </CardHeader>
                     <CardContent className="grid gap-4 text-sm">
                         <div className="flex items-start gap-3">
