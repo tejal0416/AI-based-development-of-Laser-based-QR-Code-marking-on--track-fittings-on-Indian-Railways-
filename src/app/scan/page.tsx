@@ -277,7 +277,7 @@ export default function ScanPage() {
                     <div id="qr-reader-container-hidden" className="hidden"></div>
                    <CardDescription className="mt-4">
                       Place the QR code inside the frame. Good lighting improves accuracy.
-                   </CartDescription>
+                   </CardDescription>
                    <Button variant="link" onClick={() => { setStep("pre-scan"); setHasCameraPermission(null); }}>
                         Go Back
                    </Button>
