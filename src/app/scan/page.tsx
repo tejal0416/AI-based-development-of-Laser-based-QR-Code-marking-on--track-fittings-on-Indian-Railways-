@@ -182,7 +182,7 @@ export default function ScanPage() {
                 Report a Defect
               </CardTitle>
               <CardDescription>
-                Is there an issue with this part? Select the type of defect and add notes if necessary.
+                Select the type of issue found with this part. This helps in accurate reporting and maintenance planning.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -191,28 +191,28 @@ export default function ScanPage() {
                  <RadioGroup value={defectType} onValueChange={setDefectType}>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="rusted" id="rusted" />
-                      <Label htmlFor="rusted">Rusted</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="corroded" id="corroded" />
-                      <Label htmlFor="corroded">Corroded</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
                       <RadioGroupItem value="cracked" id="cracked" />
-                      <Label htmlFor="cracked">Cracked</Label>
+                      <Label htmlFor="cracked">Cracked or Broken</Label>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="other" id="other" />
-                      <Label htmlFor="other">Other</Label>
+                      <RadioGroupItem value="corrosion" id="corrosion" />
+                      <Label htmlFor="corrosion">Severe Corrosion</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="wear" id="wear" />
+                      <Label htmlFor="wear">Excessive Wear</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="misaligned" id="misaligned" />
+                      <Label htmlFor="misaligned">Loose or Misaligned</Label>
                     </div>
                   </div>
                 </RadioGroup>
               </div>
 
               <div className="space-y-2">
-                  <Label htmlFor="notes">Additional Notes</Label>
-                  <Textarea id="notes" placeholder="e.g., 'Heavy corrosion on the left side...'" value={notes} onChange={(e) => setNotes(e.target.value)} />
+                  <Label htmlFor="notes">Additional Notes (Optional)</Label>
+                  <Textarea id="notes" placeholder="e.g., 'Hairline crack on the western-facing side...'" value={notes} onChange={(e) => setNotes(e.target.value)} />
               </div>
 
               <Button onClick={startScanning} className="w-full" disabled={!defectType}>
@@ -277,7 +277,7 @@ export default function ScanPage() {
                     <div id="qr-reader-container-hidden" className="hidden"></div>
                    <CardDescription className="mt-4">
                       Place the QR code inside the frame. Good lighting improves accuracy.
-                   </CardDescription>
+                   </CartDescription>
                    <Button variant="link" onClick={() => { setStep("pre-scan"); setHasCameraPermission(null); }}>
                         Go Back
                    </Button>
