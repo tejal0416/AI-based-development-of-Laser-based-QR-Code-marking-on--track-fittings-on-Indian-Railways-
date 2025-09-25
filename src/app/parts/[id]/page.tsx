@@ -129,10 +129,16 @@ function WarrantyCard({ part }: { part: Part }) {
     return (
         <Card>
             <CardHeader>
-                <CardTitle className="font-headline flex items-center gap-2">
-                    <ShieldCheck />
-                    Warranty Status
-                </CardTitle>
+                <div className="flex items-center justify-between">
+                    <CardTitle className="font-headline flex items-center gap-2">
+                        <ShieldCheck />
+                        Warranty Status
+                    </CardTitle>
+                    <Badge variant="outline" className="flex items-center gap-1 border-primary/50 text-primary text-xs">
+                        <BrainCircuit className="h-3 w-3" />
+                        AI Generated & Refined
+                    </Badge>
+                </div>
             </CardHeader>
             <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                 <div className="flex items-start gap-3">
