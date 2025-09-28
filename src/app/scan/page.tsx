@@ -244,7 +244,7 @@ export default function ScanPage() {
                       <AlertTitle>Camera Access Denied</AlertTitle>
                       <AlertDescription>
                         Please enable camera permissions in your browser settings to use the scanner.
-                      </Aler-tDescription>
+                      </AlertDescription>
                     </Alert>
                   )}
 
