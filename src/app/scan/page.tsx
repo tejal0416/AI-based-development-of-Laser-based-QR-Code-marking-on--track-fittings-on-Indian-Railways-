@@ -42,7 +42,7 @@ export default function ScanPage() {
   const [notes, setNotes] = useState("");
 
   const handlePartDetect = async (qrId: string) => {
-    if (isProcessing) return;
+    if (isProcessing || !qrId) return;
     setIsProcessing(true);
 
     if (html5QrCodeRef.current?.isScanning) {
