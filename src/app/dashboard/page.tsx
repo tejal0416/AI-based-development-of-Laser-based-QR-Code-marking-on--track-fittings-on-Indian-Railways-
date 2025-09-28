@@ -41,7 +41,7 @@ export default function DashboardPage() {
 
   const categories = [
     { name: "Sleepers", type: "sleeper", description: "Concrete and wooden supports", imageHint: "railway sleeper" },
-    { name: "Clips", type: "rail_clip", description: "Fasteners for securing rails", imageHint: "rail clip" },
+    { name: "Clips", type: "rail_clip", description: "Fasteners for securing rails", imageHint: "railway track" },
     { name: "Pads", type: "rail_pad", description: "Resilient pads for vibration damping", imageHint: "rail pad" },
     { name: "Liners", type: "liner", description: "Insulating and positioning components", imageHint: "rail liner" },
   ];
@@ -83,6 +83,13 @@ export default function DashboardPage() {
           <AlertTitle>Data Source</AlertTitle>
           <AlertDescription>
             Part data is retrieved from connected UDM and TMS portals to provide you with the latest information.
+            <div className="mt-2">
+                <Button asChild variant="outline" size="sm">
+                    <Link href="https://www.ireps.gov.in/iMMS/logon" target="_blank">
+                        Connect to iMMS Portal
+                    </Link>
+                </Button>
+            </div>
           </AlertDescription>
         </Alert>
 
