@@ -4,8 +4,8 @@
 import { useEffect, useState, useRef, Suspense } from "react";
 import Link from "next/link";
 import { notFound, useParams } from "next/navigation";
-import { getPartById, getVendorById } from "@/lib/data";
-import type { Part, Inspection } from "@/lib/types";
+import { getPartById, getVendorById, addInspection } from "@/lib/data";
+import type { Part, Inspection, InspectionStatus } from "@/lib/types";
 import { format, formatDistanceToNow, addDays, differenceInDays } from "date-fns";
 import { generateInspectionSummary } from "@/ai/flows/generate-inspection-summary";
 import { AppLayout } from "@/components/app-layout";
@@ -48,6 +48,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/use-auth";
 
 
 const statusIcons: Record<string, React.ReactNode> = {
@@ -101,7 +102,12 @@ function AiSummary({ part, inspections }: { part: Part, inspections: Inspection[
           setLoading(false);
       }
     }
-    getSummary();
+    if (inspections.length > 0) {
+      getSummary();
+    } else {
+        setSummary(`No inspection history available to analyze for part ${part.part_name}.`);
+        setLoading(false);
+    }
   }, [part, inspections]);
 
   return (
@@ -307,9 +313,10 @@ function PartInfoAndHistory({ part }: { part: Part }) {
 }
 
 
-export default function InspectionPage() {
+function PageContent() {
   const params = useParams();
   const { toast } = useToast();
+  const { user } = useAuth();
   const partId = params.id as string;
   
   const [part, setPart] = useState<Part | null>(null);
@@ -346,18 +353,31 @@ export default function InspectionPage() {
     }
   };
 
-  const handleSubmit = () => {
-    if (!imageFile) {
+  const handleSubmit = async () => {
+    if (!imageFile || !part || !user) {
         toast({
             variant: "destructive",
-            title: "No Image Selected",
-            description: "Please take a picture of the part before submitting."
+            title: "Submission Error",
+            description: "Please attach an image and ensure you are logged in."
         });
         return;
     }
+    
     // Here you would typically handle the form submission, e.g., upload the image and save the inspection record.
-    console.log("Submitting inspection for", part?.part_name, "with image", imageFile.name);
+    console.log("Submitting inspection for", part.part_name, "with image", imageFile.name);
+    
+    const newInspection: Omit<Inspection, 'insp_id'> = {
+        qr_id: part.qr_id,
+        inspector_id: user.email || 'unknown_inspector',
+        insp_date: new Date().toISOString(),
+        status: 'Failed' as InspectionStatus, // Assuming any photo submission is a failure
+        image_path: imageFile.name, // Storing image name, in real app this would be a URL after upload
+    };
+
+    // This is a mock function, in a real app it would be an API call.
+    await addInspection(newInspection);
     setSubmitted(true);
+    
     toast({
         title: "Inspection Submitted",
         description: "Your report has been successfully recorded."
@@ -388,7 +408,7 @@ export default function InspectionPage() {
   if (submitted) {
     return (
         <AppLayout>
-            <div className="max-w-2xl mx-auto w-full text-center">
+            <div className="max-w-2xl mx-auto w-full">
                 <div className="flex justify-end mb-4">
                      <Button asChild>
                         <Link href="/dashboard">Return to Dashboard</Link>
@@ -399,8 +419,8 @@ export default function InspectionPage() {
                         <div className="mx-auto bg-green-100 rounded-full p-4 w-fit">
                             <CheckCircle className="h-12 w-12 text-green-600" />
                         </div>
-                        <CardTitle className="mt-4">Inspection Submitted Successfully</CardTitle>
-                        <CardDescription>
+                        <CardTitle className="mt-4 text-center">Inspection Submitted Successfully</CardTitle>
+                        <CardDescription className="text-center">
                             The inspection report for part <span className="font-semibold">{part.part_name}</span> has been saved.
                         </CardDescription>
                     </CardHeader>
@@ -464,6 +484,10 @@ export default function InspectionPage() {
   );
 }
 
-    
-
-    
+export default function InspectionPage() {
+    return (
+        <Suspense fallback={<div className="flex min-h-screen items-center justify-center">Loading...</div>}>
+            <PageContent />
+        </Suspense>
+    )
+}

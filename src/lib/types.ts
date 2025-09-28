@@ -1,10 +1,11 @@
+
 export interface Vendor {
   vendor_id: string;
   vendor_name: string;
   public_key: string;
 }
 
-export type InspectionStatus = 'Passed' | 'Failed' | 'Needs Repair';
+export type InspectionStatus = 'Passed' | 'Failed' | 'Needs Repair' | 'Approved';
 
 export interface Inspection {
   insp_id: string;

@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -8,7 +9,7 @@
  *
  * @exports generateInspectionSummary - The main function to generate the inspection summary.
  * @exports GenerateInspectionSummaryInput - The input type for the generateInspectionSummary function.
- * @exports GenerateInspectionSummaryOutput - The return type for the generateInspectionSummary function.
+ * @exports GenerateInspectionSummaryOutput - The return type for the generateInspectionsummary function.
  */
 
 import {ai} from '@/ai/genkit';
@@ -43,7 +44,7 @@ Part Name: {{{partName}}}
 Inspection History:
 {{{inspectionHistory}}}
 
-Analyze the history and provide a concise summary (about 40-60 words). Conclude with a clear recommendation: "New inspection recommended," "No immediate inspection needed," or "Monitor part closely." Base your recommendation on the time since the last inspection, the status of past inspections, and any recurring issues.`,
+Analyze the history and provide a concise summary (about 40-60 words). If the latest inspection status is 'Failed' or 'Needs Repair', make a special note highlighting that the part is defective and requires immediate attention. Conclude with a clear recommendation: "New inspection recommended," "No immediate inspection needed," or "Monitor part closely." Base your recommendation on the time since the last inspection, the status of past inspections, and any recurring issues.`,
 });
 
 const generateInspectionSummaryFlow = ai.defineFlow(
