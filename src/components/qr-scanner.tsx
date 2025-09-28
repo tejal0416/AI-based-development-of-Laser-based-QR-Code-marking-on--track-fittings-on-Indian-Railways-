@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -45,7 +46,7 @@ export default function ScanPage() {
   }, []);
 
   const handlePartDetect = async (qrId: string) => {
-      if (!isScanning) return;
+      if (!isScanning || !qrId) return;
       setIsScanning(false);
 
       toast({

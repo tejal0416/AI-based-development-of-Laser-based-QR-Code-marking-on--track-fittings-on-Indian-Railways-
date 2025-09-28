@@ -5,7 +5,7 @@ export interface Vendor {
   public_key: string;
 }
 
-export type InspectionStatus = 'Passed' | 'Failed' | 'Needs Repair' | 'Approved';
+export type InspectionStatus = 'Passed' | 'Failed' | 'Needs Repair' | 'Not Inspected';
 
 export interface Inspection {
   insp_id: string;
