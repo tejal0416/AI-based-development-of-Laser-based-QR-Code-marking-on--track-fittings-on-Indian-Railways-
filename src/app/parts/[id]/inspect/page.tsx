@@ -72,6 +72,13 @@ function AiSummary({ part, inspections }: { part: Part, inspections: Inspection[
 
   useEffect(() => {
     async function getSummary() {
+      if (!part || inspections.length === 0) {
+        setSummary(`No inspection history available to analyze for part ${part.part_name}.`);
+        setLoading(false);
+        return;
+      }
+      
+      setLoading(true);
       const inspectionHistory = inspections
         .map(
           (insp) =>
@@ -83,12 +90,6 @@ function AiSummary({ part, inspections }: { part: Part, inspections: Inspection[
         )
         .join("\n");
 
-      if (!inspectionHistory) {
-        setSummary(`No inspection history available to analyze for part ${part.part_name}.`);
-        setLoading(false);
-        return;
-      }
-      
       try {
         const result = await generateInspectionSummary({
           partName: part.part_name,
@@ -102,12 +103,7 @@ function AiSummary({ part, inspections }: { part: Part, inspections: Inspection[
           setLoading(false);
       }
     }
-    if (inspections.length > 0) {
-      getSummary();
-    } else {
-        setSummary(`No inspection history available to analyze for part ${part.part_name}.`);
-        setLoading(false);
-    }
+    getSummary();
   }, [part, inspections]);
 
   return (
