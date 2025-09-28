@@ -86,7 +86,7 @@ export default function DashboardPage() {
             <div className="mt-2">
                 <Button asChild variant="outline" size="sm">
                     <Link href="https://www.ireps.gov.in/iMMS/logon" target="_blank">
-                        Connect to iMMS Portal
+                        Connect to UDM portal
                     </Link>
                 </Button>
             </div>
