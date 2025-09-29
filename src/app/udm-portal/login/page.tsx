@@ -66,11 +66,11 @@ export default function UdmLoginPage() {
             <form onSubmit={handleLogin} className="space-y-6">
               <div className="grid grid-cols-3 items-center gap-4">
                 <Label htmlFor="username" className="text-right">User Name</Label>
-                <Input id="username" className="col-span-2 max-w-sm" />
+                <Input id="username" className="col-span-2 max-w-sm" defaultValue="testuser" />
               </div>
               <div className="grid grid-cols-3 items-center gap-4">
                 <Label htmlFor="password" className="text-right">Password</Label>
-                <Input id="password" type="password" className="col-span-2 max-w-sm" />
+                <Input id="password" type="password" className="col-span-2 max-w-sm" defaultValue="password" />
               </div>
               <div className="pl-1/3 ml-[calc(33.33%+1rem)] flex items-center gap-2">
                  <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white">Login</Button>
