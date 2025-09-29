@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Bell, Box, Building, FileText, Search, Settings, ShieldAlert, Siren, Users, Warehouse, LogOut } from "lucide-react";
+import { Bell, Box, Building, FileText, Search, Settings, ShieldAlert, Siren, Users, Warehouse, LogOut, Upload } from "lucide-react";
 import { Icons } from "@/components/icons";
 import {
   DropdownMenu,
@@ -17,6 +17,26 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog";
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from "@/components/ui/chart";
 import { BarChart, PieChart, Bar, Pie, Cell, ResponsiveContainer, XAxis, YAxis } from "recharts";
@@ -36,6 +56,8 @@ const recentActivity = [
   { qrId: "QR003341", partName: "Sleeper", vendor: "InfraBuild Group", supplyDate: "2024-09-21", expiryDate: "2026-09-21", status: "Active" },
 ];
 
+const vendors = [...new Set(recentActivity.map(item => item.vendor))];
+
 const monthlySuppliesData = [
   { month: "Apr", total: Math.floor(Math.random() * 5000) + 1000 },
   { month: "May", total: Math.floor(Math.random() * 5000) + 1000 },
@@ -53,9 +75,9 @@ const inspectionStatusData = [
 
 const chartConfig = {
     total: { label: "Total" },
-    passed: { label: "Passed" },
-    pending: { label: "Pending" },
-    failed: { label: "Failed" }
+    passed: { label: "Passed", color: "hsl(var(--chart-2))" },
+    pending: { label: "Pending", color: "hsl(var(--chart-4))" },
+    failed: { label: "Failed", color: "hsl(var(--chart-1))" }
 }
 
 const statusVariant: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
@@ -136,10 +158,64 @@ export default function UdmPortalPage() {
             ))}
           </div>
 
-          <Button variant="outline" className="w-full md:w-auto">
-             <Users className="mr-2 h-4 w-4"/>
-             Register Complaint Against Vendor
-          </Button>
+          <Dialog>
+            <DialogTrigger asChild>
+                <Button variant="outline" className="w-full md:w-auto">
+                    <Users className="mr-2 h-4 w-4"/>
+                    Register Complaint Against Vendor
+                </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                <DialogTitle>Register Complaint</DialogTitle>
+                <DialogDescription>
+                    Fill out the form below to submit a complaint against a vendor.
+                </DialogDescription>
+                </DialogHeader>
+                <div className="grid gap-4 py-4">
+                    <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="vendor" className="text-right">
+                        Vendor
+                        </Label>
+                        <Select>
+                            <SelectTrigger id="vendor" className="col-span-3">
+                                <SelectValue placeholder="Select a vendor" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {vendors.map((vendor) => (
+                                    <SelectItem key={vendor} value={vendor.toLowerCase().replace(/ /g, '-')}>{vendor}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="complaint" className="text-right">
+                        Complaint
+                        </Label>
+                        <Textarea id="complaint" placeholder="Please describe the issue in detail." className="col-span-3" />
+                    </div>
+                     <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="evidence" className="text-right">
+                        Evidence
+                        </Label>
+                        <div className="col-span-3">
+                            <Button asChild variant="outline" className="w-full">
+                                <label htmlFor="file-upload" className="cursor-pointer">
+                                    <Upload className="mr-2 h-4 w-4" />
+                                    Upload File (Optional)
+                                    <input id="file-upload" type="file" className="sr-only" />
+                                </label>
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+                <DialogFooter>
+                    <DialogClose asChild>
+                        <Button type="submit">Submit Complaint</Button>
+                    </DialogClose>
+                </DialogFooter>
+            </DialogContent>
+          </Dialog>
 
           <div className="grid gap-4 md:gap-8 lg:grid-cols-2">
             <Card>
@@ -182,10 +258,10 @@ export default function UdmPortalPage() {
                     <CardContent>
                         <ChartContainer config={chartConfig} className="h-[200px] w-full">
                             <ResponsiveContainer width="100%" height="100%">
-                                <BarChart data={monthlySuppliesData}>
+                                <BarChart data={monthlySuppliesData} margin={{ top: 20, right: 20, bottom: 5, left: 0 }}>
                                     <XAxis dataKey="month" stroke="hsl(var(--foreground))" fontSize={12} tickLine={false} axisLine={false} />
                                     <YAxis stroke="hsl(var(--foreground))" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value / 1000}K`} />
-                                    <ChartTooltip content={<ChartTooltipContent />} />
+                                    <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
                                     <Bar dataKey="total" fill="hsl(var(--primary))" radius={4} />
                                 </BarChart>
                             </ResponsiveContainer>
@@ -195,15 +271,26 @@ export default function UdmPortalPage() {
                 <Card>
                     <CardHeader>
                         <CardTitle>Inspection Status</CardTitle>
+                        <CardDescription>Overview of all inspections.</CardDescription>
                     </CardHeader>
-                    <CardContent className="flex justify-center">
-                        <ChartContainer config={chartConfig} className="h-[200px] w-[200px]">
+                    <CardContent className="flex justify-center items-center pb-6">
+                        <ChartContainer config={chartConfig} className="h-[200px] w-full max-w-[250px]">
                             <ResponsiveContainer width="100%" height="100%">
                             <PieChart>
-                                <ChartTooltip content={<ChartTooltipContent nameKey="name" />} />
-                                <Pie data={inspectionStatusData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80}>
-                                    {inspectionStatusData.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={entry.fill} />
+                                <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+                                <Pie data={inspectionStatusData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} labelLine={false} label={({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
+                                    const RADIAN = Math.PI / 180;
+                                    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+                                    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+                                    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+                                    return (
+                                        <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
+                                        {`${(percent * 100).toFixed(0)}%`}
+                                        </text>
+                                    );
+                                }}>
+                                    {inspectionStatusData.map((entry) => (
+                                        <Cell key={`cell-${entry.name}`} fill={entry.fill} />
                                     ))}
                                 </Pie>
                                 <ChartLegend content={<ChartLegendContent nameKey="name" />} />
@@ -220,3 +307,5 @@ export default function UdmPortalPage() {
     </div>
   );
 }
+
+    
