@@ -259,36 +259,6 @@ function PartDetailsSkeleton() {
                     <CardHeader><CardTitle className="font-headline">Warranty Status</CardTitle></CardHeader>
                     <CardContent><Skeleton className="h-16 w-full" /></CardContent>
                 </Card>
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="font-headline">Inspection History</CardTitle>
-                        <CardDescription>
-                            Review the complete maintenance log for this part.
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Date</TableHead>
-                                    <TableHead>Inspector ID</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead className="w-1/2">Inspection ID</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {[...Array(3)].map((_, i) => (
-                                    <TableRow key={i}>
-                                        <TableCell><Skeleton className="h-5 w-24" /></TableCell>
-                                        <TableCell><Skeleton className="h-5 w-16" /></TableCell>
-                                        <TableCell><Skeleton className="h-5 w-20" /></TableCell>
-                                        <TableCell><Skeleton className="h-5 w-full" /></TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </CardContent>
-                </Card>
             </div>
             <div className="md:col-span-1 space-y-8">
                 <Card>
@@ -324,7 +294,7 @@ export default async function PartDetailPage({ params }: PartDetailPageProps) {
   return (
     <AppLayout>
         <div className="mb-6">
-            <h1 className="font-headline text-3xl font-bold">{part.part_name}</h1>
+            <h1 className="font-headline text-2xl font-bold">{part.part_name}</h1>
             <p className="text-muted-foreground">QR ID: {part.qr_id}</p>
         </div>
       <Suspense fallback={<PartDetailsSkeleton />}>
@@ -335,9 +305,3 @@ export default async function PartDetailPage({ params }: PartDetailPageProps) {
     </AppLayout>
   );
 }
-
-    
-
-    
-
-    

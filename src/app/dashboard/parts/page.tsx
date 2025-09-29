@@ -167,7 +167,7 @@ function PartsList() {
                                     const status = getLatestStatus(part);
                                     return (
                                         <TableRow key={part.qr_id}>
-                                            <TableCell className="font-medium">{part.part_name}</TableCell>
+                                            <TableCell className="font-medium max-w-xs truncate">{part.part_name}</TableCell>
                                             <TableCell className="font-mono text-xs">{part.qr_id}</TableCell>
                                             <TableCell>{part.lot_no}</TableCell>
                                             <TableCell>

@@ -390,7 +390,7 @@ function PageContent() {
     <AppLayout>
       <div className="max-w-4xl mx-auto w-full space-y-8">
         <div>
-            <h1 className="font-headline text-3xl font-bold">New Inspection Report for {part.part_name}</h1>
+            <h1 className="font-headline text-2xl font-bold">New Inspection Report for {part.part_name}</h1>
             <p className="text-muted-foreground">Review the part's history and details, then attach a photo of the defect to submit your report.</p>
         </div>
         
@@ -439,5 +439,3 @@ export default function InspectionPage() {
         </Suspense>
     )
 }
-
-    
