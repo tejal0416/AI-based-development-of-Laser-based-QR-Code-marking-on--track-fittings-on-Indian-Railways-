@@ -2,13 +2,12 @@
 "use client";
 
 import Link from "next/link";
-import { AppLayout } from "@/components/app-layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { BarChart, Bell, Box, Building, FileText, PieChart, Search, Settings, ShieldAlert, Siren, Users, Warehouse, LogOut } from "lucide-react";
+import { Bell, Box, Building, FileText, Search, Settings, ShieldAlert, Siren, Users, Warehouse, LogOut } from "lucide-react";
 import { Icons } from "@/components/icons";
 import {
   DropdownMenu,
@@ -20,7 +19,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { Bar, Pie, Cell, ResponsiveContainer } from "recharts";
+import { BarChart, PieChart, Bar, Pie, Cell, ResponsiveContainer } from "recharts";
 
 // Sample Data
 const summaryCards = [
@@ -218,3 +217,5 @@ export default function UdmPortalPage() {
     </div>
   );
 }
+
+    
