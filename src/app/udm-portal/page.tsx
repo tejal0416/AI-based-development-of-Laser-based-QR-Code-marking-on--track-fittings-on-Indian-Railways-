@@ -2,6 +2,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -87,6 +88,7 @@ const statusVariant: Record<string, "default" | "secondary" | "destructive" | "o
 }
 
 export default function UdmPortalPage() {
+  const router = useRouter();
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
       <aside className="fixed inset-y-0 left-0 z-10 hidden w-60 flex-col border-r bg-card sm:flex">
@@ -137,7 +139,7 @@ export default function UdmPortalPage() {
                 <DropdownMenuItem>Settings</DropdownMenuItem>
                 <DropdownMenuItem>Support</DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem><LogOut className="mr-2 h-4 w-4" /> Logout</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => router.push('/login')}><LogOut className="mr-2 h-4 w-4" /> Logout</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
