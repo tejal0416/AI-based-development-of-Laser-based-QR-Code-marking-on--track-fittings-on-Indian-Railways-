@@ -185,54 +185,6 @@ async function PartDetailsContent({ partId }: { partId: string }) {
 
                 <WarrantyCard part={part} />
 
-                <Card>
-                    <CardHeader>
-                    <CardTitle className="font-headline">Inspection History</CardTitle>
-                    <CardDescription className="flex items-center gap-2 pt-1">
-                        <Info className="w-4 h-4"/>
-                        This log is retrieved from connected UDM and TMS portals.
-                    </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                    <Table>
-                        <TableHeader>
-                        <TableRow>
-                            <TableHead>Date</TableHead>
-                            <TableHead>Inspector ID</TableHead>
-                            <TableHead>Status</TableHead>
-                            <TableHead className="w-1/2">Inspection ID</TableHead>
-                        </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                        {part.inspections.length > 0 ? (
-                            part.inspections
-                            .sort((a, b) => new Date(b.insp_date).getTime() - new Date(a.insp_date).getTime())
-                            .map((inspection) => (
-                                <TableRow key={inspection.insp_id}>
-                                <TableCell className="font-medium whitespace-nowrap">
-                                    {format(new Date(inspection.insp_date), "PP")}
-                                </TableCell>
-                                <TableCell>{inspection.inspector_id}</TableCell>
-                                <TableCell>
-                                    <div className="flex items-center gap-2">
-                                    {statusIcons[inspection.status]}
-                                    <Badge variant={statusBadgeVariants[inspection.status]}>{inspection.status}</Badge>
-                                    </div>
-                                </TableCell>
-                                <TableCell className="font-mono text-xs">{inspection.insp_id}</TableCell>
-                                </TableRow>
-                            ))
-                        ) : (
-                            <TableRow>
-                            <TableCell colSpan={4} className="text-center">
-                                No inspection history found.
-                            </TableCell>
-                            </TableRow>
-                        )}
-                        </TableBody>
-                    </Table>
-                    </CardContent>
-                </Card>
             </div>
 
             <div className="md:col-span-1 space-y-8">
@@ -383,6 +335,8 @@ export default async function PartDetailPage({ params }: PartDetailPageProps) {
     </AppLayout>
   );
 }
+
+    
 
     
 
