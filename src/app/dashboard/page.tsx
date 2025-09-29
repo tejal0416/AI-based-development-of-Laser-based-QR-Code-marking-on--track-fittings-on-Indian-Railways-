@@ -83,10 +83,15 @@ export default function DashboardPage() {
           <AlertTitle>Data Source</AlertTitle>
           <AlertDescription>
             Part data is retrieved from connected UDM and TMS portals to provide you with the latest information.
-            <div className="mt-2">
+            <div className="mt-2 flex items-center gap-2">
                 <Button asChild variant="outline" size="sm">
-                    <Link href="/udm-portal/login">
+                    <Link href="/udm-portal/login" target="_blank" rel="noopener noreferrer">
                         Connect to UDM portal
+                    </Link>
+                </Button>
+                 <Button asChild variant="outline" size="sm">
+                    <Link href="https://www.ireps.gov.in/iMMS/logon" target="_blank" rel="noopener noreferrer">
+                        Connect to iMMS Portal
                     </Link>
                 </Button>
             </div>
