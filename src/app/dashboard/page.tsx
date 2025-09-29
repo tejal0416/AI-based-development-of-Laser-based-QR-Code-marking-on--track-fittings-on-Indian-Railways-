@@ -89,11 +89,6 @@ export default function DashboardPage() {
                         Connect to UDM portal
                     </Link>
                 </Button>
-                 <Button asChild variant="outline" size="sm">
-                    <Link href="https://www.ireps.gov.in/iMMS/logon" target="_blank" rel="noopener noreferrer">
-                        Connect to iMMS Portal
-                    </Link>
-                </Button>
             </div>
           </AlertDescription>
         </Alert>
