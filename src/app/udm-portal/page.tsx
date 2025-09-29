@@ -18,8 +18,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { BarChart, PieChart, Bar, Pie, Cell, ResponsiveContainer } from "recharts";
+import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from "@/components/ui/chart";
+import { BarChart, PieChart, Bar, Pie, Cell, ResponsiveContainer, XAxis, YAxis } from "recharts";
 
 // Sample Data
 const summaryCards = [
@@ -183,6 +183,8 @@ export default function UdmPortalPage() {
                         <ChartContainer config={chartConfig} className="h-[200px] w-full">
                             <ResponsiveContainer width="100%" height="100%">
                                 <BarChart data={monthlySuppliesData}>
+                                    <XAxis dataKey="month" stroke="hsl(var(--foreground))" fontSize={12} tickLine={false} axisLine={false} />
+                                    <YAxis stroke="hsl(var(--foreground))" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value / 1000}K`} />
                                     <ChartTooltip content={<ChartTooltipContent />} />
                                     <Bar dataKey="total" fill="hsl(var(--primary))" radius={4} />
                                 </BarChart>
@@ -204,6 +206,7 @@ export default function UdmPortalPage() {
                                         <Cell key={`cell-${index}`} fill={entry.fill} />
                                     ))}
                                 </Pie>
+                                <ChartLegend content={<ChartLegendContent nameKey="name" />} />
                             </PieChart>
                             </ResponsiveContainer>
                         </ChartContainer>
@@ -217,5 +220,3 @@ export default function UdmPortalPage() {
     </div>
   );
 }
-
-    
