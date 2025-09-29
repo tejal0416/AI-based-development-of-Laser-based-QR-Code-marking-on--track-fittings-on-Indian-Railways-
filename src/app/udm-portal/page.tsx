@@ -47,10 +47,11 @@ const monthlySuppliesData = [
 ];
 
 const inspectionStatusData = [
-  { name: "Passed", value: 400, fill: "var(--color-passed)" },
-  { name: "Pending", value: 38, fill: "var(--color-pending)" },
-  { name: "Failed", value: 15, fill: "var(--color-failed)" },
+  { name: "Passed", value: 400, fill: "hsl(var(--chart-2))" },
+  { name: "Pending", value: 38, fill: "hsl(var(--chart-4))" },
+  { name: "Failed", value: 15, fill: "hsl(var(--chart-1))" },
 ];
+
 const chartConfig = {
     total: { label: "Total" },
     passed: { label: "Passed" },
@@ -200,9 +201,9 @@ export default function UdmPortalPage() {
                             <PieChart>
                                 <ChartTooltip content={<ChartTooltipContent nameKey="name" />} />
                                 <Pie data={inspectionStatusData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80}>
-                                    <Cell key="cell-0" fill="hsl(var(--chart-2))" />
-                                    <Cell key="cell-1" fill="hsl(var(--chart-4))" />
-                                    <Cell key="cell-2" fill="hsl(var(--chart-1))" />
+                                    {inspectionStatusData.map((entry, index) => (
+                                        <Cell key={`cell-${index}`} fill={entry.fill} />
+                                    ))}
                                 </Pie>
                             </PieChart>
                             </ResponsiveContainer>
