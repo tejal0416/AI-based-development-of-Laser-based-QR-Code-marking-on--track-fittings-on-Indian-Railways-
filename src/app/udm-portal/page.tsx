@@ -76,8 +76,8 @@ export default function UdmPortalPage() {
         </div>
         <nav className="flex-1 overflow-auto py-4">
             <div className="grid items-start px-4 text-sm font-medium">
-                <Link className="flex items-center gap-3 rounded-lg bg-primary/10 px-3 py-2 text-primary transition-all hover:text-primary" href="#"><Box className="h-4 w-4"/> Dashboard</Link>
-                <Link className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary" href="#"><Building className="h-4 w-4"/> Vendors</Link>
+                <Link className="flex items-center gap-3 rounded-lg bg-primary/10 px-3 py-2 text-primary transition-all hover:text-primary" href="/udm-portal"><Box className="h-4 w-4"/> Dashboard</Link>
+                <Link className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary" href="/udm-portal/vendors"><Building className="h-4 w-4"/> Vendors</Link>
                 <Link className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary" href="#"><Warehouse className="h-4 w-4"/> Supplies</Link>
                 <Link className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary" href="#"><ShieldAlert className="h-4 w-4"/> Inspections</Link>
                 <Link className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary" href="#"><Siren className="h-4 w-4"/> Warranty</Link>
