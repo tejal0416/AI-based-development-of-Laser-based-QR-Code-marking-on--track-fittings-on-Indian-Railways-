@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Bell, Box, Building, FileText, Search, Settings, ShieldAlert, Siren, Users, Warehouse, LogOut, Upload } from "lucide-react";
+import { Bell, Box, Building, FileText, Search, Settings, ShieldAlert, Siren, Users, Warehouse, LogOut, Upload, Mail, Send, Power } from "lucide-react";
 import { Icons } from "@/components/icons";
 import {
   DropdownMenu,
@@ -40,274 +40,243 @@ import { Textarea } from "@/components/ui/textarea";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from "@/components/ui/chart";
-import { BarChart, PieChart, Bar, Pie, Cell, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import { BarChart, LineChart, Line, Bar, Pie, Cell, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from "recharts";
 
 // Sample Data
 const summaryCards = [
-  { title: "Total Supplies Registered", value: "12,540", icon: <Warehouse className="h-6 w-6 text-blue-500" />, color: "text-blue-500" },
-  { title: "Active Vendors", value: "420", icon: <Building className="h-6 w-6 text-green-500" />, color: "text-green-500" },
-  { title: "Pending Inspections", value: "38", icon: <ShieldAlert className="h-6 w-6 text-orange-500" />, color: "text-orange-500" },
-  { title: "Expiring Warranties", value: "25", icon: <Siren className="h-6 w-6 text-red-500" />, color: "text-red-500" },
+  { title: "Zones/PUs working", value: "28", icon: <Warehouse className="h-6 w-6 text-blue-500" />, color: "text-blue-500" },
+  { title: "User Depots working", value: "1797", icon: <Building className="h-6 w-6 text-green-500" />, color: "text-green-500" },
+  { title: "Transactions today", value: "45764", icon: <ShieldAlert className="h-6 w-6 text-orange-500" />, color: "text-orange-500" },
 ];
 
-const recentActivity = [
-  { qrId: "QR003078", partName: "Rail Pad", vendor: "SteelTech Industries", supplyDate: "2024-09-14", expiryDate: "2025-09-14", status: "Active" },
-  { qrId: "QR003112", partName: "Elastic Clip", vendor: "Bharat Fasteners Ltd.", supplyDate: "2024-08-02", expiryDate: "2025-08-02", status: "Inspection Pending" },
-  { qrId: "QR003205", partName: "Liner", vendor: "Metro Cast Pvt. Ltd.", supplyDate: "2024-07-18", expiryDate: "2025-07-18", status: "Warranty Expiring Soon" },
-  { qrId: "QR003341", partName: "Sleeper", vendor: "InfraBuild Group", supplyDate: "2024-09-21", expiryDate: "2026-09-21", status: "Active" },
+const receiptData = [
+    {name: 'Item 1', value: 5},
+    {name: 'Item 2', value: 4},
+    {name: 'Item 3', value: 3},
+    {name: 'Item 4', value: 2},
+    {name: 'Item 5', value: 1},
 ];
 
-const vendors = [...new Set(recentActivity.map(item => item.vendor))];
-
-const monthlySuppliesData = [
-  { month: "Apr", total: Math.floor(Math.random() * 5000) + 1000 },
-  { month: "May", total: Math.floor(Math.random() * 5000) + 1000 },
-  { month: "Jun", total: Math.floor(Math.random() * 5000) + 1000 },
-  { month: "Jul", total: Math.floor(Math.random() * 5000) + 1000 },
-  { month: "Aug", total: Math.floor(Math.random() * 5000) + 1000 },
-  { month: "Sep", total: Math.floor(Math.random() * 5000) + 1000 },
+const issueData = [
+    {name: 'Item A', value: 3},
+    {name: 'Item B', value: 2},
+    {name: 'Item C', value: 1},
+    {name: 'Item D', value: 1},
+    {name: 'Item E', value: 1},
 ];
 
-const inspectionStatusData = [
-  { name: "Passed", value: 400, fill: "hsl(var(--chart-2))" },
-  { name: "Pending", value: 38, fill: "hsl(var(--chart-4))" },
-  { name: "Failed", value: 15, fill: "hsl(var(--chart-1))" },
+const monthWiseData = [
+  { name: 'Jan-2022', receipt: 4000, issue: 2400 },
+  { name: 'Feb-2022', receipt: 3000, issue: 1398 },
+  { name: 'Mar-2022', receipt: 2000, issue: 9800 },
+  { name: 'Apr-2022', receipt: 2780, issue: 3908 },
+  { name: 'May-2022', receipt: 1890, issue: 4800 },
+  { name: 'Jun-2022', receipt: 2390, issue: 3800 },
+];
+
+const vendors = [
+    "SteelTech Industries", 
+    "Bharat Fasteners Ltd.", 
+    "Metro Cast Pvt. Ltd.", 
+    "InfraBuild Group"
 ];
 
 const chartConfig = {
-    total: { label: "Total" },
-    passed: { label: "Passed", color: "hsl(var(--chart-2))" },
-    pending: { label: "Pending", color: "hsl(var(--chart-4))" },
-    failed: { label: "Failed", color: "hsl(var(--chart-1))" }
+    receipt: { label: "Receipt Value", color: "hsl(var(--chart-2))" },
+    issue: { label: "Issue Value", color: "hsl(var(--chart-1))" },
 }
 
-const statusVariant: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
-  "Active": "default",
-  "Inspection Pending": "secondary",
-  "Warranty Expiring Soon": "destructive",
-}
 
 export default function UdmPortalPage() {
   const router = useRouter();
   return (
-    <div className="flex min-h-screen w-full flex-col bg-muted/40">
-      <aside className="fixed inset-y-0 left-0 z-10 hidden w-60 flex-col border-r bg-card sm:flex">
-        <div className="flex h-16 items-center border-b px-6">
-          <Link href="#" className="flex items-center gap-2 font-semibold">
-            <Icons.logo className="h-6 w-6 text-blue-600" />
-            <span>UDM Portal</span>
-          </Link>
-        </div>
-        <nav className="flex-1 overflow-auto py-4">
-            <div className="grid items-start px-4 text-sm font-medium">
-                <Link className="flex items-center gap-3 rounded-lg bg-primary/10 px-3 py-2 text-primary transition-all hover:text-primary" href="/udm-portal"><Box className="h-4 w-4"/> Dashboard</Link>
-                <Link className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary" href="/udm-portal/vendors"><Building className="h-4 w-4"/> Vendors</Link>
-                <Link className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary" href="#"><Warehouse className="h-4 w-4"/> Supplies</Link>
-                <Link className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary" href="#"><ShieldAlert className="h-4 w-4"/> Inspections</Link>
-                <Link className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary" href="#"><Siren className="h-4 w-4"/> Warranty</Link>
-                <Link className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary" href="#"><FileText className="h-4 w-4"/> Reports</Link>
-                <Link className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary" href="#"><Users className="h-4 w-4"/> Complaint Center</Link>
+    <div className="flex min-h-screen w-full flex-col bg-gray-100">
+      <header className="bg-white text-gray-800 shadow-sm">
+        <div className="container mx-auto px-4 py-2 flex justify-between items-center">
+            <div className="flex items-center gap-4">
+                <Icons.logo className="h-10 w-10 text-blue-800" />
+                <div>
+                    <h1 className="text-lg font-bold text-blue-900">Indian Railways E-Procurement System (IREPS)</h1>
+                    <h2 className="text-md font-semibold text-blue-800">यूजर डिपो मॉड्यूल User Depot Module (UDM)</h2>
+                </div>
             </div>
-        </nav>
-        <div className="mt-auto p-4 border-t">
-            <Link className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary" href="#"><Settings className="h-4 w-4"/> Settings</Link>
+            <div className="flex items-center gap-4 text-sm">
+                <Mail className="w-5 h-5 cursor-pointer hover:text-blue-700" />
+                <Send className="w-5 h-5 cursor-pointer hover:text-blue-700" />
+                <Power className="w-5 h-5 cursor-pointer text-red-600 hover:text-red-800" onClick={() => router.push('/login')} />
+            </div>
         </div>
-      </aside>
-      <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-60">
-        <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-card px-6">
-          <div className="relative flex-1">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input type="search" placeholder="Search QR ID, Vendor, or Lot..." className="w-full rounded-lg bg-background pl-8 md:w-[300px] lg:w-[400px]" />
-          </div>
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" className="rounded-full">
-                <Bell className="h-5 w-5" />
-                <span className="sr-only">Toggle notifications</span>
-            </Button>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="rounded-full">
-                  <Avatar>
-                    <AvatarImage src="https://picsum.photos/seed/admin/40/40" />
-                    <AvatarFallback>AD</AvatarFallback>
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Admin User</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>Settings</DropdownMenuItem>
-                <DropdownMenuItem>Support</DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => router.push('/login')}><LogOut className="mr-2 h-4 w-4" /> Logout</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        </header>
-        <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
-            <h1 className="text-2xl font-bold font-headline tracking-tight">Unified Digital Management (UDM) – Dashboard</h1>
-          <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
-            {summaryCards.map((card) => (
-              <Card key={card.title}>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">{card.title}</CardTitle>
-                  {card.icon}
-                </CardHeader>
-                <CardContent>
-                  <div className={`text-2xl font-bold ${card.color}`}>{card.value}</div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+      </header>
 
-          <Dialog>
-            <DialogTrigger asChild>
-                <Button variant="outline" className="w-full md:w-auto">
-                    <Users className="mr-2 h-4 w-4"/>
-                    Register Complaint Against Vendor
-                </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-                <DialogHeader>
-                <DialogTitle>Register Complaint</DialogTitle>
-                <DialogDescription>
-                    Fill out the form below to submit a complaint against a vendor.
-                </DialogDescription>
-                </DialogHeader>
-                <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="vendor" className="text-right">
-                        Vendor
-                        </Label>
-                        <Select>
-                            <SelectTrigger id="vendor" className="col-span-3">
-                                <SelectValue placeholder="Select a vendor" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {vendors.map((vendor) => (
-                                    <SelectItem key={vendor} value={vendor.toLowerCase().replace(/ /g, '-')}>{vendor}</SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+      <div className="flex flex-1">
+        <aside className="fixed inset-y-0 left-0 z-10 hidden w-64 flex-col border-r bg-white sm:flex mt-28">
+            <div className="flex items-center gap-4 px-4 py-2 border-b">
+                <Avatar>
+                    <AvatarImage src="https://picsum.photos/seed/admin/40/40" />
+                    <AvatarFallback>SK</AvatarFallback>
+                </Avatar>
+                <div>
+                    <p className="font-semibold">SANDEEP KUMAR</p>
+                    <p className="text-xs text-gray-600">(SSE/AC/CDG), AMBALA...</p>
+                </div>
+            </div>
+            <nav className="flex-1 overflow-auto py-4">
+                <div className="grid items-start px-2 text-sm font-medium">
+                    <Link className="flex items-center gap-3 rounded-lg bg-red-100 px-3 py-2 text-red-700 font-bold transition-all" href="/udm-portal"><Box className="h-4 w-4"/> Homepage</Link>
+                    <span className="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-600 font-semibold mt-2"><Building className="h-4 w-4"/> User Depot Module</span>
+                    <div className="ml-6 flex flex-col gap-1 text-gray-500">
+                        <Link className="px-3 py-1 hover:text-blue-700" href="#">DMTR</Link>
+                        <Link className="px-3 py-1 hover:text-blue-700" href="#">Ledger</Link>
+                        <Link className="px-3 py-1 hover:text-blue-700" href="#">Receipt</Link>
+                        <Link className="px-3 py-1 hover:text-blue-700" href="#">Acceptance</Link>
+                        <Link className="px-3 py-1 hover:text-blue-700" href="#">CRN (Digitally-signed)</Link>
+                        <Link className="px-3 py-1 hover:text-blue-700" href="#">CRC (Digitally-signed)</Link>
                     </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="complaint" className="text-right">
-                        Complaint
-                        </Label>
-                        <Textarea id="complaint" placeholder="Please describe the issue in detail." className="col-span-3" />
+                     <Link className="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-blue-700 mt-4" href="/udm-portal/vendors"><Users className="h-4 w-4"/> Vendor Management</Link>
+                </div>
+            </nav>
+        </aside>
+
+        <main className="flex-1 sm:pl-64 pt-28">
+            <div className="p-4">
+                <div className="bg-blue-900 text-white p-2 rounded-t-md text-sm">
+                    Northern Railway, Unit Type: Division, Unit: Ambala Division, Department: Electrical, Consignee: A6949-SSE/AC/CDG
+                </div>
+                <div className="bg-white p-4 rounded-b-md shadow-md">
+                    <div className="flex items-center gap-2 mb-4">
+                        <span className="relative flex h-3 w-3">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                        </span>
+                        <span className="font-bold text-red-600">LIVE</span>
                     </div>
-                     <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="evidence" className="text-right">
-                        Evidence
-                        </Label>
-                        <div className="col-span-3">
-                            <Button asChild variant="outline" className="w-full">
-                                <label htmlFor="file-upload" className="cursor-pointer">
-                                    <Upload className="mr-2 h-4 w-4" />
-                                    Upload File (Optional)
-                                    <input id="file-upload" type="file" className="sr-only" />
-                                </label>
-                            </Button>
+
+                    <div className="grid gap-4 md:grid-cols-3 md:gap-8 mb-8">
+                        {summaryCards.map((card) => (
+                        <Card key={card.title} className="text-center">
+                            <CardHeader className="pb-2">
+                            <CardTitle className="text-sm font-medium text-gray-500">{card.title}</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                            <div className={`text-3xl font-bold ${card.color}`}>{card.value}</div>
+                            </CardContent>
+                        </Card>
+                        ))}
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <Card className="col-span-1 lg:col-span-2">
+                            <CardHeader>
+                                <CardTitle className="text-center text-md">Month-wise Value of Receipt & Issue (Last 6 months)</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <ResponsiveContainer width="100%" height={300}>
+                                <LineChart data={monthWiseData}>
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="name" fontSize={12} />
+                                    <YAxis label={{ value: 'Value (Rs. in Lakhs)', angle: -90, position: 'insideLeft' }} fontSize={12} />
+                                    <Tooltip />
+                                    <Legend />
+                                    <Line type="monotone" dataKey="receipt" name="Receipt Value" stroke="#3b82f6" />
+                                    <Line type="monotone" dataKey="issue" name="Issue Value" stroke="#ef4444" />
+                                </LineChart>
+                                </ResponsiveContainer>
+                            </CardContent>
+                        </Card>
+                        <div className="space-y-4">
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle className="text-center text-sm">High Receipt Value Items in last 6 months (Top 5)</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <ResponsiveContainer width="100%" height={150}>
+                                        <BarChart data={receiptData} layout="vertical">
+                                            <XAxis type="number" hide />
+                                            <YAxis type="category" dataKey="name" hide />
+                                            <Bar dataKey="value" fill="#82ca9d" background={{ fill: '#eee' }} barSize={15} />
+                                        </BarChart>
+                                    </ResponsiveContainer>
+                                </CardContent>
+                            </Card>
+                             <Card>
+                                <CardHeader>
+                                    <CardTitle className="text-center text-sm">High Issue Value Items in last 6 months (Top 5)</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <ResponsiveContainer width="100%" height={150}>
+                                        <BarChart data={issueData} layout="vertical">
+                                            <XAxis type="number" hide />
+                                            <YAxis type="category" dataKey="name" hide />
+                                            <Bar dataKey="value" fill="#f97316" background={{ fill: '#eee' }} barSize={15} />
+                                        </BarChart>
+                                    </ResponsiveContainer>
+                                </CardContent>
+                            </Card>
                         </div>
                     </div>
+
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <Button variant="outline" className="w-full md:w-auto mt-8">
+                                <Users className="mr-2 h-4 w-4"/>
+                                Register Complaint Against Vendor
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-[425px]">
+                            <DialogHeader>
+                            <DialogTitle>Register Complaint</DialogTitle>
+                            <DialogDescription>
+                                Fill out the form below to submit a complaint against a vendor.
+                            </DialogDescription>
+                            </DialogHeader>
+                            <div className="grid gap-4 py-4">
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                    <Label htmlFor="vendor" className="text-right">
+                                    Vendor
+                                    </Label>
+                                    <Select>
+                                        <SelectTrigger id="vendor" className="col-span-3">
+                                            <SelectValue placeholder="Select a vendor" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {vendors.map((vendor) => (
+                                                <SelectItem key={vendor} value={vendor.toLowerCase().replace(/ /g, '-')}>{vendor}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                    <Label htmlFor="complaint" className="text-right">
+                                    Complaint
+                                    </Label>
+                                    <Textarea id="complaint" placeholder="Please describe the issue in detail." className="col-span-3" />
+                                </div>
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                    <Label htmlFor="evidence" className="text-right">
+                                    Evidence
+                                    </Label>
+                                    <div className="col-span-3">
+                                        <Button asChild variant="outline" className="w-full">
+                                            <label htmlFor="file-upload" className="cursor-pointer">
+                                                <Upload className="mr-2 h-4 w-4" />
+                                                Upload File (Optional)
+                                                <input id="file-upload" type="file" className="sr-only" />
+                                            </label>
+                                        </Button>
+                                    </div>
+                                </div>
+                            </div>
+                            <DialogFooter>
+                                <DialogClose asChild>
+                                    <Button type="submit">Submit Complaint</Button>
+                                </DialogClose>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
                 </div>
-                <DialogFooter>
-                    <DialogClose asChild>
-                        <Button type="submit">Submit Complaint</Button>
-                    </DialogClose>
-                </DialogFooter>
-            </DialogContent>
-          </Dialog>
-
-          <div className="grid gap-4 md:gap-8 lg:grid-cols-2">
-            <Card>
-              <CardHeader>
-                <CardTitle>Recent Activity</CardTitle>
-                <CardDescription>A log of the latest supply chain events.</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>QR ID</TableHead>
-                      <TableHead>Part Name</TableHead>
-                      <TableHead>Vendor</TableHead>
-                      <TableHead>Supply Date</TableHead>
-                      <TableHead>Status</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {recentActivity.map((activity) => (
-                      <TableRow key={activity.qrId}>
-                        <TableCell className="font-mono text-xs">{activity.qrId}</TableCell>
-                        <TableCell>{activity.partName}</TableCell>
-                        <TableCell>{activity.vendor}</TableCell>
-                        <TableCell>{activity.supplyDate}</TableCell>
-                        <TableCell><Badge variant={statusVariant[activity.status]}>{activity.status}</Badge></TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
-            
-            <div className="space-y-4">
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Monthly Supplies</CardTitle>
-                        <CardDescription>Last 6 months</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <ChartContainer config={chartConfig} className="h-[200px] w-full">
-                            <ResponsiveContainer width="100%" height="100%">
-                                <BarChart data={monthlySuppliesData} margin={{ top: 20, right: 20, bottom: 5, left: 0 }}>
-                                    <XAxis dataKey="month" stroke="hsl(var(--foreground))" fontSize={12} tickLine={false} axisLine={false} />
-                                    <YAxis stroke="hsl(var(--foreground))" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value / 1000}K`} />
-                                    <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
-                                    <Bar dataKey="total" fill="hsl(var(--primary))" radius={4} />
-                                </BarChart>
-                            </ResponsiveContainer>
-                        </ChartContainer>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Inspection Status</CardTitle>
-                        <CardDescription>Overview of all inspections.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="flex justify-center items-center pb-6">
-                        <ChartContainer config={chartConfig} className="h-[200px] w-full max-w-[250px]">
-                            <ResponsiveContainer width="100%" height="100%">
-                            <PieChart>
-                                <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
-                                <Pie data={inspectionStatusData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} labelLine={false} label={({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
-                                    const RADIAN = Math.PI / 180;
-                                    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-                                    const x = cx + radius * Math.cos(-midAngle * RADIAN);
-                                    const y = cy + radius * Math.sin(-midAngle * RADIAN);
-                                    return (
-                                        <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
-                                        {`${(percent * 100).toFixed(0)}%`}
-                                        </text>
-                                    );
-                                }}>
-                                    {inspectionStatusData.map((entry) => (
-                                        <Cell key={`cell-${entry.name}`} fill={entry.fill} />
-                                    ))}
-                                </Pie>
-                                <ChartLegend content={<ChartLegendContent nameKey="name" />} />
-                            </PieChart>
-                            </ResponsiveContainer>
-                        </ChartContainer>
-                    </CardContent>
-                </Card>
             </div>
-
-          </div>
         </main>
       </div>
     </div>
   );
 }
-
-    
