@@ -85,7 +85,7 @@ export default function DashboardPage() {
             Part data is retrieved from connected UDM and TMS portals to provide you with the latest information.
             <div className="mt-2">
                 <Button asChild variant="outline" size="sm">
-                    <Link href="https://www.ireps.gov.in/iMMS/logon" target="_blank">
+                    <Link href="/udm-portal">
                         Connect to UDM portal
                     </Link>
                 </Button>
