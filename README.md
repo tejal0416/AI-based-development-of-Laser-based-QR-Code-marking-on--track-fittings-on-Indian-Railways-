@@ -1,9 +1,5 @@
 # Digital Traceability of Railway Track Fittings Using AI and Laser QR Marking
 
-Oct 26, 2026 · @Tejal
-
-Smart India Hackathon 2025, problem statement 25021 (Hardware, Transportation & Logistics). Items in \[brackets\] need your own measurements or details; none of them has been invented. Figures taken from the idea deck are labeled as reported by the deck.
-
 ## 1. Problem Definition
 
 Assigned problem (SIH 2025, problem statement 25021): develop a unified system for laser-based QR code marking on railway track fittings, so that elastic rail clips, rail pads, liners and sleepers can be identified by mobile scan and linked to the User Depot Module (UDM) and the Track Management System (TMS). AI should extract each fitting's details, including inspections from manufacture and supply to in-service performance, and flag exceptions for quality monitoring.
