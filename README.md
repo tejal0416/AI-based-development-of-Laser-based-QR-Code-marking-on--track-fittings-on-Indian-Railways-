@@ -316,10 +316,6 @@ npm run build
 npm start
 ```
 
-- Node.js version: \[confirm\].
-- Environment variables: the Gemini API key \[variable name\] and the Firebase configuration \[variable names\]. Store values in a local env file that is not committed.
+- Node.js version
 - Deployment: Firebase App Hosting, configured by `apphosting.yaml` and `.firebaserc`.
 
-## Appendix B: Key Source Listing
-
-Paste here the function that looks up a part by its scanned ID and the function that applies the exception rules, with their file paths in `src` \[paths\]. The `src` folder could not be read while preparing this report, so no code is shown.
